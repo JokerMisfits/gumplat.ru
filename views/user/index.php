@@ -1,8 +1,5 @@
 <?php
 
-use yii\grid;
-use yii\helpers;
-use yii\widgets\Pjax;
 use app\models\Users;
 
 /** @var yii\web\View $this */
@@ -18,7 +15,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <p><?= yii\helpers\Html::a('Создать пользователя', ['create'], ['class' => 'btn btn-success']) ?></p>
 
-    <?php Pjax::begin(); ?>
+    <?php yii\widgets\Pjax::begin(); ?>
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
     <?= yii\grid\GridView::widget([
@@ -27,9 +24,8 @@ $this->params['breadcrumbs'][] = $this->title;
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
             //'id',
-            'username',
-            'name',
-            'surname',
+            //'username',
+            'snm',
             //'password',
             //'auth_key',
             //'access_token',
@@ -45,6 +41,6 @@ $this->params['breadcrumbs'][] = $this->title;
         ]
     ]); ?>
 
-    <?php Pjax::end(); ?>
+    <?php yii\widgets\Pjax::end(); ?>
 
 </div>

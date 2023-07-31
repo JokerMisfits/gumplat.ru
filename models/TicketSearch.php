@@ -14,8 +14,8 @@ class TicketSearch extends Tickets{
      */
     public function rules(){
         return [
-            [['id', 'tg_user_id', 'status', 'category_id'], 'integer'],
-            [['name', 'surname', 'phone', 'answers', 'title', 'text', 'comment', 'last_change'], 'safe']
+            [['id', 'tg_user_id', 'status', 'category_id', 'city_id', 'user_id'], 'integer'],
+            [['name', 'surname', 'phone', 'email', 'title', 'text', 'answers', 'comment', 'last_change'], 'safe']
         ];
     }
 
@@ -58,14 +58,18 @@ class TicketSearch extends Tickets{
             'status' => $this->status,
             'last_change' => $this->last_change,
             'category_id' => $this->category_id,
+            'city_id' => $this->city_id, 
+            'user_id' => $this->user_id
         ]);
 
         $query->andFilterWhere(['like', 'name', $this->name])
             ->andFilterWhere(['like', 'surname', $this->surname])
             ->andFilterWhere(['like', 'phone', $this->phone])
             ->andFilterWhere(['like', 'answers', $this->answers])
+            ->andFilterWhere(['like', 'email', $this->email])
             ->andFilterWhere(['like', 'title', $this->title])
             ->andFilterWhere(['like', 'text', $this->text])
+            ->andFilterWhere(['like', 'answers', $this->answers]) 
             ->andFilterWhere(['like', 'comment', $this->comment]);
 
         return $dataProvider;

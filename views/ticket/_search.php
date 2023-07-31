@@ -8,43 +8,29 @@ use yii\widgets\ActiveForm;
 /** @var yii\widgets\ActiveForm $form */
 ?>
 
-<div class="tickets-search">
+<div class="tickets-search container py-2 my-2 border border-dark rounded bg-light">
 
     <?php $form = ActiveForm::begin([
         'action' => ['index'],
         'method' => 'get',
         'options' => [
             'data-pjax' => 1
-        ],
-    ]); ?>
+        ]
+    ]); 
+    ?>
 
-    <?= $form->field($model, 'id') ?>
+    <?= $form->field($model, 'id')->textInput(['maxlength' => true])->label('Номер обращения'); ?>
 
-    <?= $form->field($model, 'tg_user_id') ?>
+    <?= $form->field($model, 'phone')->textInput(['maxlength' => true]); ?>
 
-    <?= $form->field($model, 'status') ?>
+    <?= $form->field($model, 'title')->textInput(['maxlength' => true]); ?>
 
-    <?= $form->field($model, 'name') ?>
+    <?= $form->field($model, 'text')->textarea(['rows' => 1]); ?>
 
-    <?= $form->field($model, 'surname') ?>
-
-    <?php // echo $form->field($model, 'phone') ?>
-
-    <?php // echo $form->field($model, 'answers') ?>
-
-    <?php // echo $form->field($model, 'title') ?>
-
-    <?php // echo $form->field($model, 'text') ?>
-
-    <?php // echo $form->field($model, 'comment') ?>
-
-    <?php // echo $form->field($model, 'last_change') ?>
-
-    <?php // echo $form->field($model, 'category_id') ?>
+    <?= $form->field($model, 'comment')->textarea(['rows' => 1]); ?>
 
     <div class="form-group">
-        <?= Html::submitButton('Search', ['class' => 'btn btn-primary']) ?>
-        <?= Html::resetButton('Reset', ['class' => 'btn btn-outline-secondary']) ?>
+        <?= Html::submitButton('Найти', ['class' => 'btn btn-primary']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>

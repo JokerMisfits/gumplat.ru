@@ -6,35 +6,24 @@ use yii\widgets\ActiveForm;
 /** @var yii\web\View $this */
 /** @var app\models\Users $model */
 /** @var yii\widgets\ActiveForm $form */
+/** @var string $from */
 ?>
 
 <div class="users-form">
 
     <?php 
-        $form = ActiveForm::begin([
-            'action' => ['user/create'],
-            'method' => 'post',
-            'options' => [
-                'autocomplete' => 'off'
-            ],
-            'enableClientValidation' => true,
-            'enableAjaxValidation' => true,
-            'validateOnBlur' => true,
-            'validateOnChange' => false,
-            'validateOnType' => false,
-            'validateOnSubmit' => true
-        ]);
+        $form = ActiveForm::begin();
     ?>
 
-    <?= $form->field($model, 'username', ['labelOptions' => ['class' => 'form-required']])->textInput(['minlength' => 5, 'maxlength' => 32, 'class' => 'form-control', 'placeholder' => 'Введите логин']); ?>
+    <?= $form->field($model, 'snm', ['labelOptions' => ['class' => 'form-required']])->textInput(['minlength' => 4, 'maxlength' => 255, 'class' => 'form-control', 'placeholder' => 'Введите ФИО сотрудника']); ?>
 
-    <?= $form->field($model, 'password', ['labelOptions' => ['class' => 'form-required']])->passwordInput(['enableAjaxValidation' => false, 'minlength' => 6, 'maxlength' => 64, 'class' => 'form-control', 'placeholder' => 'Введите пароль']); ?>
-
-    <?= $form->field($model, 'password_repeat', ['labelOptions' => ['class' => 'form-required']])->passwordInput(['enableAjaxValidation' => false, 'maxlength' => 64, 'placeholder' => 'Введите пароль повторно', 'class' => 'form-control']); ?>
-
-    <?= $form->field($model, 'name')->textInput(['maxlength' => true])?>
-
-    <?= $form->field($model, 'surname')->textInput(['maxlength' => true]) ?>
+    <?php 
+        if($from === 'create'){
+            echo $form->field($model, 'username', ['labelOptions' => ['class' => 'form-required']])->textInput(['minlength' => 5, 'maxlength' => 32, 'class' => 'form-control', 'placeholder' => 'Введите логин']);
+            echo $form->field($model, 'password', ['labelOptions' => ['class' => 'form-required']])->passwordInput(['enableAjaxValidation' => false, 'minlength' => 6, 'maxlength' => 64, 'class' => 'form-control', 'placeholder' => 'Введите пароль']);
+            echo $form->field($model, 'password_repeat', ['labelOptions' => ['class' => 'form-required']])->passwordInput(['enableAjaxValidation' => false, 'maxlength' => 64, 'placeholder' => 'Введите пароль повторно', 'class' => 'form-control']);
+        }
+    ?>
 
     <?php // echo $form->field($model, 'auth_key')->textInput(['maxlength' => true]) ?>
 

@@ -31,18 +31,25 @@ $name = Yii::$app->name;
 <?php $this->beginBody() ?>
 
 <style>
-    .form-required::after {
+    .form-required::after{
         content: '*';
-        color: red;
+        color: #dc3545;
         margin-left: 4px;
     }
-    .form-required:hover::after {
+    .form-required:hover::after{
         content: 'Обязательное поле';
-        color: red;
+        color: #dc3545;
         margin-left: 4px;
     }
-    .crudHeader{
-        margin: 32px 0 10px 10px;
+    .form-question-ticket-create-tg-user-id::after{
+        content: '?';
+        color: #0d6efd;
+        margin-left: 4px;
+    }
+    .form-question-ticket-create-tg-user-id:hover::after{
+        content: 'Необходимо для отправки и просмотра сообщений с пользователем в telegram';
+        color: #dc3545;
+        margin-left: 4px;
     }
 </style>
 
@@ -54,22 +61,24 @@ $name = Yii::$app->name;
         'options' => ['class' => 'navbar-expand-md navbar-dark fixed-top bg-dark row']
     ]);
     echo Nav::widget([
-        'options' => ['class' => 'navbar-nav col-md-6 m-0 p-0 text-center'],
+        'options' => ['class' => 'navbar-nav col-md-8 m-0 p-0 text-center'],
         'items' => [
             ['label' => 'Обращения', 'url' => ['ticket/index']],
-
+            ['label' => 'Документы', 'url' => ['category/index']],
+            ['label' => 'Категории', 'url' => ['category/index']],
+            ['label' => 'Города', 'url' => ['city/index']]
         ]
     ]);
     echo Nav::widget([
-        'options' => ['class' => 'navbar-nav d-flex justify-content-md-end col-md-6 text-center'],
+        'options' => ['class' => 'navbar-nav d-flex justify-content-md-end col-md-4 text-center'],
         'items' => [
             Yii::$app->user->isGuest
                 ? ['label' => 'Войти', 'url' => ['/login']]
                 : '<li class="nav-item">'
                 . Html::beginForm(['/logout'])
-                . Html::submitButton((strlen(Yii::$app->user->identity->username) > 5) 
-                ? 'Выйти<span class="d-none d-lg-inline">(' . Yii::$app->user->identity->username . ')</span>'
-                : 'Выйти(' . Yii::$app->user->identity->username . ')',
+                . Html::submitButton((strlen(Yii::$app->user->identity->snm) > 5) 
+                ? 'Выйти<span class="d-none d-lg-inline">(' . Yii::$app->user->identity->snm . ')</span>'
+                : 'Выйти(' . Yii::$app->user->identity->snm . ')',
                     ['class' => 'nav-link btn btn-link logout text-center']
                 )
                 . Html::endForm()
@@ -80,9 +89,9 @@ $name = Yii::$app->name;
     ?>
 </header>
 
-<main id="main" class="flex-shrink-0 col-12" role="main">
+<main id="main" class="flex-shrink-0 col-12" role="main" style="margin-top: 60px;">
         <?php if(!empty($this->params['breadcrumbs'])):?>
-            <?= Breadcrumbs::widget(['links' => $this->params['breadcrumbs']]) ?>
+            <?= '<div class="m-1 m-md-2">' . Breadcrumbs::widget(['links' => $this->params['breadcrumbs']]) . '</div>' ?>
         <?php endif ?>
         <?= Alert::widget() ?>
         <?= $content ?>

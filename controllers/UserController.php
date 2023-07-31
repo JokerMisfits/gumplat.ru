@@ -76,14 +76,15 @@ class UserController extends AppController{
                         Yii::$app->session->setFlash('error', 'Произошла ошибка при регистрации');                  
                         $model->password = '';
                         $model->password_repeat = '';
-                        return $this->render('user/create', [
+                        return $this->render('create', [
                             'model' => $model
                         ]);
                     }
                 }
                 else{
-                    $model = new Users(['scenario' => 'signup']);
-                    return $this->render('user/create', [
+                    $model->password = '';
+                    $model->password_repeat = '';
+                    return $this->render('create', [
                         'model' => $model
                     ]);
                 }
@@ -93,7 +94,7 @@ class UserController extends AppController{
                 $model->password = '';
                 $model->password_repeat = '';
                 $model->auth_key = '';
-                return $this->render('user/create', [
+                return $this->render('create', [
                     'model' => $model,
                 ]);
             }
@@ -130,7 +131,7 @@ class UserController extends AppController{
      * @throws yii\web\NotFoundHttpException if the model cannot be found
      */
     public function actionDelete(int $id) : yii\web\NotFoundHttpException|yii\web\Response{
-        throw new yii\web\NotFoundHttpException();
+        throw new yii\web\ForbiddenHttpException('Доступ только у разработчиков');
         // $this->findModel($id)->delete();
         // return $this->redirect(['index']);
     }

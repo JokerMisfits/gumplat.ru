@@ -2,7 +2,7 @@
 
 namespace app\models;
 
-use yii;
+use yii\db\ActiveRecord;
 
 /**
  * This is the model class for table "tickets".
@@ -13,14 +13,18 @@ use yii;
  * @property string|null $name Имя
  * @property string|null $surname Фамилия
  * @property string|null $phone Номер телефона
- * @property string|null $answers Ответы на вопросы
+ * @property string|null $email Почта
  * @property string $title Заголовок обращения
  * @property string $text Текст обращения
- * @property string|null $comment Комментарий
+ * @property string|null $answers Ответы на вопросы
+ * @property string|null $comment Результаты рассмотрения
+ * @property string $creation_date Дата создания обращения
  * @property string $last_change Дата последнего изменения
  * @property int|null $category_id ID категории
+ * @property int|null $city_id ID города
+ * @property int|null $user_id ID пользователя
  */
-class Tickets extends yii\db\ActiveRecord{
+class Tickets extends ActiveRecord{
 
     /**
      * {@inheritdoc}
@@ -34,11 +38,11 @@ class Tickets extends yii\db\ActiveRecord{
      */
     public function rules(){
         return [
-            [['tg_user_id', 'status', 'category_id'], 'integer'],
-            [['answers', 'text', 'comment'], 'string'],
-            [['title', 'text'], 'required'], 
-            [['last_change'], 'safe'],
-            [['name', 'surname', 'phone', 'title'], 'string', 'max' => 255]
+            [['tg_user_id', 'status', 'category_id', 'city_id', 'user_id'], 'integer'],
+            [['title', 'text'], 'required'],
+            [['text', 'answers', 'comment'], 'string'],
+            [['creation_date', 'last_change'], 'safe'],
+            [['name', 'surname', 'phone', 'email', 'title'], 'string', 'max' => 255]
         ];
     }
 
@@ -53,12 +57,16 @@ class Tickets extends yii\db\ActiveRecord{
             'name' => 'Имя',
             'surname' => 'Фамилия',
             'phone' => 'Номер телефона',
-            'answers' => 'Ответы на вопросы',
+            'email' => 'Почта',
             'title' => 'Заголовок обращения',
             'text' => 'Текст обращения',
-            'comment' => 'Комментарий',
+            'answers' => 'Ответы на вопросы',
+            'comment' => 'Результаты рассмотрения',
+            'creation_date' => 'Дата создания обращения', 
             'last_change' => 'Дата последнего изменения',
-            'category_id' => 'ID категории'
+            'category_id' => 'Категория обращения',
+            'city_id' => 'Город',
+            'user_id' => 'Ответственный'
         ];
     }
 

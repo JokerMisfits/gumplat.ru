@@ -2,21 +2,21 @@
 
 namespace app\models;
 
-use app\models\Users;
+use app\models\Cities;
 use yii\data\ActiveDataProvider;
 
 /**
- * UserSearch represents the model behind the search form of `app\models\Users`.
+ * CitySearch represents the model behind the search form of `app\models\Cities`.
  */
-class UserSearch extends Users{
-
+class CitySearch extends Cities{
     /**
      * {@inheritdoc}
      */
     public function rules(){
         return [
-            [['id', 'tg_user_id'], 'integer'],
-            [['username', 'password', 'snm', 'auth_key', 'access_token', 'registration_date', 'last_activity'], 'safe']
+            [['id'], 'integer'],
+            [['name'], 'safe'],
+            [['x', 'y'], 'number'],
         ];
     }
 
@@ -36,8 +36,7 @@ class UserSearch extends Users{
      * @return ActiveDataProvider
      */
     public function search($params){
-        $query = Users::find();
-
+        $query = Cities::find();
         // add conditions that should always apply here
 
         $dataProvider = new ActiveDataProvider([
@@ -46,7 +45,7 @@ class UserSearch extends Users{
 
         $this->load($params);
 
-        if (!$this->validate()) {
+        if(!$this->validate()){
             // uncomment the following line if you do not want to return any records when validation fails
             // $query->where('0=1');
             return $dataProvider;
@@ -55,15 +54,11 @@ class UserSearch extends Users{
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
-            'tg_user_id' => $this->tg_user_id,
-            'registration_date' => $this->registration_date,
-            'last_activity' => $this->last_activity,
+            'x' => $this->x,
+            'y' => $this->y,
         ]);
 
-        $query->andFilterWhere(['like', 'username', $this->username])
-            ->andFilterWhere(['like', 'snm', $this->snm])
-            ->andFilterWhere(['like', 'auth_key', $this->auth_key])
-            ->andFilterWhere(['like', 'access_token', $this->access_token]);
+        $query->andFilterWhere(['like', 'name', $this->name]);
 
         return $dataProvider;
     }

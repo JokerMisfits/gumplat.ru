@@ -11,8 +11,7 @@ use yii;
  * @property string $username Имя пользователя
  * @property string $password Пароль
  * @property string $password_repeat Пароль
- * @property string|null $name Имя сотрудника
- * @property string|null $surname Фамилия сотрудника
+ * @property string $snm ФИО сотрудника
  * @property string|null $auth_key Кука
  * @property string|null $access_token Код авторизации
  * @property int|null $tg_user_id ID пользователя в telegram
@@ -33,7 +32,7 @@ class Users extends yii\db\ActiveRecord implements yii\web\IdentityInterface{
 
     public function scenarios(){
         $scenarios = parent::scenarios();
-        $scenarios['signup'] = ['username', 'password', 'password_repeat'];
+        $scenarios['signup'] = ['username', 'password', 'password_repeat', 'snm'];
         $scenarios['login'] = ['username', 'password', 'rememberMe'];
         return $scenarios;
     }
@@ -43,9 +42,10 @@ class Users extends yii\db\ActiveRecord implements yii\web\IdentityInterface{
      */
     public function rules(){
         return [
-            [['username', 'password'], 'required'],
-            [['password_repeat'], 'required', 'on' => 'signup'],
-            [['name', 'surname'], 'string', 'max' => 255],
+            [['snm'], 'required'],
+            [['username', 'password', 'password_repeat'], 'required', 'on' => 'signup'],
+            [['snm'], 'string', 'min' => 4],
+            [['snm'], 'string', 'max' => 255],
             [['tg_user_id'], 'integer'],
             [['last_activity', 'registration_date'], 'safe'],
             [['rememberMe'], 'boolean'],
@@ -56,7 +56,7 @@ class Users extends yii\db\ActiveRecord implements yii\web\IdentityInterface{
             [['password', 'auth_key', 'access_token'], 'string', 'max' => 64],
             [['password_repeat'], 'string', 'max' => 64],
             [['username'], 'unique', 'except' => 'login'],
-            [['username', 'password'], 'trim'],
+            [['username', 'password', 'snm'], 'trim'],
             [['password'], 'validateModelPassword', 'on' => 'login'],
             ['username', 'match', 'pattern' => '/^[a-z]\w*$/i','message' => '{attribute} должно начинаться и содержать символы только латинского алфавита']
         ];
@@ -72,8 +72,7 @@ class Users extends yii\db\ActiveRecord implements yii\web\IdentityInterface{
             'password' => 'Пароль',
             'password_repeat' => 'Подтвердить пароль',
             'rememberMe' => 'Запомнить меня',
-            'name' => 'Имя сотрудника',
-            'surname' => 'Фамилия сотрудника',
+            'snm' => 'ФИО сотрудника',
             'auth_key' => 'Кука',
             'access_token' => 'Код авторизации', 
             'tg_user_id' => 'ID пользователя в telegram', 

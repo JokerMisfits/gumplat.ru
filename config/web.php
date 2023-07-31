@@ -55,7 +55,9 @@ $config = [
             'showScriptName' => false,
             'rules' => [
                 '<action:(index|login|logout)>' => 'site/<action>',
-                'tickets' => 'ticket/index'
+                'tickets' => 'ticket/index',
+                'cities' => 'city/index',
+                'categories' => 'category/index'
             ]
         ],
         'authManager' => [

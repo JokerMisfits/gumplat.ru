@@ -2,21 +2,20 @@
 
 namespace app\models;
 
-use app\models\Users;
+use app\models\Categories;
 use yii\data\ActiveDataProvider;
 
 /**
- * UserSearch represents the model behind the search form of `app\models\Users`.
+ * CategorySearch represents the model behind the search form of `app\models\Categories`.
  */
-class UserSearch extends Users{
-
+class CategorySearch extends Categories{
     /**
      * {@inheritdoc}
      */
     public function rules(){
         return [
-            [['id', 'tg_user_id'], 'integer'],
-            [['username', 'password', 'snm', 'auth_key', 'access_token', 'registration_date', 'last_activity'], 'safe']
+            [['id'], 'integer'],
+            [['name'], 'safe'],
         ];
     }
 
@@ -36,7 +35,7 @@ class UserSearch extends Users{
      * @return ActiveDataProvider
      */
     public function search($params){
-        $query = Users::find();
+        $query = Categories::find();
 
         // add conditions that should always apply here
 
@@ -46,7 +45,7 @@ class UserSearch extends Users{
 
         $this->load($params);
 
-        if (!$this->validate()) {
+        if(!$this->validate()){
             // uncomment the following line if you do not want to return any records when validation fails
             // $query->where('0=1');
             return $dataProvider;
@@ -55,15 +54,9 @@ class UserSearch extends Users{
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
-            'tg_user_id' => $this->tg_user_id,
-            'registration_date' => $this->registration_date,
-            'last_activity' => $this->last_activity,
         ]);
 
-        $query->andFilterWhere(['like', 'username', $this->username])
-            ->andFilterWhere(['like', 'snm', $this->snm])
-            ->andFilterWhere(['like', 'auth_key', $this->auth_key])
-            ->andFilterWhere(['like', 'access_token', $this->access_token]);
+        $query->andFilterWhere(['like', 'name', $this->name]);
 
         return $dataProvider;
     }

@@ -24,9 +24,7 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'password') ?>
 
-    <?= $form->field($model, 'name') ?>
-
-    <?= $form->field($model, 'surname') ?>
+    <?= $form->field($model, 'snm') ?>
 
     <?php // echo $form->field($model, 'auth_key') ?>
 
@@ -39,8 +37,8 @@ use yii\widgets\ActiveForm;
     <?php // echo $form->field($model, 'last_activity') ?>
 
     <div class="form-group">
-        <?= Html::submitButton('Search', ['class' => 'btn btn-primary']) ?>
-        <?= Html::resetButton('Reset', ['class' => 'btn btn-outline-secondary']) ?>
+        <?= Html::submitButton('Поиск', ['class' => 'btn btn-primary']) ?>
+        <?= Html::resetButton('Сбросить', ['class' => 'btn btn-outline-secondary']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>

@@ -6,17 +6,12 @@ use yii\widgets\DetailView;
 /** @var yii\web\View $this */
 /** @var app\models\Users $model */
 
-if(isset($model->name)){
-    $this->title = $model->name;
-}
-else{
-    $this->title = $model->username;
-}
+$this->title = $model->snm;
 $this->params['breadcrumbs'][] = ['label' => 'Пользователи', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
 ?>
-<div class="users-view">
+<div class="users-view container table-responsive pt-0 mb-4 border border-dark rounded bg-light">
 
     <h1><?= Html::encode($this->title) ?></h1>
 
@@ -40,8 +35,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'label' => 'Логин'
             ],
             //'password',
-            'name',
-            'surname',
+            'snm',
             //'auth_key',
             //'access_token',
             //'tg_user_id',
