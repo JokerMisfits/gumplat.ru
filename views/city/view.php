@@ -27,10 +27,22 @@ $this->params['breadcrumbs'][] = $this->title;
     <?= \yii\widgets\DetailView::widget([
         'model' => $model,
         'attributes' => [
-            'id',
+            //'id',
             'name',
             'x',
-            'y'
+            'y',
+            [
+                'attribute' => 'territory',
+                'label' => 'Новая территория',
+                'value' => function($model){
+                    if($model->territory === 0){
+                        return 'Нет';
+                    }
+                    else{
+                        return 'Да';
+                    }
+                }
+            ],
         ]
     ]);
 

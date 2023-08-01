@@ -14,6 +14,17 @@ yii\web\YiiAsset::register($this);
 ?>
 
 <style>
+    @media(max-width: 767px){
+        #tickets-view-content{
+            border: none!important;
+        }
+        #ticket-view-sidebar{
+            border-top: 1px solid #212529;
+        }
+        #ticket-view-sidebar-header{
+            border: none!important;
+        }
+    }
     th{
         white-space: nowrap!important;
         vertical-align: middle!important;
@@ -36,8 +47,8 @@ yii\web\YiiAsset::register($this);
   </div>
 </div>
 
-<div class="tickets-view row p-0 mx-0 mb-4 bg-light border-top border-bottom border-dark">
-    <div class="col-10 table-responsive border-end border-dark" style="padding: 0 0 0 2px;">
+<div class="tickets-view row p-0 m-0 table-responsive bg-light border-top border-bottom border-dark">
+    <div id="tickets-view-content" class="col-12 col-md-9 border-end border-dark" style="padding: 0 0 0 2px;">
         <h1 class="text-start"><?= 'Обращение №' . yii\helpers\Html::encode($model->id); ?></h1>
         <p>
             <?= yii\helpers\Html::a('Изменить', ['update', 'id' => $model->id], ['class' => 'btn btn-primary mt-1']); ?>
@@ -157,7 +168,6 @@ yii\web\YiiAsset::register($this);
                         }
                     }
                 ],
-                //'answers:ntext',
                 //todo перенести в отдельную вкладку
                 //'comment:ntext',
                 [
@@ -170,7 +180,6 @@ yii\web\YiiAsset::register($this);
                         else{
                             return $model->category_id;
                         }
-                        
                     }
                 ],
                 [
@@ -201,7 +210,7 @@ yii\web\YiiAsset::register($this);
                     'attribute' => 'creation_date',
                     'label' => 'Дата создания обращения',
                     'value' => function ($model) {
-                        $dateTime = new DateTime($model->creation_date, new DateTimeZone('Europe/Moscow'));
+                        $dateTime = new DateTime($model->creation_date, null);
                         return Yii::$app->formatter->asDatetime($dateTime, 'php:d.m.Y H:i:s');
                     },
                 ],
@@ -209,7 +218,7 @@ yii\web\YiiAsset::register($this);
                     'attribute' => 'last_change',
                     'label' => 'Дата последнего изменения',
                     'value' => function ($model) {
-                        $dateTime = new DateTime($model->last_change, new DateTimeZone('Europe/Moscow'));
+                        $dateTime = new DateTime($model->last_change, null);
                         return Yii::$app->formatter->asDatetime($dateTime, 'php:d.m.Y H:i:s');
                     },
                 ]
@@ -217,21 +226,36 @@ yii\web\YiiAsset::register($this);
         ]) 
         ?>
     </div>
-    <div class="col-2 p-0">
+    <div id="ticket-view-sidebar" class="col-12 col-md-3 p-0">
         <div id="ticket-view-sidebar-header" class="border-bottom border-dark text-center">
-            <span class="text-nowrap">Документы по категории</span>
+            <span class="text-nowrap"><?= $model->category_id !== null ? 'Документы по категории: ' . Categories::findOne($model->category_id)->name : 'Документы по категории:' ?></span>
         </div>
-        <div id="ticket-view-sidebar-content">
+        <div id="ticket-view-sidebar-content" class="px-2 pb-2">
             <?php
-                if(!isset($model->category_id)){
-                    echo '<span class="text-danger">Категория не задана</span>';
+                if(isset($model->category_id)){
+                    echo 'СДЕЛАТЬ ОТОБРАЖЕНИЕ ССЫЛОК НА ФАЙЛЫ' . PHP_EOL;
                 }
                 else{
-                    echo 'Список файлов по категории:' . PHP_EOL;
+                    echo '<span class="not-set">Категория не задана</span>';
                 }
             ?>
         </div>
     </div>
+</div>
+
+<div class="col-12 container-fluid my-2 bg-dark p-2 text-light">
+    <?php 
+        echo '<span>История сообщений:</span><hr class="text-danger my-2">';
+        if(isset($model->tg_user_id)){
+            //todo ЕСЛИ нет сообщения то echo '<span>Ничего не найдено.</span>';
+            echo '<span>ПРИДУМАТЬ МЕТОД ПОДГРУЗКИ СООБЩЕНИЙ</span><hr class="text-danger my-2">';
+            echo 'ФОРМА ОТПРАВКИ СООБЩЕНИЙ';
+        }
+        else{
+            echo '<span>ID пользователя в telegram не задано</span>';
+        }
+    ?>
+    
 </div>
 
 <script>
@@ -251,6 +275,6 @@ yii\web\YiiAsset::register($this);
         }
         let modalContent = document.getElementById('ModalContent');
         modalContent.innerHTML = content;
-        button.innerHTML = `<button class="btn btn-info" data-bs-toggle="modal" data-bs-target="#Modal">Показать</button>`;
+        button.innerHTML = `<button class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#Modal">Показать</button>`;
     }
 </script>

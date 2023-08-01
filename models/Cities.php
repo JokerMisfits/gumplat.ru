@@ -11,6 +11,7 @@ use Yii;
  * @property string $name Название города
  * @property float $x Долгота
  * @property float $y Широта
+ * @property int $territory Новая территория? 
  */
 class Cities extends yii\db\ActiveRecord{
     
@@ -28,6 +29,7 @@ class Cities extends yii\db\ActiveRecord{
         return [
             [['name', 'x', 'y'], 'required'],
             [['x', 'y'], 'number'],
+            [['territory'], 'integer'],
             [['name'], 'string', 'max' => 255],
             [['name'], 'unique']
         ];
@@ -41,7 +43,8 @@ class Cities extends yii\db\ActiveRecord{
             'id' => 'ID',
             'name' => 'Название города',
             'x' => 'Долгота',
-            'y' => 'Широта'
+            'y' => 'Широта',
+            'territory' => 'Новая территория?'
         ];
     }
 

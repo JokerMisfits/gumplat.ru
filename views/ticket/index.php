@@ -1,6 +1,9 @@
 <?php
 
+use app\models\Users;
+use app\models\Cities;
 use app\models\Tickets;
+use app\models\Categories;
 
 /** @var yii\web\View $this */
 /** @var app\models\TicketSearch $searchModel */
@@ -10,10 +13,7 @@ $this->title = 'Обращения';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="tickets-index">
-
 <div class="mx-1 mx-md-2">
-<h1><?= yii\helpers\Html::encode($this->title); ?></h1>
-
 <p>
     <?= yii\helpers\Html::a('Создать обращение', ['create'], ['class' => 'btn btn-success mt-1']); ?>
     <button class="btn btn-primary mt-1" onclick="showSearch()">Расширенный поиск</button>
@@ -58,19 +58,45 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             'name',
             'surname',
-            'email:email', 
-            //'comment:ntext',
+            'email:email',
             [
                 'attribute' => 'category_id',
-                'label' => 'Категория обращения'
+                'label' => 'Категория обращения',
+                'value' => function($model){
+                    if(isset($model->category_id)){
+                        return Categories::findOne($model->category_id)->name;
+                    }
+                    else{
+                        return $model->category_id;
+                    }
+                },
+                'filter' => yii\helpers\ArrayHelper::map(Categories::find()->all(), 'id', 'name')
             ],
             [
                 'attribute' => 'city_id',
-                'label' => 'Город'
+                'label' => 'Город',
+                'value' => function($model){
+                    if(isset($model->city_id)){
+                        return Cities::findOne($model->city_id)->name;
+                    }
+                    else{
+                        return $model->city_id;
+                    }
+                },
+                'filter' => yii\helpers\ArrayHelper::map(Cities::find()->all(), 'id', 'name')
             ],
             [
                 'attribute' => 'user_id',
-                'label' => 'Ответственный'
+                'label' => 'Ответственный',
+                'value' => function($model){
+                    if(isset($model->user_id)){
+                        return Users::findOne($model->user_id)->snm;
+                    }
+                    else{
+                        return $model->user_id;
+                    }
+                },
+                'filter' => yii\helpers\ArrayHelper::map(Users::find()->all(), 'id', 'snm')
             ],
             [
             'class' => yii\grid\ActionColumn::class,
@@ -78,6 +104,20 @@ $this->params['breadcrumbs'][] = $this->title;
                 return yii\helpers\Url::toRoute([$action, 'id' => $model->id]);
             }
             ]
+        ],
+        'pager' => [
+            'class' => yii\widgets\LinkPager::class,
+            'options' => [
+                'class' => 'pagination d-flex justify-content-center',
+            ],
+            'linkOptions' => [
+                'class' => 'page-link',
+            ],
+            'activePageCssClass' => 'active',
+            'disabledPageCssClass' => 'page-link disabled',
+            'prevPageCssClass' => 'page-item',
+            'nextPageCssClass' => 'page-item',
+            'disableCurrentPageButton' => true
         ]
     ]); 
     ?>

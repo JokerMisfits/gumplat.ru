@@ -41,6 +41,9 @@ class TicketSearch extends Tickets{
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'pagination' => [
+                'pageSize' => 13
+            ]
         ]);
 
         $this->load($params);

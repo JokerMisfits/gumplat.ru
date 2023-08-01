@@ -18,17 +18,19 @@ use yii\widgets\ActiveForm;
         ],
     ]); ?>
 
-    <?= $form->field($model, 'id') ?>
+    <?= $form->field($model, 'id'); ?>
 
-    <?= $form->field($model, 'name') ?>
+    <?= $form->field($model, 'name'); ?>
 
-    <?= $form->field($model, 'x') ?>
+    <?= $form->field($model, 'x'); ?>
 
-    <?= $form->field($model, 'y') ?>
+    <?= $form->field($model, 'y'); ?>
+
+    <?= $form->field($model, 'territory'); ?> 
 
     <div class="form-group">
-        <?= Html::submitButton('Search', ['class' => 'btn btn-primary']) ?>
-        <?= Html::resetButton('Reset', ['class' => 'btn btn-outline-secondary']) ?>
+        <?= Html::submitButton('Поиск', ['class' => 'btn btn-primary']) ?>
+        <?= Html::resetButton('Сбросить', ['class' => 'btn btn-outline-secondary']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>

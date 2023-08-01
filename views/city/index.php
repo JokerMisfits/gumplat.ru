@@ -11,16 +11,16 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="cities-index">
 
-    <h1><?= \yii\helpers\Html::encode($this->title); ?></h1>
-
+<div class="mx-1 mx-md-2">
     <p>
-        <?= \yii\helpers\Html::a('Добавить город', ['create'], ['class' => 'btn btn-success']); ?>
+        <?= yii\helpers\Html::a('Добавить город', ['create'], ['class' => 'btn btn-success']); ?>
     </p>
+</div>
 
-    <?php \yii\widgets\Pjax::begin(); ?>
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
+    <?php yii\widgets\Pjax::begin(); ?>
 
-    <?= \yii\grid\GridView::widget([
+<div class="table-responsive text-nowrap">
+    <?= yii\grid\GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => [
@@ -29,16 +29,42 @@ $this->params['breadcrumbs'][] = $this->title;
             'x',
             'y',
             [
-                'class' => \yii\grid\ActionColumn::class,
+                'attribute' => 'territory',
+                'label' => 'Новая территория',
+                'value' => function($model){
+                    if($model->territory === 0){
+                        return 'Нет';
+                    }
+                    else{
+                        return 'Да';
+                    }
+                }
+            ],
+            [
+                'class' => yii\grid\ActionColumn::class,
                 'urlCreator' => function ($action, Cities $model, $key, $index, $column) {
-                    return \yii\helpers\Url::toRoute([$action, 'id' => $model->id]);
+                    return yii\helpers\Url::toRoute([$action, 'id' => $model->id]);
                  }
             ]
+        ],
+        'pager' => [
+            'class' => yii\widgets\LinkPager::class,
+            'options' => [
+                'class' => 'pagination d-flex justify-content-center',
+            ],
+            'linkOptions' => [
+                'class' => 'page-link',
+            ],
+            'activePageCssClass' => 'active',
+            'disabledPageCssClass' => 'page-link disabled',
+            'prevPageCssClass' => 'page-item',
+            'nextPageCssClass' => 'page-item',
+            'disableCurrentPageButton' => true
         ]
-    ]); 
-
+    ]);
     ?>
+</div>
 
-    <?php \yii\widgets\Pjax::end(); ?>
+    <?php yii\widgets\Pjax::end(); ?>
 
 </div>

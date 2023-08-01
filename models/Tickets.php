@@ -2,6 +2,7 @@
 
 namespace app\models;
 
+use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
 
 /**
@@ -23,6 +24,10 @@ use yii\db\ActiveRecord;
  * @property int|null $category_id ID категории
  * @property int|null $city_id ID города
  * @property int|null $user_id ID пользователя
+ *
+ * @property Categories $category 
+ * @property Cities $city 
+ * @property Users $user 
  */
 class Tickets extends ActiveRecord{
 
@@ -42,7 +47,10 @@ class Tickets extends ActiveRecord{
             [['title', 'text'], 'required'],
             [['text', 'answers', 'comment'], 'string'],
             [['creation_date', 'last_change'], 'safe'],
-            [['name', 'surname', 'phone', 'email', 'title'], 'string', 'max' => 255]
+            [['name', 'surname', 'phone', 'email', 'title'], 'string', 'max' => 255],
+            [['category_id'], 'exist', 'skipOnError' => true, 'targetClass' => Categories::class, 'targetAttribute' => ['category_id' => 'id']],
+            [['city_id'], 'exist', 'skipOnError' => true, 'targetClass' => Cities::class, 'targetAttribute' => ['city_id' => 'id']],
+            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => Users::class, 'targetAttribute' => ['user_id' => 'id']]
         ];
     }
 
@@ -69,6 +77,33 @@ class Tickets extends ActiveRecord{
             'user_id' => 'Ответственный'
         ];
     }
+
+   /** 
+    * Gets query for [[Category]]. 
+    * 
+    * @return ActiveQuery|CategoriesQuery 
+    */ 
+   public function getCategory(){ 
+       return $this->hasOne(Categories::class, ['id' => 'category_id']); 
+   } 
+ 
+   /** 
+    * Gets query for [[City]]. 
+    * 
+    * @return ActiveQuery|CitiesQuery 
+    */ 
+   public function getCity(){ 
+       return $this->hasOne(Cities::class, ['id' => 'city_id']); 
+   } 
+ 
+   /** 
+    * Gets query for [[User]]. 
+    * 
+    * @return \yii\db\ActiveQuery|UsersQuery 
+    */ 
+   public function getUser(){ 
+       return $this->hasOne(Users::class, ['id' => 'user_id']); 
+   }
 
     /**
      * {@inheritdoc}

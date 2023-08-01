@@ -14,7 +14,7 @@ class CitySearch extends Cities{
      */
     public function rules(){
         return [
-            [['id'], 'integer'],
+            [['id', 'territory'], 'integer'],
             [['name'], 'safe'],
             [['x', 'y'], 'number'],
         ];
@@ -41,6 +41,9 @@ class CitySearch extends Cities{
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'pagination' => [
+                'pageSize' => 13
+            ]
         ]);
 
         $this->load($params);
@@ -56,6 +59,7 @@ class CitySearch extends Cities{
             'id' => $this->id,
             'x' => $this->x,
             'y' => $this->y,
+            'territory' => $this->territory
         ]);
 
         $query->andFilterWhere(['like', 'name', $this->name]);

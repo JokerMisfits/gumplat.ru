@@ -1,11 +1,7 @@
 <?php
 
 use app\models\Categories;
-use yii\helpers\Html;
-use yii\helpers\Url;
-use yii\grid\ActionColumn;
-use yii\grid\GridView;
-use yii\widgets\Pjax;
+
 /** @var yii\web\View $this */
 /** @var app\models\CategorySearch $searchModel */
 /** @var yii\data\ActiveDataProvider $dataProvider */
@@ -15,31 +11,46 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="categories-index">
 
-    <h1><?= Html::encode($this->title) ?></h1>
-
+<div class="mx-1 mx-md-2">
     <p>
-        <?= Html::a('Create Categories', ['create'], ['class' => 'btn btn-success']) ?>
+        <?= yii\helpers\Html::a('Добавить категорию', ['create'], ['class' => 'btn btn-success']) ?>
     </p>
+</div>
 
-    <?php Pjax::begin(); ?>
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
+    <?php yii\widgets\Pjax::begin(); ?>
 
-    <?= GridView::widget([
+<div class="table-responsive text-nowrap">
+    <?= yii\grid\GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
-            //'id',
             'name',
             [
-                'class' => ActionColumn::class,
+                'class' => yii\grid\ActionColumn::class,
                 'urlCreator' => function ($action, Categories $model, $key, $index, $column) {
-                    return Url::toRoute([$action, 'id' => $model->id]);
+                    return yii\helpers\Url::toRoute([$action, 'id' => $model->id]);
                  }
-            ],
+            ]
         ],
-    ]); ?>
+        'pager' => [
+            'class' => yii\widgets\LinkPager::class,
+            'options' => [
+                'class' => 'pagination d-flex justify-content-center',
+            ],
+            'linkOptions' => [
+                'class' => 'page-link',
+            ],
+            'activePageCssClass' => 'active',
+            'disabledPageCssClass' => 'page-link disabled',
+            'prevPageCssClass' => 'page-item',
+            'nextPageCssClass' => 'page-item',
+            'disableCurrentPageButton' => true
+        ]
+    ]);
+    ?>
+</div>
 
-    <?php Pjax::end(); ?>
+    <?php yii\widgets\Pjax::end(); ?>
 
 </div>

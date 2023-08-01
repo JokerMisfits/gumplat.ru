@@ -35,7 +35,6 @@ class CityController extends AppController{
     public function actionIndex(){
         $searchModel = new CitySearch();
         $dataProvider = $searchModel->search($this->request->queryParams);
-
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
