@@ -2,14 +2,12 @@
 
 namespace app\models;
 
-use yii\db\ActiveQuery;
-
 /**
  * This is the ActiveQuery class for [[Categories]].
  *
  * @see Categories
  */
-class CategoriesQuery extends ActiveQuery{
+class CategoriesQuery extends \yii\db\ActiveQuery{
 
     /**
      * {@inheritdoc}

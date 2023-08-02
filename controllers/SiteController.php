@@ -2,7 +2,6 @@
 
 namespace app\controllers;
 
-use yii;
 use app\models\Users;
 
 class SiteController extends AppController{
@@ -10,7 +9,7 @@ class SiteController extends AppController{
     /**
      * {@inheritdoc}
      */
-    public function actions(){
+    public function actions() : array{
         return [
             'error' => [
                 'class' => 'yii\web\ErrorAction'
@@ -25,23 +24,23 @@ class SiteController extends AppController{
     /**
      * Displays homepage.
      *
-     * @return string|yii\web\Response
+     * @return string|\yii\web\Response
      */
-    public function actionIndex(){
+    public function actionIndex() : string|\yii\web\Response{
         return $this->redirect('/tickets');
     }
 
     /**
      * Login action.
      *
-     * @return yii\web\Response|string
+     * @return string|\yii\web\Response
      */
-    public function actionLogin(){
-        if(!Yii::$app->user->isGuest){
+    public function actionLogin() : string|\yii\web\Response{
+        if(!\Yii::$app->user->isGuest){
             return $this->goHome();
         }
         $model = new Users(['scenario' => 'login']);
-        if($model->load(Yii::$app->request->post())){
+        if($model->load(\Yii::$app->request->post())){
             if($model->validate()){
                 if($model->login()){
                     return $this->goBack();
@@ -49,30 +48,30 @@ class SiteController extends AppController{
                 else{
                     $model->password = '';
                     return $this->render('login', [
-                        'model' => $model,
+                        'model' => $model
                     ]);
                 }
             }
             else{
                 $model->password = '';
                 return $this->render('login', [
-                    'model' => $model,
+                    'model' => $model
                 ]);
             }
         }
 
         return $this->render('login', [
-            'model' => $model,
+            'model' => $model
         ]);
     }
 
     /**
      * Logout action.
      *
-     * @return yii\web\Response
+     * @return \yii\web\Response
      */
-    public function actionLogout(){
-        Yii::$app->user->logout();
+    public function actionLogout() : \yii\web\Response{
+        \Yii::$app->user->logout();
         return $this->goHome();
     }
 }

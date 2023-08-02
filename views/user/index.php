@@ -6,40 +6,49 @@ use app\models\Users;
 /** @var app\models\UserSearch $searchModel */
 /** @var yii\data\ActiveDataProvider $dataProvider */
 
-$this->title = 'Пользователи';
+$this->title = 'Сотрудники';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="users-index">
 
-    <h1><?= yii\helpers\Html::encode($this->title) ?></h1>
-
-    <p><?= yii\helpers\Html::a('Создать пользователя', ['create'], ['class' => 'btn btn-success']) ?></p>
+<div class="mx-1 mx-md-2">
+    <p>
+        <?= yii\helpers\Html::a('Добавить сотрудника', ['create'], ['class' => 'btn btn-success mt-1']); ?>
+    </p>
+</div>
 
     <?php yii\widgets\Pjax::begin(); ?>
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
     <?= yii\grid\GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
-            //'id',
-            //'username',
             'snm',
-            //'password',
-            //'auth_key',
-            //'access_token',
-            //'tg_user_id',
-            //'registration_date',
-            //'last_activity',
             [
                 'class' => yii\grid\ActionColumn::class,
+                'template' => '{view} {update}',
                 'urlCreator' => function ($action, Users $model, $key, $index, $column){
                     return yii\helpers\Url::toRoute([$action, 'id' => $model->id]);
                  }
             ]
+        ],
+        'pager' => [
+            'class' => yii\widgets\LinkPager::class,
+            'options' => [
+                'class' => 'pagination d-flex justify-content-center',
+            ],
+            'linkOptions' => [
+                'class' => 'page-link',
+            ],
+            'activePageCssClass' => 'active',
+            'disabledPageCssClass' => 'page-link disabled',
+            'prevPageCssClass' => 'page-item',
+            'nextPageCssClass' => 'page-item',
+            'disableCurrentPageButton' => true
         ]
-    ]); ?>
+    ]);
+    ?>
 
     <?php yii\widgets\Pjax::end(); ?>
 

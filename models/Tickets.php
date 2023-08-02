@@ -2,9 +2,6 @@
 
 namespace app\models;
 
-use yii\db\ActiveQuery;
-use yii\db\ActiveRecord;
-
 /**
  * This is the model class for table "tickets".
  *
@@ -17,7 +14,6 @@ use yii\db\ActiveRecord;
  * @property string|null $email Почта
  * @property string $title Заголовок обращения
  * @property string $text Текст обращения
- * @property string|null $answers Ответы на вопросы
  * @property string|null $comment Результаты рассмотрения
  * @property string $creation_date Дата создания обращения
  * @property string $last_change Дата последнего изменения
@@ -25,27 +21,27 @@ use yii\db\ActiveRecord;
  * @property int|null $city_id ID города
  * @property int|null $user_id ID пользователя
  *
- * @property Categories $category 
+ * @property Categories $category
  * @property Cities $city 
  * @property Users $user 
  */
-class Tickets extends ActiveRecord{
+class Tickets extends \yii\db\ActiveRecord{
 
     /**
      * {@inheritdoc}
      */
-    public static function tableName(){
+    public static function tableName() : string{
         return 'tickets';
     }
 
     /**
      * {@inheritdoc}
      */
-    public function rules(){
+    public function rules() : array{
         return [
             [['tg_user_id', 'status', 'category_id', 'city_id', 'user_id'], 'integer'],
             [['title', 'text'], 'required'],
-            [['text', 'answers', 'comment'], 'string'],
+            [['text', 'comment'], 'string'],
             [['creation_date', 'last_change'], 'safe'],
             [['name', 'surname', 'phone', 'email', 'title'], 'string', 'max' => 255],
             [['category_id'], 'exist', 'skipOnError' => true, 'targetClass' => Categories::class, 'targetAttribute' => ['category_id' => 'id']],
@@ -57,7 +53,7 @@ class Tickets extends ActiveRecord{
     /**
      * {@inheritdoc}
      */
-    public function attributeLabels(){
+    public function attributeLabels() : array{
         return [
             'id' => 'ID',
             'tg_user_id' => 'ID пользователя в telegram',
@@ -68,9 +64,8 @@ class Tickets extends ActiveRecord{
             'email' => 'Почта',
             'title' => 'Заголовок обращения',
             'text' => 'Текст обращения',
-            'answers' => 'Ответы на вопросы',
             'comment' => 'Результаты рассмотрения',
-            'creation_date' => 'Дата создания обращения', 
+            'creation_date' => 'Дата создания обращения',
             'last_change' => 'Дата последнего изменения',
             'category_id' => 'Категория обращения',
             'city_id' => 'Город',
@@ -81,27 +76,27 @@ class Tickets extends ActiveRecord{
    /** 
     * Gets query for [[Category]]. 
     * 
-    * @return ActiveQuery|CategoriesQuery 
+    * @return \yii\db\ActiveQuery|CategoriesQuery
     */ 
-   public function getCategory(){ 
+   public function getCategory() : \yii\db\ActiveQuery|CategoriesQuery{ 
        return $this->hasOne(Categories::class, ['id' => 'category_id']); 
    } 
  
    /** 
     * Gets query for [[City]]. 
     * 
-    * @return ActiveQuery|CitiesQuery 
+    * @return \yii\db\ActiveQuery|CitiesQuery
     */ 
-   public function getCity(){ 
+   public function getCity() : \yii\db\ActiveQuery|CitiesQuery{ 
        return $this->hasOne(Cities::class, ['id' => 'city_id']); 
    } 
  
    /** 
     * Gets query for [[User]]. 
     * 
-    * @return \yii\db\ActiveQuery|UsersQuery 
+    * @return \yii\db\ActiveQuery|UsersQuery
     */ 
-   public function getUser(){ 
+   public function getUser() : \yii\db\ActiveQuery|UsersQuery{ 
        return $this->hasOne(Users::class, ['id' => 'user_id']); 
    }
 
@@ -109,7 +104,7 @@ class Tickets extends ActiveRecord{
      * {@inheritdoc}
      * @return TicketsQuery the active query used by this AR class.
      */
-    public static function find(){
+    public static function find() : TicketsQuery{
         return new TicketsQuery(get_called_class());
     }
 }

@@ -57,7 +57,9 @@ $config = [
                 '<action:(index|login|logout)>' => 'site/<action>',
                 'tickets' => 'ticket/index',
                 'cities' => 'city/index',
-                'categories' => 'category/index'
+                'categories' => 'category/index',
+                'documents' => 'document/index',
+                'download/<id:\d+>' => 'document/download-file'
             ]
         ],
         'authManager' => [

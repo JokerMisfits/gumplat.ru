@@ -1,8 +1,6 @@
 <?php
-
 /** @var yii\web\View $this */
 /** @var app\models\Categories $model */
-
 $this->title = $model->name;
 $this->params['breadcrumbs'][] = ['label' => 'Категории', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
@@ -10,7 +8,7 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="categories-view container table-responsive pt-0 mb-4 border border-dark rounded bg-light">
 
-    <h1><?= yii\helpers\Html::encode($this->title) ?></h1>
+    <h1><?= yii\helpers\Html::encode($this->title); ?></h1>
 
     <p>
         <?= yii\helpers\Html::a('Изменить', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
@@ -20,7 +18,8 @@ $this->params['breadcrumbs'][] = $this->title;
                 'confirm' => 'Вы уверены, что хотите удалить данную категорию?',
                 'method' => 'post',
             ],
-        ]) ?>
+        ]);
+        ?>
     </p>
 
     <?= yii\widgets\DetailView::widget([
@@ -29,6 +28,7 @@ $this->params['breadcrumbs'][] = $this->title;
             //'id',
             'name'
         ]
-    ]) ?>
+    ]);
+    ?>
 
 </div>

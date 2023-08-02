@@ -1,7 +1,5 @@
 <?php
 
 return [
-    'adminEmail' => 'admin@example.com',
-    'senderEmail' => 'noreply@example.com',
-    'senderName' => 'Example.com mailer',
+    'maxFileStorageSize' => 2147483648 //2ГБ
 ];

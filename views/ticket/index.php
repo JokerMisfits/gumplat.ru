@@ -13,20 +13,28 @@ $this->title = 'Обращения';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="tickets-index">
+
 <div class="mx-1 mx-md-2">
-<p>
-    <?= yii\helpers\Html::a('Создать обращение', ['create'], ['class' => 'btn btn-success mt-1']); ?>
-    <button class="btn btn-primary mt-1" onclick="showSearch()">Расширенный поиск</button>
-    <?= yii\helpers\Html::a('Сбросить поиск', ['/tickets'], ['class' => 'btn btn-outline-secondary mt-1']); ?>
-</p>
+    <p>
+        <?= yii\helpers\Html::a('Создать обращение', ['create'], ['class' => 'btn btn-success mt-1']); ?>
+        <button class="btn btn-primary mt-1" onclick="showSearch()">Расширенный поиск</button>
+        <?= yii\helpers\Html::a('Сбросить поиск', ['/tickets'], ['class' => 'btn btn-outline-secondary mt-1']); ?>
+    </p>
 </div>
 
-<?php yii\widgets\Pjax::begin(); ?>
+    <?php yii\widgets\Pjax::begin(); ?>
 
-<?php echo '<div id="ticket-search" style="display: none;">' . $this->render('_search', ['model' => $searchModel]) . '</div>'; ?>
+    <?php echo '<div id="ticket-search" style="display: none;">' . $this->render('_search', ['model' => $searchModel]) . '</div>'; ?>
 
 <div class="table-responsive text-nowrap">
-    <?= yii\grid\GridView::widget([
+    <?php 
+        if(Yii::$app->user->can('admin')){
+            $template = '{view} {update} {delete}';
+        }
+        else{
+            $template = '{view} {update}';
+        }
+        echo yii\grid\GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => [
@@ -100,6 +108,7 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             [
             'class' => yii\grid\ActionColumn::class,
+            'template' => $template,
             'urlCreator' => function ($action, Tickets $model, $key, $index, $column){
                 return yii\helpers\Url::toRoute([$action, 'id' => $model->id]);
             }

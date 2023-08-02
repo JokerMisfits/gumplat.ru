@@ -1,8 +1,4 @@
 <?php
-
-use yii\helpers\Html;
-use yii\widgets\ActiveForm;
-
 /** @var yii\web\View $this */
 /** @var app\models\Users $model */
 /** @var yii\widgets\ActiveForm $form */
@@ -11,9 +7,7 @@ use yii\widgets\ActiveForm;
 
 <div class="users-form">
 
-    <?php 
-        $form = ActiveForm::begin();
-    ?>
+    <?php $form = yii\widgets\ActiveForm::begin(); ?>
 
     <?= $form->field($model, 'snm', ['labelOptions' => ['class' => 'form-required']])->textInput(['minlength' => 4, 'maxlength' => 255, 'class' => 'form-control', 'placeholder' => 'Введите ФИО сотрудника']); ?>
 
@@ -25,20 +19,10 @@ use yii\widgets\ActiveForm;
         }
     ?>
 
-    <?php // echo $form->field($model, 'auth_key')->textInput(['maxlength' => true]) ?>
-
-    <?php // echo $form->field($model, 'access_token')->textInput(['maxlength' => true]) ?>
-
-    <?php // echo $form->field($model, 'tg_user_id')->textInput(['maxlength' => true]) ?>
-
-    <?php // echo $form->field($model, 'registration_date')->textInput() ?>
-
-    <?php // echo $form->field($model, 'last_activity')->textInput() ?>
-
     <div class="form-group">
-        <?= Html::submitButton('Сохранить', ['class' => 'btn btn-success']) ?>
+        <?= yii\helpers\Html::submitButton('Сохранить', ['class' => 'btn btn-success']); ?>
     </div>
 
-    <?php ActiveForm::end(); ?>
+    <?php yii\widgets\ActiveForm::end(); ?>
 
 </div>

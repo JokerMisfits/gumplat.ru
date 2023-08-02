@@ -2,14 +2,12 @@
 
 namespace app\models;
 
-use yii\db\ActiveQuery;
-
 /**
  * This is the ActiveQuery class for [[Tickets]].
  *
  * @see Tickets
  */
-class TicketsQuery extends ActiveQuery{
+class TicketsQuery extends \yii\db\ActiveQuery{
     public function active(){
         return $this->andWhere('[[status]]=1');
     }

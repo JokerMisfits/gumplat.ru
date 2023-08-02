@@ -1,8 +1,5 @@
 <?php
 
-use yii\helpers\Html;
-use yii\widgets\ActiveForm;
-
 /** @var yii\web\View $this */
 /** @var app\models\Tickets $model */
 /** @var app\models\Cities $cities */
@@ -16,7 +13,7 @@ use yii\widgets\ActiveForm;
 <div class="tickets-form">
 
     <?php 
-        $form = ActiveForm::begin();
+        $form = yii\widgets\ActiveForm::begin();
         $statusOptions = [
             '0' => 'Зарегистрировано',
             '1' => 'Обрабатывается',
@@ -50,9 +47,9 @@ use yii\widgets\ActiveForm;
     <?php echo $form->field($model, 'status')->dropDownList($statusOptions); ?>
 
     <div class="form-group">
-        <?= Html::submitButton('Сохранить', ['class' => 'btn btn-success']) ?>
+        <?= yii\helpers\Html::submitButton('Сохранить', ['class' => 'btn btn-success']) ?>
     </div>
 
-    <?php ActiveForm::end(); ?>
+    <?php yii\widgets\ActiveForm::end(); ?>
 
 </div>

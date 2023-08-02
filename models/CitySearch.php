@@ -3,27 +3,27 @@
 namespace app\models;
 
 use app\models\Cities;
-use yii\data\ActiveDataProvider;
 
 /**
  * CitySearch represents the model behind the search form of `app\models\Cities`.
  */
 class CitySearch extends Cities{
+    
     /**
      * {@inheritdoc}
      */
-    public function rules(){
+    public function rules() : array{
         return [
             [['id', 'territory'], 'integer'],
             [['name'], 'safe'],
-            [['x', 'y'], 'number'],
+            [['x', 'y'], 'number']
         ];
     }
 
     /**
      * {@inheritdoc}
      */
-    public function scenarios(){
+    public function scenarios() : array{
         // bypass scenarios() implementation in the parent class
         return parent::scenarios();
     }
@@ -33,13 +33,13 @@ class CitySearch extends Cities{
      *
      * @param array $params
      *
-     * @return ActiveDataProvider
+     * @return \yii\data\ActiveDataProvider
      */
-    public function search($params){
+    public function search(array $params) : \yii\data\ActiveDataProvider{
         $query = Cities::find();
         // add conditions that should always apply here
 
-        $dataProvider = new ActiveDataProvider([
+        $dataProvider = new \yii\data\ActiveDataProvider([
             'query' => $query,
             'pagination' => [
                 'pageSize' => 13

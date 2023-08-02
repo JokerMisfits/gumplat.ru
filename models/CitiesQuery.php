@@ -2,14 +2,12 @@
 
 namespace app\models;
 
-use yii\db\ActiveQuery;
-
 /**
  * This is the ActiveQuery class for [[Cities]].
  *
  * @see Cities
  */
-class CitiesQuery extends ActiveQuery{
+class CitiesQuery extends \yii\db\ActiveQuery{
 
     /**
      * {@inheritdoc}

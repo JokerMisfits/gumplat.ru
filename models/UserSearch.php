@@ -3,7 +3,6 @@
 namespace app\models;
 
 use app\models\Users;
-use yii\data\ActiveDataProvider;
 
 /**
  * UserSearch represents the model behind the search form of `app\models\Users`.
@@ -13,9 +12,9 @@ class UserSearch extends Users{
     /**
      * {@inheritdoc}
      */
-    public function rules(){
+    public function rules() : array{
         return [
-            [['id', 'tg_user_id'], 'integer'],
+            [['id'], 'integer'],
             [['username', 'password', 'snm', 'auth_key', 'access_token', 'registration_date', 'last_activity'], 'safe']
         ];
     }
@@ -23,7 +22,7 @@ class UserSearch extends Users{
     /**
      * {@inheritdoc}
      */
-    public function scenarios(){
+    public function scenarios() : array{
         // bypass scenarios() implementation in the parent class
         return parent::scenarios();
     }
@@ -33,15 +32,18 @@ class UserSearch extends Users{
      *
      * @param array $params
      *
-     * @return ActiveDataProvider
+     * @return \yii\data\ActiveDataProvider
      */
-    public function search($params){
+    public function search(array $params) : \yii\data\ActiveDataProvider{
         $query = Users::find();
 
         // add conditions that should always apply here
 
-        $dataProvider = new ActiveDataProvider([
+        $dataProvider = new \yii\data\ActiveDataProvider([
             'query' => $query,
+            'pagination' => [
+                'pageSize' => 13
+            ]
         ]);
 
         $this->load($params);
@@ -55,9 +57,8 @@ class UserSearch extends Users{
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
-            'tg_user_id' => $this->tg_user_id,
             'registration_date' => $this->registration_date,
-            'last_activity' => $this->last_activity,
+            'last_activity' => $this->last_activity
         ]);
 
         $query->andFilterWhere(['like', 'username', $this->username])

@@ -1,8 +1,4 @@
 <?php
-
-use yii\helpers\Html;
-use yii\widgets\ActiveForm;
-
 /** @var yii\web\View $this */
 /** @var app\models\TicketSearch $model */
 /** @var yii\widgets\ActiveForm $form */
@@ -10,13 +6,13 @@ use yii\widgets\ActiveForm;
 
 <div class="tickets-search container py-2 my-2 border border-dark rounded bg-light">
 
-    <?php $form = ActiveForm::begin([
+    <?php $form = yii\widgets\ActiveForm::begin([
         'action' => ['index'],
         'method' => 'get',
         'options' => [
             'data-pjax' => 1
         ]
-    ]); 
+    ]);
     ?>
 
     <?= $form->field($model, 'id')->textInput(['maxlength' => true])->label('Номер обращения'); ?>
@@ -30,9 +26,9 @@ use yii\widgets\ActiveForm;
     <?= $form->field($model, 'comment')->textarea(['rows' => 1]); ?>
 
     <div class="form-group">
-        <?= Html::submitButton('Найти', ['class' => 'btn btn-primary']) ?>
+        <?= yii\helpers\Html::submitButton('Найти', ['class' => 'btn btn-primary']) ?>
     </div>
 
-    <?php ActiveForm::end(); ?>
+    <?php yii\widgets\ActiveForm::end(); ?>
 
 </div>

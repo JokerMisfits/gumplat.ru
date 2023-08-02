@@ -52,13 +52,16 @@ yii\web\YiiAsset::register($this);
         <h1 class="text-start"><?= 'Обращение №' . yii\helpers\Html::encode($model->id); ?></h1>
         <p>
             <?= yii\helpers\Html::a('Изменить', ['update', 'id' => $model->id], ['class' => 'btn btn-primary mt-1']); ?>
-            <?= yii\helpers\Html::a('Удалить', ['delete', 'id' => $model->id], [
-                'class' => 'btn btn-danger mt-1',
-                'data' => [
-                    'confirm' => 'Вы уверены, что хотите удалить данное обращение?',
-                    'method' => 'post',
-                ]
-            ]);
+            <?php
+                if(Yii::$app->user->can('admin')){
+                echo yii\helpers\Html::a('Удалить', ['delete', 'id' => $model->id], [
+                    'class' => 'btn btn-danger mt-1',
+                    'data' => [
+                        'confirm' => 'Вы уверены, что хотите удалить данное обращение?',
+                        'method' => 'post',
+                    ]
+                ]);
+                }
             ?>
         </p>
         <?= yii\widgets\DetailView::widget([
@@ -212,7 +215,7 @@ yii\web\YiiAsset::register($this);
                     'value' => function ($model) {
                         $dateTime = new DateTime($model->creation_date, null);
                         return Yii::$app->formatter->asDatetime($dateTime, 'php:d.m.Y H:i:s');
-                    },
+                    }
                 ],
                 [
                     'attribute' => 'last_change',
@@ -220,20 +223,32 @@ yii\web\YiiAsset::register($this);
                     'value' => function ($model) {
                         $dateTime = new DateTime($model->last_change, null);
                         return Yii::$app->formatter->asDatetime($dateTime, 'php:d.m.Y H:i:s');
-                    },
+                    }
                 ]
             ],
         ]) 
         ?>
     </div>
     <div id="ticket-view-sidebar" class="col-12 col-md-3 p-0">
-        <div id="ticket-view-sidebar-header" class="border-bottom border-dark text-center">
-            <span class="text-nowrap"><?= $model->category_id !== null ? 'Документы по категории: ' . Categories::findOne($model->category_id)->name : 'Документы по категории:' ?></span>
+        <div id="ticket-view-sidebar-header" class="border-bottom border-dark text-center px-2">
+            <span class="text-nowrap"><?= $model->category_id !== null ? 'Документы по категории: ' . Categories::findOne($model->category_id)->name : 'Документы по категории:'; ?></span>
         </div>
         <div id="ticket-view-sidebar-content" class="px-2 pb-2">
             <?php
                 if(isset($model->category_id)){
-                    echo 'СДЕЛАТЬ ОТОБРАЖЕНИЕ ССЫЛОК НА ФАЙЛЫ' . PHP_EOL;
+                    $modelCategories = new Categories;
+                    $modelCategories->id = $model->category_id;
+                    $files = $modelCategories->getDocuments();
+                    if($files->count() > 0){
+                        $files = $files->all();
+                        $count = count($files);
+                        for($i = 0; $i < $count; $i++){
+                            echo '<div class="col-12 mt-1 text-center"><span class="text-nowrap">' . yii\helpers\Html::a($files[$i]->base_name . '.' . $files[$i]->extension, ['download/' . $files[$i]->id], ['class' => 'link-primary link-offset-2 link-underline-opacity-50 link-underline-opacity-100-hover', 'title' => 'Скачать', 'target' => '_blank']) . '</span></div>';
+                        }
+                    }
+                    else{
+                        echo '<span class="not-set">Файлы в заданной категории отсутствуют</span>';
+                    }
                 }
                 else{
                     echo '<span class="not-set">Категория не задана</span>';
@@ -243,7 +258,7 @@ yii\web\YiiAsset::register($this);
     </div>
 </div>
 
-<div class="col-12 container-fluid my-2 bg-dark p-2 text-light">
+<div class="col-12 container-fluid mb-4 bg-dark p-2 text-light">
     <?php 
         echo '<span>История сообщений:</span><hr class="text-danger my-2">';
         if(isset($model->tg_user_id)){

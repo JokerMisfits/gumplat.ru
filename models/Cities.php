@@ -2,8 +2,6 @@
 
 namespace app\models;
 
-use Yii;
-
 /**
  * This is the model class for table "cities".
  *
@@ -13,19 +11,19 @@ use Yii;
  * @property float $y Широта
  * @property int $territory Новая территория? 
  */
-class Cities extends yii\db\ActiveRecord{
+class Cities extends \yii\db\ActiveRecord{
     
     /**
      * {@inheritdoc}
      */
-    public static function tableName(){
+    public static function tableName() : string{
         return 'cities';
     }
 
     /**
      * {@inheritdoc}
      */
-    public function rules(){
+    public function rules() : array{
         return [
             [['name', 'x', 'y'], 'required'],
             [['x', 'y'], 'number'],
@@ -38,7 +36,7 @@ class Cities extends yii\db\ActiveRecord{
     /**
      * {@inheritdoc}
      */
-    public function attributeLabels(){
+    public function attributeLabels() : array{
         return [
             'id' => 'ID',
             'name' => 'Название города',
@@ -52,7 +50,7 @@ class Cities extends yii\db\ActiveRecord{
      * {@inheritdoc}
      * @return CitiesQuery the active query used by this AR class.
      */
-    public static function find(){
+    public static function find() : CitiesQuery{
         return new CitiesQuery(get_called_class());
     }
 }

@@ -3,7 +3,6 @@
 namespace app\models;
 
 use app\models\Tickets;
-use yii\data\ActiveDataProvider;
 
 /**
  * TicketSearch represents the model behind the search form of `app\models\Tickets`.
@@ -12,17 +11,17 @@ class TicketSearch extends Tickets{
     /**
      * {@inheritdoc}
      */
-    public function rules(){
+    public function rules() : array{
         return [
             [['id', 'tg_user_id', 'status', 'category_id', 'city_id', 'user_id'], 'integer'],
-            [['name', 'surname', 'phone', 'email', 'title', 'text', 'answers', 'comment', 'last_change'], 'safe']
+            [['name', 'surname', 'phone', 'email', 'title', 'text', 'comment', 'last_change'], 'safe']
         ];
     }
 
     /**
      * {@inheritdoc}
      */
-    public function scenarios(){
+    public function scenarios() : array{
         // bypass scenarios() implementation in the parent class
         return parent::scenarios();
     }
@@ -32,14 +31,14 @@ class TicketSearch extends Tickets{
      *
      * @param array $params
      *
-     * @return ActiveDataProvider
+     * @return \yii\data\ActiveDataProvider
      */
-    public function search($params){
+    public function search(array $params) : \yii\data\ActiveDataProvider{
         $query = Tickets::find();
 
         // add conditions that should always apply here
 
-        $dataProvider = new ActiveDataProvider([
+        $dataProvider = new \yii\data\ActiveDataProvider([
             'query' => $query,
             'pagination' => [
                 'pageSize' => 13
@@ -68,11 +67,9 @@ class TicketSearch extends Tickets{
         $query->andFilterWhere(['like', 'name', $this->name])
             ->andFilterWhere(['like', 'surname', $this->surname])
             ->andFilterWhere(['like', 'phone', $this->phone])
-            ->andFilterWhere(['like', 'answers', $this->answers])
             ->andFilterWhere(['like', 'email', $this->email])
             ->andFilterWhere(['like', 'title', $this->title])
             ->andFilterWhere(['like', 'text', $this->text])
-            ->andFilterWhere(['like', 'answers', $this->answers]) 
             ->andFilterWhere(['like', 'comment', $this->comment]);
 
         return $dataProvider;

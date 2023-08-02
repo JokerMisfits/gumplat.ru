@@ -2,27 +2,28 @@
 
 namespace app\models;
 
-use yii;
-
 /**
  * This is the model class for table "categories".
  *
  * @property int $id ID
  * @property string $name Название категории
+ *
+ * @property Documents[] $documents
+ * @property Tickets[] $tickets
  */
-class Categories extends yii\db\ActiveRecord{
+class Categories extends \yii\db\ActiveRecord{
 
     /**
      * {@inheritdoc}
      */
-    public static function tableName(){
+    public static function tableName() : string{
         return 'categories';
     }
 
     /**
      * {@inheritdoc}
      */
-    public function rules(){
+    public function rules() : array{
         return [
             [['name'], 'required'],
             [['name'], 'string', 'max' => 255]
@@ -32,19 +33,36 @@ class Categories extends yii\db\ActiveRecord{
     /**
      * {@inheritdoc}
      */
-    public function attributeLabels(){
+    public function attributeLabels() : array{
         return [
             'id' => 'ID',
             'name' => 'Название категории'
         ];
     }
 
+   /** 
+    * Gets query for [[Documents]]. 
+    * 
+    * @return \yii\db\ActiveQuery|DocumentsQuery
+    */ 
+   public function getDocuments() : \yii\db\ActiveQuery|DocumentsQuery{ 
+       return $this->hasMany(Documents::class, ['category_id' => 'id']); 
+   } 
+ 
+   /** 
+    * Gets query for [[Tickets]]. 
+    * 
+    * @return \yii\db\ActiveQuery|TicketsQuery
+    */ 
+   public function getTickets() : \yii\db\ActiveQuery|TicketsQuery{ 
+       return $this->hasMany(Tickets::class, ['category_id' => 'id']); 
+   }
+
     /**
      * {@inheritdoc}
      * @return CategoriesQuery the active query used by this AR class.
      */
-    
-    public static function find(){
+    public static function find() : CategoriesQuery{
         return new CategoriesQuery(get_called_class());
     }
 }

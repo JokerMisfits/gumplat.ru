@@ -1,8 +1,4 @@
 <?php
-
-use yii\helpers\Html;
-use yii\widgets\ActiveForm;
-
 /** @var yii\web\View $this */
 /** @var app\models\CategorySearch $model */
 /** @var yii\widgets\ActiveForm $form */
@@ -10,7 +6,7 @@ use yii\widgets\ActiveForm;
 
 <div class="categories-search">
 
-    <?php $form = ActiveForm::begin([
+    <?php $form = yii\widgets\ActiveForm::begin([
         'action' => ['index'],
         'method' => 'get',
         'options' => [
@@ -23,10 +19,10 @@ use yii\widgets\ActiveForm;
     <?= $form->field($model, 'name') ?>
 
     <div class="form-group">
-        <?= Html::submitButton('Search', ['class' => 'btn btn-primary']) ?>
-        <?= Html::resetButton('Reset', ['class' => 'btn btn-outline-secondary']) ?>
+        <?= yii\helpers\Html::submitButton('Search', ['class' => 'btn btn-primary']) ?>
+        <?= yii\helpers\Html::resetButton('Reset', ['class' => 'btn btn-outline-secondary']) ?>
     </div>
 
-    <?php ActiveForm::end(); ?>
+    <?php yii\widgets\ActiveForm::end(); ?>
 
 </div>

@@ -60,24 +60,28 @@ $name = Yii::$app->name;
         'brandUrl' => Yii::$app->homeUrl,
         'options' => ['class' => 'navbar-expand-md navbar-dark fixed-top bg-dark row']
     ]);
-    echo Nav::widget([
-        'options' => ['class' => 'navbar-nav col-md-8 m-0 p-0 text-center'],
-        'items' => [
+    $navItems = [
             ['label' => 'Обращения', 'url' => ['ticket/index']],
-            ['label' => 'Документы', 'url' => ['category/index']],
             ['label' => 'Категории', 'url' => ['category/index']],
-            ['label' => 'Города', 'url' => ['city/index']]
-        ]
+            ['label' => 'Города', 'url' => ['city/index']],
+            ['label' => 'Документы', 'url' => ['document/index']],
+    ];
+    if(Yii::$app->user->can('admin')){
+        $navItems[] = ['label' => 'Сотрудники', 'url' => ['user/index']];
+    }
+    echo Nav::widget([
+        'options' => ['class' => 'navbar-nav col-md-9 m-0 p-0 text-center'],
+        'items' => $navItems
     ]);
     echo Nav::widget([
-        'options' => ['class' => 'navbar-nav d-flex justify-content-md-end col-md-4 text-center'],
+        'options' => ['class' => 'navbar-nav d-flex justify-content-md-end col-md-3 text-center'],
         'items' => [
             Yii::$app->user->isGuest
                 ? ['label' => 'Войти', 'url' => ['/login']]
                 : '<li class="nav-item">'
                 . Html::beginForm(['/logout'])
-                . Html::submitButton((strlen(Yii::$app->user->identity->snm) > 5) 
-                ? 'Выйти<span class="d-none d-lg-inline">(' . Yii::$app->user->identity->snm . ')</span>'
+                . Html::submitButton((strlen(Yii::$app->user->identity->snm) > 10)
+                ? 'Выйти<span class="d-none d-xl-inline">(' . Yii::$app->user->identity->snm . ')</span>'
                 : 'Выйти(' . Yii::$app->user->identity->snm . ')',
                     ['class' => 'nav-link btn btn-link logout text-center']
                 )

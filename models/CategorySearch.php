@@ -3,16 +3,16 @@
 namespace app\models;
 
 use app\models\Categories;
-use yii\data\ActiveDataProvider;
 
 /**
  * CategorySearch represents the model behind the search form of `app\models\Categories`.
  */
 class CategorySearch extends Categories{
+
     /**
      * {@inheritdoc}
      */
-    public function rules(){
+    public function rules() : array{
         return [
             [['id'], 'integer'],
             [['name'], 'safe'],
@@ -22,7 +22,7 @@ class CategorySearch extends Categories{
     /**
      * {@inheritdoc}
      */
-    public function scenarios(){
+    public function scenarios() : array{
         // bypass scenarios() implementation in the parent class
         return parent::scenarios();
     }
@@ -32,15 +32,18 @@ class CategorySearch extends Categories{
      *
      * @param array $params
      *
-     * @return ActiveDataProvider
+     * @return \yii\data\ActiveDataProvider
      */
-    public function search($params){
+    public function search(array $params) : \yii\data\ActiveDataProvider{
         $query = Categories::find();
 
         // add conditions that should always apply here
 
-        $dataProvider = new ActiveDataProvider([
+        $dataProvider = new \yii\data\ActiveDataProvider([
             'query' => $query,
+            'pagination' => [
+                'pageSize' => 13
+            ]
         ]);
 
         $this->load($params);
@@ -53,7 +56,7 @@ class CategorySearch extends Categories{
 
         // grid filtering conditions
         $query->andFilterWhere([
-            'id' => $this->id,
+            'id' => $this->id
         ]);
 
         $query->andFilterWhere(['like', 'name', $this->name]);

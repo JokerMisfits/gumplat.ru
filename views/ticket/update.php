@@ -1,7 +1,4 @@
 <?php
-
-use yii\helpers\Html;
-
 /** @var yii\web\View $this */
 /** @var app\models\Tickets $model */
 /** @var app\models\Cities $cities */
@@ -15,7 +12,7 @@ $this->params['breadcrumbs'][] = 'Изменить';
 ?>
 <div class="tickets-update container pt-0 mb-4 border border-dark rounded bg-light">
 
-    <h1><?= Html::encode($this->title); ?></h1>
+    <h1><?= yii\helpers\Html::encode($this->title); ?></h1>
 
     <?= $this->render('_form', [
         'model' => $model,
@@ -23,6 +20,7 @@ $this->params['breadcrumbs'][] = 'Изменить';
         'users' => $users,
         'categories' => $categories,
         'action' => 'ticket/update'
-    ]) ?>
+    ]);
+    ?>
 
 </div>

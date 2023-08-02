@@ -1,7 +1,5 @@
 <?php
 
-use yii\helpers\Html;
-
 /** @var yii\web\View $this */
 /** @var app\models\Cities $model */
 
@@ -12,7 +10,7 @@ $this->params['breadcrumbs'][] = 'Изменить';
 ?>
 <div class="cities-update container pt-0 mb-4 border border-dark rounded bg-light">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+    <h1><?= yii\helpers\Html::encode($this->title); ?></h1>
 
     <?= $this->render('_form', [
         'model' => $model

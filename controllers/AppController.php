@@ -2,14 +2,12 @@
 
 namespace app\controllers;
 
-use yii;
+class AppController extends \yii\web\Controller{
 
-class AppController extends yii\web\Controller{
-
-    public function behaviors(){
+    public function behaviors() : array{
         return [
             'access' => [
-                'class' => yii\filters\AccessControl::class,
+                'class' => \yii\filters\AccessControl::class,
                 'rules' => [
                     [
                         'actions' => ['login'],
@@ -23,7 +21,7 @@ class AppController extends yii\web\Controller{
                 ]
             ],
             'verbs' => [
-                'class' => yii\filters\VerbFilter::class,
+                'class' => \yii\filters\VerbFilter::class,
                 'actions' => [
                     'logout' => ['post']
                 ]
@@ -31,16 +29,15 @@ class AppController extends yii\web\Controller{
         ];
     }
 
-    protected static function debug($data, $mode = false){
+    protected static function debug(mixed $data, $mode = false) : void{
         echo "<pre>";
         var_dump($data);
         echo "</pre>";
         if($mode){exit(0);}
     }
     
-    public function beforeAction($action){
-        Yii::$app->session->set('csrf', md5(uniqid(rand(), true)));
+    public function beforeAction($action) : bool{
+        \Yii::$app->session->set('csrf', md5(uniqid(rand(), true)));
         return parent::beforeAction($action);
     }
-
 }

@@ -14,9 +14,10 @@ use yii;
  * @property string $snm ФИО сотрудника
  * @property string|null $auth_key Кука
  * @property string|null $access_token Код авторизации
- * @property int|null $tg_user_id ID пользователя в telegram
  * @property string $registration_date Дата регистрации
  * @property string $last_activity Дата последней активности
+ * 
+ * @property Tickets[] $tickets 
  */
 class Users extends yii\db\ActiveRecord implements yii\web\IdentityInterface{
     public string $password_repeat = '';
@@ -26,11 +27,11 @@ class Users extends yii\db\ActiveRecord implements yii\web\IdentityInterface{
     /**
      * {@inheritdoc}
      */
-    public static function tableName(){
+    public static function tableName() : string{
         return 'users';
     }
 
-    public function scenarios(){
+    public function scenarios() : array{
         $scenarios = parent::scenarios();
         $scenarios['signup'] = ['username', 'password', 'password_repeat', 'snm'];
         $scenarios['login'] = ['username', 'password', 'rememberMe'];
@@ -40,13 +41,12 @@ class Users extends yii\db\ActiveRecord implements yii\web\IdentityInterface{
     /**
      * {@inheritdoc}
      */
-    public function rules(){
+    public function rules() : array{
         return [
             [['snm'], 'required'],
             [['username', 'password', 'password_repeat'], 'required', 'on' => 'signup'],
             [['snm'], 'string', 'min' => 4],
             [['snm'], 'string', 'max' => 255],
-            [['tg_user_id'], 'integer'],
             [['last_activity', 'registration_date'], 'safe'],
             [['rememberMe'], 'boolean'],
             [['rememberMe'], 'required', 'on' => 'login'],
@@ -65,7 +65,7 @@ class Users extends yii\db\ActiveRecord implements yii\web\IdentityInterface{
     /**
      * {@inheritdoc}
      */
-    public function attributeLabels(){
+    public function attributeLabels() : array{
         return [
             'id' => 'ID',
             'username' => 'Имя пользователя',
@@ -74,11 +74,19 @@ class Users extends yii\db\ActiveRecord implements yii\web\IdentityInterface{
             'rememberMe' => 'Запомнить меня',
             'snm' => 'ФИО сотрудника',
             'auth_key' => 'Кука',
-            'access_token' => 'Код авторизации', 
-            'tg_user_id' => 'ID пользователя в telegram', 
-            'registration_date' => 'Дата регистрации', 
+            'access_token' => 'Код авторизации',
+            'registration_date' => 'Дата регистрации',
             'last_activity' => 'Дата последней активности'
         ];
+    }
+
+   /** 
+    * Gets query for [[Tickets]]. 
+    * 
+    * @return \yii\db\ActiveQuery|TicketsQuery 
+    */ 
+    public function getTickets() : \yii\db\ActiveQuery|TicketsQuery{ 
+        return $this->hasMany(Tickets::class, ['user_id' => 'id']);
     }
 
     /**
