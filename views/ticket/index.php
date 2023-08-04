@@ -5,6 +5,7 @@ use app\models\Cities;
 use app\models\Tickets;
 use app\models\Categories;
 
+
 /** @var yii\web\View $this */
 /** @var app\models\TicketSearch $searchModel */
 /** @var yii\data\ActiveDataProvider $dataProvider */
@@ -17,8 +18,8 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="mx-1 mx-md-2">
     <p>
         <?= yii\helpers\Html::a('Создать обращение', ['create'], ['class' => 'btn btn-success mt-1']); ?>
-        <button class="btn btn-primary mt-1" onclick="showSearch()">Расширенный поиск</button>
-        <?= yii\helpers\Html::a('Сбросить поиск', ['/tickets'], ['class' => 'btn btn-outline-secondary mt-1']); ?>
+        <button id="ticket-search-button" class="btn btn-primary mt-1" onclick="showSearch()">Показать расширенный поиск</button>
+        <?= yii\helpers\Html::a('Сбросить все фильтры и сортировки', ['/tickets?sort='], ['class' => 'btn btn-outline-secondary mt-1']); ?>
     </p>
 </div>
 
@@ -42,7 +43,7 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'attribute' => 'status',
                 'label' => 'Статус обращения',
-                'value' => function ($model) {
+                'value' => function($model){
                     if($model->status == 0){
                         return 'Зарегистрировано';
                     }
@@ -78,7 +79,8 @@ $this->params['breadcrumbs'][] = $this->title;
                         return $model->category_id;
                     }
                 },
-                'filter' => yii\helpers\ArrayHelper::map(Categories::find()->all(), 'id', 'name')
+                'filter' => yii\helpers\ArrayHelper::map(Categories::find()->all(), 'id', 'name'),
+                'filterInputOptions' => ['class' => 'form-control selectpicker', 'data-style' => 'btn-primary', 'prompt' => 'Все']
             ],
             [
                 'attribute' => 'city_id',
@@ -91,7 +93,8 @@ $this->params['breadcrumbs'][] = $this->title;
                         return $model->city_id;
                     }
                 },
-                'filter' => yii\helpers\ArrayHelper::map(Cities::find()->all(), 'id', 'name')
+                'filter' => yii\helpers\ArrayHelper::map(Cities::find()->where(['territory' => 0])->all(), 'id', 'name') + ['Новая территория' => yii\helpers\ArrayHelper::map(Cities::find()->where(['territory' => 1])->all(), 'id', 'name')],
+                'filterInputOptions' => ['class' => 'form-control selectpicker', 'data-style' => 'btn-primary', 'prompt' => 'Все']
             ],
             [
                 'attribute' => 'user_id',
@@ -104,7 +107,22 @@ $this->params['breadcrumbs'][] = $this->title;
                         return $model->user_id;
                     }
                 },
-                'filter' => yii\helpers\ArrayHelper::map(Users::find()->all(), 'id', 'snm')
+                'filter' => yii\helpers\ArrayHelper::map(Users::find()->where(['or', ['id' => Yii::$app->params['systemUserId']], ['>=', 'id', 10]])->all(), 'id', 'snm'),
+                'filterInputOptions' => ['class' => 'form-control selectpicker', 'data-style' => 'btn-primary', 'prompt' => 'Все']
+            ],
+            [
+                'attribute' => 'creation_date',
+                'label' => 'Дата обращения',
+                'value' => function ($model) {
+                    $dateTime = new DateTime($model->creation_date, null);
+                    return Yii::$app->formatter->asDatetime($dateTime, 'php:d.m.Y H:i:s');
+                },
+                'filter' => yii\jui\DatePicker::widget([
+                    'model' => $searchModel,
+                    'attribute' => 'creation_date',
+                    'dateFormat' => 'php:Y-m-d',
+                    'options' => ['class' => 'form-control selectpicker', 'data-style' => 'btn-primary', 'placeholder' => 'Все']
+                ]),
             ],
             [
             'class' => yii\grid\ActionColumn::class,
@@ -139,11 +157,14 @@ $this->params['breadcrumbs'][] = $this->title;
 <script>
     function showSearch(){
         let form = document.getElementById('ticket-search');
+        let button = document.getElementById('ticket-search-button');
         if(form.style.display === 'none'){
             form.style.display = 'block';
+            button.innerText = 'Скрыть расширенный поиск';
         }
         else{
             form.style.display = 'none';
+            button.innerText = 'Показать расширенный поиск';
         }
     }
 </script>

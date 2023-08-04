@@ -8,7 +8,7 @@
 
     <?php $form = yii\widgets\ActiveForm::begin(); ?>
 
-    <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'name', ['labelOptions' => ['class' => 'form-required']])->textInput(['maxlength' => true]) ?>
 
     <div class="form-group">
         <?= yii\helpers\Html::submitButton('Сохранить', ['class' => 'btn btn-success']) ?>

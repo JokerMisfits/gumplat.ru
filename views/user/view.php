@@ -11,7 +11,25 @@ $this->params['breadcrumbs'][] = $this->title;
     <h1><?= yii\helpers\Html::encode($this->title); ?></h1>
 
     <p>
-        <?= yii\helpers\Html::a('Изменить', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']); ?>
+        <?php 
+            echo yii\helpers\Html::a('Изменить', ['update', 'id' => $model->id], ['class' => 'btn btn-primary my-2 mx-1']);
+            if((($model->id < 10 && Yii::$app->user->identity->id === Yii::$app->params['developerUserId']) || $model->id >= 10) && $model->id !== Yii::$app->user->identity->id){
+                echo yii\helpers\Html::a(\Yii::$app->authManager->checkAccess($model->id, 'user') ? 'Заблокировать учетную запись' : 'Разблокировать учетную запись', ['block', 'id' => $model->id], [
+                    'class' => 'btn btn-danger my-2 mx-1',
+                    'data' => [
+                        'confirm' => 'Вы уверены, что хотите заблокировать учетную запись данному сотруднику?',
+                        'method' => 'post',
+                    ]
+                ]);
+                echo yii\helpers\Html::a('Сбросить пароль', ['reset', 'id' => $model->id], [
+                    'class' => 'btn btn-outline-danger my-2 mx-1',
+                    'data' => [
+                        'confirm' => 'Вы уверены, что хотите сбросить пароль у данного сотрудника?',
+                        'method' => 'post',
+                    ]
+                ]);
+            }
+        ?>
     </p>
 
     <?= yii\widgets\DetailView::widget([

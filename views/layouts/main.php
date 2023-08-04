@@ -51,6 +51,16 @@ $name = Yii::$app->name;
         color: #dc3545;
         margin-left: 4px;
     }
+    .form-question-city-create-coordinate::after{
+        content: '?';
+        color: #dc3545;
+        margin-left: 4px;
+    }
+    .form-question-city-create-coordinate:hover::after{
+        content: 'Обязательно поле. Необходимо для интеграции яндекс карты';
+        color: #dc3545;
+        margin-left: 4px;
+    }
 </style>
 
 <header id="header">

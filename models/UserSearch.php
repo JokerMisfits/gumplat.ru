@@ -2,8 +2,6 @@
 
 namespace app\models;
 
-use app\models\Users;
-
 /**
  * UserSearch represents the model behind the search form of `app\models\Users`.
  */
@@ -35,14 +33,21 @@ class UserSearch extends Users{
      * @return \yii\data\ActiveDataProvider
      */
     public function search(array $params) : \yii\data\ActiveDataProvider{
-        $query = Users::find();
+        if(\Yii::$app->user->identity->id >= 10){
+            $query = Users::find()->where(['>=', 'id', 10]);
+        }
+        else{
+            $query = Users::find();
+        }
 
         // add conditions that should always apply here
 
         $dataProvider = new \yii\data\ActiveDataProvider([
             'query' => $query,
             'pagination' => [
-                'pageSize' => 13
+                'forcePageParam' => false,
+                'pageSizeParam' => false,
+                'pageSize' => 15
             ]
         ]);
 

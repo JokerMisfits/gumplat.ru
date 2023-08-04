@@ -2,8 +2,6 @@
 
 namespace app\models;
 
-use app\models\Categories;
-
 /**
  * CategorySearch represents the model behind the search form of `app\models\Categories`.
  */
@@ -42,7 +40,9 @@ class CategorySearch extends Categories{
         $dataProvider = new \yii\data\ActiveDataProvider([
             'query' => $query,
             'pagination' => [
-                'pageSize' => 13
+                'forcePageParam' => false,
+                'pageSizeParam' => false,
+                'pageSize' => 15
             ]
         ]);
 

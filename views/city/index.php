@@ -26,8 +26,8 @@ $this->params['breadcrumbs'][] = $this->title;
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
             'name',
-            'x',
             'y',
+            'x',
             [
                 'attribute' => 'territory',
                 'label' => 'Новая территория',
@@ -38,7 +38,13 @@ $this->params['breadcrumbs'][] = $this->title;
                     else{
                         return 'Да';
                     }
-                }
+                },
+                'filter' => [
+                    0 => 'Нет',
+                    1 => 'Да',
+                ],
+                'filterInputOptions' => ['class' => 'form-control selectpicker', 'data-style' => 'btn-primary', 'prompt' => 'Все'],
+                'contentOptions' => ['style' => 'text-align: center;']
             ],
             [
                 'class' => yii\grid\ActionColumn::class,

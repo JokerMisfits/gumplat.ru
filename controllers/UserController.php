@@ -20,6 +20,14 @@ class UserController extends AppController{
                         'roles' => ['admin']
                     ]
                 ]
+            ],
+            'verbs' => [
+                'class' => \yii\filters\VerbFilter::class,
+                'actions' => [
+                    'delete' => ['POST'],
+                    'block' => ['POST'],
+                    'reset' => ['POST']
+                ]
             ]
         ];
     }
@@ -42,12 +50,17 @@ class UserController extends AppController{
      * Displays a single Users model.
      * @param int $id ID
      * @return string
-     * @throws \yii\web\NotFoundHttpException if the model cannot be found
+     * @throws \yii\web\NotFoundHttpException|\yii\web\ForbiddenHttpException if the model cannot be found or forbidden
      */
     public function actionView(int $id) : string{
-        return $this->render('view', [
-            'model' => $this->findModel($id)
-        ]);
+        if($id < 10 && \Yii::$app->user->identity->id >= 10){
+            throw new \yii\web\ForbiddenHttpException('Доступ только у разработчиков');
+        }
+        else{
+            return $this->render('view', [
+                'model' => $this->findModel($id)
+            ]);
+        }
     }
 
     /**
@@ -110,16 +123,21 @@ class UserController extends AppController{
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param int $id ID
      * @return string|\yii\web\Response
-     * @throws \yii\web\NotFoundHttpException if the model cannot be found
+     * @throws \yii\web\NotFoundHttpException|\yii\web\ForbiddenHttpException if the model cannot be found or forbidden
      */
     public function actionUpdate(int $id) : string|\yii\web\Response{
-        $model = $this->findModel($id);
-        if(\Yii::$app->request->isPost && $model->load(\Yii::$app->request->post()) && $model->save()){
-            return $this->redirect(['view', 'id' => $model->id]);
+        if($id < 10 && \Yii::$app->user->identity->id >= 10){
+            throw new \yii\web\ForbiddenHttpException('Доступ только у разработчиков');
         }
-        return $this->render('update', [
-            'model' => $model
-        ]);
+        else{
+            $model = $this->findModel($id);
+            if(\Yii::$app->request->isPost && $model->load(\Yii::$app->request->post()) && $model->save()){
+                return $this->redirect(['view', 'id' => $model->id]);
+            }
+            return $this->render('update', [
+                'model' => $model
+            ]);
+        }
     }
 
     /**
@@ -127,12 +145,92 @@ class UserController extends AppController{
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param int $id ID
      * @return \yii\web\Response
-     * @throws \yii\web\NotFoundHttpException|\yii\web\ForbiddenHttpException if the model cannot be found
+     * @throws \yii\web\NotFoundHttpException|\yii\web\ForbiddenHttpException if the model cannot be found or forbidden
      */
     public function actionDelete(int $id) : \yii\web\Response{
-        throw new \yii\web\ForbiddenHttpException('Доступ только у разработчиков');
+        throw new \yii\web\ForbiddenHttpException('Доступ только у разработчиков');//Если включить, дописать удаление роли user у пользователя перед удалением
         // $this->findModel($id)->delete();
         // return $this->redirect(['index']);
+    }
+
+    /**
+     * Block an existing Users model.
+     * If block is successful, the browser will be redirected to the 'index' page.
+     * @param int $id ID
+     * @return \yii\web\Response
+     * @throws \yii\web\NotFoundHttpException|\yii\web\ForbiddenHttpException if the model cannot be found or forbidden
+     */
+    public function actionBlock(int $id) : \yii\web\response{
+        if($id < 10){
+            if(\Yii::$app->user->identity->id === \Yii::$app->params['developerUserId'] && $id !== \Yii::$app->user->identity->id){
+                if(\Yii::$app->authManager->checkAccess($id, 'user')){
+                    \Yii::$app->authManager->revoke(\Yii::$app->authManager->getRole('user'), $id);
+                    \Yii::$app->session->addFlash('success', 'Сотрудник успешно заблокирован');
+                }
+                else{
+                    \Yii::$app->authManager->assign(\Yii::$app->authManager->getRole('user'), $id);
+                    \Yii::$app->session->addFlash('success', 'Сотрудник успешно разблокирован');
+                }
+
+            }
+            else{
+                throw new \yii\web\ForbiddenHttpException('Доступ запрещен');
+            }
+        }
+        else{
+            if($id !== \Yii::$app->user->identity->id){
+                if(!\Yii::$app->authManager->checkAccess($id, 'admin')){
+                    if(\Yii::$app->authManager->checkAccess($id, 'user')){
+                        \Yii::$app->authManager->revoke(\Yii::$app->authManager->getRole('user'), $id);
+                        \Yii::$app->session->addFlash('success', 'Сотрудник успешно заблокирован');
+                    }
+                    else{
+                        \Yii::$app->authManager->assign(\Yii::$app->authManager->getRole('user'), $id);
+                        \Yii::$app->session->addFlash('success', 'Сотрудник успешно разблокирован');
+                    }
+                }
+                else{
+                    \Yii::$app->session->addFlash('error', 'Запрещено блокировать других администраторов');
+                }
+            }
+            else{
+                \Yii::$app->session->addFlash('error', 'Запрещено блокировать свою учетную запись');
+            }
+        }
+        return $this->redirect(['view', 'id' => $id]);
+    }
+
+    /**
+     * Reset password an existing Users model.
+     * If reset is successful, the browser will be redirected to the 'index' page.
+     * @param int $id ID
+     * @return \yii\web\Response
+     * @throws \yii\web\NotFoundHttpException|\yii\web\ForbiddenHttpException if the model cannot be found or forbidden
+     */
+    public function actionReset(int $id) : \yii\web\response{
+        if($id < 10){
+            if(\Yii::$app->user->identity->id === \Yii::$app->params['developerUserId'] && $id !== \Yii::$app->user->identity->id){
+                $model = $this->findModel($id);
+                $password = \Yii::$app->security->generateRandomString(12);
+                $model->updateAttributes(['password' => \Yii::$app->security->generatePasswordHash($password)]);
+                \Yii::$app->session->addFlash('success', 'Пароль успешно сброшен | Новый пароль: ' . $password);
+            }
+            else{
+                throw new \yii\web\ForbiddenHttpException('Доступ запрещен');
+            }
+        }
+        else{
+            if($id !== \Yii::$app->user->identity->id){
+                $model = $this->findModel($id);
+                $password = \Yii::$app->security->generateRandomString(8);
+                $model->updateAttributes(['password' => \Yii::$app->security->generatePasswordHash($password)]);
+                \Yii::$app->session->addFlash('success', 'Пароль успешно сброшен | Новый пароль: ' . $password);
+            }
+            else{
+                \Yii::$app->session->addFlash('error', 'Запрещено сбрасывать пароль своей учетной записи');
+            }
+        }
+        return $this->redirect(['view', 'id' => $id]);
     }
 
     /**

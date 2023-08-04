@@ -23,7 +23,7 @@ class AppController extends \yii\web\Controller{
             'verbs' => [
                 'class' => \yii\filters\VerbFilter::class,
                 'actions' => [
-                    'logout' => ['post']
+                    'logout' => ['POST'],
                 ]
             ]
         ];

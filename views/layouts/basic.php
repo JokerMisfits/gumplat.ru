@@ -39,7 +39,7 @@ $name = Yii::$app->name;
         'options' => ['class' => 'navbar-nav'],
         'items' => [
             Yii::$app->user->isGuest
-                ? ['label' => 'Login', 'url' => ['/site/login']]
+                ? ['label' => 'Авторизация', 'url' => ['/site/login']]
                 : '<li class="nav-item">'
                     . Html::beginForm(['/site/logout'])
                     . Html::submitButton(

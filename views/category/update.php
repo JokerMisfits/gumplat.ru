@@ -6,6 +6,16 @@ $this->params['breadcrumbs'][] = ['label' => 'Категории', 'url' => ['in
 $this->params['breadcrumbs'][] = ['label' => $model->name, 'url' => ['view', 'id' => $model->id]];
 $this->params['breadcrumbs'][] = 'Изменить';
 ?>
+
+<style>
+    @media(max-width: 575px){
+        .categories-update{
+            border-left: none!important;
+            border-right: none!important;
+        }
+    }
+</style>
+
 <div class="categories-update container pt-0 mb-4 border border-dark rounded bg-light">
 
     <h1><?= yii\helpers\Html::encode($this->title); ?></h1>

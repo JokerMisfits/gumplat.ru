@@ -2,8 +2,6 @@
 
 namespace app\models;
 
-use app\models\Tickets;
-
 /**
  * TicketSearch represents the model behind the search form of `app\models\Tickets`.
  */
@@ -14,7 +12,7 @@ class TicketSearch extends Tickets{
     public function rules() : array{
         return [
             [['id', 'tg_user_id', 'status', 'category_id', 'city_id', 'user_id'], 'integer'],
-            [['name', 'surname', 'phone', 'email', 'title', 'text', 'comment', 'last_change'], 'safe']
+            [['name', 'surname', 'phone', 'email', 'title', 'text', 'comment', 'messages', 'creation_date', 'last_change'], 'safe'],
         ];
     }
 
@@ -41,8 +39,16 @@ class TicketSearch extends Tickets{
         $dataProvider = new \yii\data\ActiveDataProvider([
             'query' => $query,
             'pagination' => [
-                'pageSize' => 13
-            ]
+                'forcePageParam' => false,
+                'pageSizeParam' => false,
+                'pageSize' => 15
+            ],
+            'sort' => [
+                'defaultOrder' => [
+                    'status' => SORT_ASC,
+                    'creation_date' => SORT_DESC
+                ]
+            ],
         ]);
 
         $this->load($params);
@@ -70,7 +76,9 @@ class TicketSearch extends Tickets{
             ->andFilterWhere(['like', 'email', $this->email])
             ->andFilterWhere(['like', 'title', $this->title])
             ->andFilterWhere(['like', 'text', $this->text])
-            ->andFilterWhere(['like', 'comment', $this->comment]);
+            ->andFilterWhere(['like', 'comment', $this->comment])
+            ->andFilterWhere(['like', 'creation_date', $this->creation_date])
+            ->andFilterWhere(['like', 'messages', $this->messages]);
 
         return $dataProvider;
     }

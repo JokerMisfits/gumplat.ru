@@ -11,6 +11,10 @@ $this->title = 'Обращение №' . $model->id;
 $this->params['breadcrumbs'][] = ['label' => 'Обращения', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 yii\web\YiiAsset::register($this);
+$this->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css', [
+    'crossorigin' => 'anonymous',
+    'position' => $this::POS_HEAD,
+]);
 ?>
 
 <style>
@@ -33,18 +37,21 @@ yii\web\YiiAsset::register($this);
 
 <!-- Modal -->
 <div class="modal fade text-light" id="Modal" tabindex="-1" aria-labelledby="ModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-fullscreen modal-dialog-scrollable">
-    <div class="modal-content bg-dark">
-      <div class="modal-header">
-        <h1 class="modal-title fs-5" id="ModalLabel">Заголовок</h1>
-        <button type="button" class="btn btn-danger btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body" id="ModalContent">Текст</div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Закрыть</button>
-      </div>
+    <div class="modal-dialog modal-fullscreen modal-dialog-scrollable">
+        <div class="modal-content bg-dark">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="ModalLabel">Заголовок</h1>
+                <button type="button" class="btn btn-danger btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="ModalContent">Текст</div>
+            <div class="modal-footer">
+                <div class="col-12 text-start">
+                    <a href="https://t.me/Xo_Diamond_XO" class="link-danger link-offset-2 link-underline-opacity-30 link-underline-opacity-100-hover" title="Напишите, чтобы заказать расширение функционала проекта.">Связь с разработчиком</a> <i class="fas fa-laptop-code"></i>
+                </div>
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Закрыть</button>
+            </div>
+        </div>
     </div>
-  </div>
 </div>
 
 <div class="tickets-view row p-0 m-0 table-responsive bg-light border-top border-bottom border-dark">
@@ -52,6 +59,7 @@ yii\web\YiiAsset::register($this);
         <h1 class="text-start"><?= 'Обращение №' . yii\helpers\Html::encode($model->id); ?></h1>
         <p>
             <?= yii\helpers\Html::a('Изменить', ['update', 'id' => $model->id], ['class' => 'btn btn-primary mt-1']); ?>
+            <button id="ticket-result-button" class="btn btn-dark mt-1" onclick="showResult()">Показать результаты рассмотрения</button>
             <?php
                 if(Yii::$app->user->can('admin')){
                 echo yii\helpers\Html::a('Удалить', ['delete', 'id' => $model->id], [
@@ -64,6 +72,9 @@ yii\web\YiiAsset::register($this);
                 }
             ?>
         </p>
+
+        <?php echo '<div id="ticket-result" style="display: none;">' . $this->render('result', ['model' => $model]) . '</div>'; ?>
+
         <?= yii\widgets\DetailView::widget([
             'model' => $model,
             'attributes' => [
@@ -149,7 +160,7 @@ yii\web\YiiAsset::register($this);
                         return $model->text;
                     }
                 ],
-                'tg_user_id',
+                //'tg_user_id',
                 [
                     'attribute' => 'status',
                     'label' => 'Статус обращения',
@@ -171,8 +182,6 @@ yii\web\YiiAsset::register($this);
                         }
                     }
                 ],
-                //todo перенести в отдельную вкладку
-                //'comment:ntext',
                 [
                     'attribute' => 'category_id',
                     'label' => 'Категория обращения',
@@ -267,7 +276,7 @@ yii\web\YiiAsset::register($this);
             echo 'ФОРМА ОТПРАВКИ СООБЩЕНИЙ';
         }
         else{
-            echo '<span>ID пользователя в telegram не задано</span>';
+            echo '<span>ID пользователя в telegram не задан</span>';
         }
     ?>
     
@@ -290,6 +299,21 @@ yii\web\YiiAsset::register($this);
         }
         let modalContent = document.getElementById('ModalContent');
         modalContent.innerHTML = content;
-        button.innerHTML = `<button class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#Modal">Показать</button>`;
+        button.innerHTML = `<button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#Modal">Показать</button>`;
+    }
+</script>
+
+<script>
+    function showResult(){
+        let form = document.getElementById('ticket-result');
+        let button = document.getElementById('ticket-result-button');
+        if(form.style.display === 'none'){
+            form.style.display = 'block';
+            button.innerText = 'Скрыть результаты рассмотрения';
+        }
+        else{
+            form.style.display = 'none';
+            button.innerText = 'Показать результаты рассмотрения';
+        }
     }
 </script>

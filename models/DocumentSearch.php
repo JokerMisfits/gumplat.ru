@@ -2,8 +2,6 @@
 
 namespace app\models;
 
-use app\models\Documents;
-
 /**
  * DocumentSearch represents the model behind the search form of `app\models\Documents`.
  */
@@ -40,7 +38,9 @@ class DocumentSearch extends Documents{
         $dataProvider = new \yii\data\ActiveDataProvider([
             'query' => $query,
             'pagination' => [
-                'pageSize' => 12
+                'forcePageParam' => false,
+                'pageSizeParam' => false,
+                'pageSize' => 15
             ]
         ]);
         $this->load($params);

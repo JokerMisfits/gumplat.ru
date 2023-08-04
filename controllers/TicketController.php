@@ -63,6 +63,7 @@ class TicketController extends AppController{
      */
     public function actionCreate() : string|\yii\web\Response{
         $model = new Tickets();
+        $model->user_id = \Yii::$app->params['systemUserId'];
         if(\Yii::$app->request->isAjax && $model->load(\Yii::$app->request->post())){
             \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
             return \yii\widgets\ActiveForm::validate($model);
@@ -107,14 +108,17 @@ class TicketController extends AppController{
      */
     public function actionUpdate(int $id) : string|\yii\web\Response{
         $model = $this->findModel($id);
-        if(\Yii::$app->request->isAjax && $model->load(\Yii::$app->request->post())){
-            \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
-            return \yii\widgets\ActiveForm::validate($model);
-        }
         if($model->load(\yii::$app->request->post())){
             if($model->validate()){
-                if($model->save()){
-                    return $this->redirect(['view', 'id' => $model->id]);
+                if($model->status == 2 || $model->status == 3){
+                    if($model->comment == '' || !isset($model->comment) || strlen($model->comment) < 5){
+                        \Yii::$app->session->addFlash('error', 'Необходимо заполнить результаты рассмотрения, перед закрытием обращения.');     
+                    }
+                }
+                else{
+                    if($model->save()){
+                        return $this->redirect(['view', 'id' => $model->id]);
+                    }
                 }
             }
             else{

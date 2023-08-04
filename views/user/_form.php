@@ -20,7 +20,7 @@
     ?>
 
     <div class="form-group">
-        <?= yii\helpers\Html::submitButton('Сохранить', ['class' => 'btn btn-success']); ?>
+        <?= yii\helpers\Html::submitButton('Сохранить', ['class' => 'btn btn-success mt-2 mx-1']); ?>
     </div>
 
     <?php yii\widgets\ActiveForm::end(); ?>

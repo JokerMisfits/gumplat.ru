@@ -5,6 +5,16 @@ $this->title = 'Добавление города';
 $this->params['breadcrumbs'][] = ['label' => 'Города', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
+
+<style>
+    @media(max-width: 575px){
+        .cities-create{
+            border-left: none!important;
+            border-right: none!important;
+        }
+    }
+</style>
+
 <div class="cities-create container pt-0 mb-4 bg-light border border-dark rounded">
 
     <h1><?= yii\helpers\Html::encode($this->title); ?></h1>
