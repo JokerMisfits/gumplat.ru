@@ -52,7 +52,7 @@ class TicketController extends AppController{
      */
     public function actionView(int $id) : string{
         return $this->render('view', [
-            'model' => $this->findModel($id),
+            'model' => $this->findModel($id)
         ]);
     }
 
@@ -153,6 +153,53 @@ class TicketController extends AppController{
         else{
             throw new \yii\web\ForbiddenHttpException('Доступ только у администраторов');
         }
+    }
+
+
+   /** 
+     * @param int $id ID
+     * @param int $tg_user_id tg_user_id
+     * @return \yii\web\Response
+     */
+    public function actionMessage(int $id, int $tg_user_id, string $message) : \yii\web\Response{
+        $model = $this->findModel($id);
+        $transaction = \Yii::$app->db->beginTransaction();
+        try{
+            $messages = json_decode($model->messages, true);
+            $messages[count($messages)] = $message;
+            $model->messages = json_encode($messages);
+            $model->updateAttributes(['messages']);
+            $data = [
+                'chat_id' => $tg_user_id,
+                'text' => 'По вашему обращению пришел ответ от юриста',
+                'reply_markup' => [
+                    'inline_keyboard' => [
+                        [  
+                            [
+                                'text' => 'Нажмите, чтобы прочесть сообщение',
+                                'callback_data' => 'TICKETBLABLABLA',
+                            ],
+                        ]
+                    ],
+                    'resize_keyboard' => true
+                ]
+            ];
+            if(AppController::curlSendMessage($data) !== false){
+                $transaction->commit();
+                \Yii::$app->session->addFlash('success', 'Сообщение успешно отправлено.');
+            }
+            else{
+                $transaction->rollBack();
+                \Yii::$app->session->addFlash('error', 'Произошла ошибка при отправке сообщения.');
+            }
+        }
+        catch(\Exception|\Throwable $e){
+            $transaction->rollBack();
+            \Yii::error('Ошибка при обновлении сообщения в Ticket::' . $id . ' | ' . $e->getMessage(), 'tickets');
+            \Yii::$app->session->setFlash('error', 'Произошла ошибка при отправке сообщения.');
+        }
+        \Yii::$app->request->queryParams = [];
+        return $this->redirect(['view', 'id' => $id]);
     }
 
     /**

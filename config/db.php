@@ -1,6 +1,6 @@
 <?php
 
-if(!isset($_SERVER['DB_DSN'])){
+if(!array_key_exists('DB_DSN', $_SERVER)){
     $dotenv = \Dotenv\Dotenv::createImmutable(dirname(__FILE__) . '/../');
     $dotenv->load();
 }

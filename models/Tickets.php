@@ -15,7 +15,7 @@ namespace app\models;
  * @property string $title Заголовок обращения
  * @property string $text Текст обращения
  * @property string|null $comment Результаты рассмотрения
- * @property string|null $messages Сообщения
+ * @property string $messages Сообщения
  * @property string $creation_date Дата создания обращения
  * @property string $last_change Дата последнего изменения
  * @property int|null $category_id ID категории
@@ -42,8 +42,8 @@ class Tickets extends \yii\db\ActiveRecord{
         return [
             [['tg_user_id', 'status', 'category_id', 'city_id', 'user_id'], 'integer'],
             [['title', 'text'], 'required'],
-            [['text', 'comment', 'messages'], 'string'],
-            [['creation_date', 'last_change'], 'safe'],
+            [['text', 'comment'], 'string'],
+            [['creation_date', 'last_change', 'messages'], 'safe'],
             [['name', 'surname'], 'string', 'min' => 1],
             [['phone'], 'string', 'min' => 3],
             [['email'], 'string', 'min' => 5],
@@ -111,6 +111,9 @@ class Tickets extends \yii\db\ActiveRecord{
                 if($this->comment === ''){
                     $this->comment = null;
                 }
+            }
+            if($this->messages === null){
+                $this->messages = '{}';
             }
             return true;
         }

@@ -14,10 +14,13 @@ $config = [
     'version' => '1.0.0',
     'basePath' => dirname(__DIR__),
     'language' => 'ru-Ru',
-    'bootstrap' => ['log'],
+    'bootstrap' => [
+        'log',
+        'queue'
+    ],
     'aliases' => [
         '@bower' => '@vendor/bower-asset',
-        '@npm'   => '@vendor/npm-asset',
+        '@npm'   => '@vendor/npm-asset'
     ],
     'components' => [
         'request' => [
@@ -38,16 +41,16 @@ $config = [
             'class' => \yii\symfonymailer\Mailer::class,
             'viewPath' => '@app/mail',
             // send all mails to a file by default.
-            'useFileTransport' => true,
+            'useFileTransport' => true
         ],
         'log' => [
             'traceLevel' => YII_DEBUG ? 3 : 0,
             'targets' => [
                 [
                     'class' => 'yii\log\FileTarget',
-                    'levels' => ['error', 'warning'],
-                ],
-            ],
+                    'levels' => ['error', 'warning']
+                ]
+            ]
         ],
         'db' => $db,
         'urlManager' => [
@@ -70,7 +73,16 @@ $config = [
             'itemChildTable' => '{{%auth_item_child}}',
             'defaultRoles' => ['guest']
         ],
+        'queue' => [
+            'class' => \yii\queue\db\Queue::class,
+            'as log' => \yii\queue\LogBehavior::class,
+            'db' => 'db',
+            'tableName' => '{{%queue}}',
+            'channel' => 'default',
+            'mutex' => \yii\mutex\MysqlMutex::class
+        ]
     ],
+    'timeZone' => 'Europe/Moscow',
     'params' => $params
 ];
 
@@ -86,6 +98,11 @@ if (YII_ENV_DEV) {
     $config['bootstrap'][] = 'gii';
     $config['modules']['gii'] = [
         'class' => 'yii\gii\Module',
+        'generators' => [
+            'job' => [
+                'class' => yii\queue\gii\Generator::class
+            ]
+        ]
         // uncomment the following to add your IP if you are not connecting from localhost.
         //'allowedIPs' => ['127.0.0.1', '::1'],
     ];

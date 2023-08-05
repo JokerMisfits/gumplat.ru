@@ -3,7 +3,7 @@
 $params = require __DIR__ . '/params.php';
 $db = require __DIR__ . '/db.php';
 
-if(!isset($_SERVER['DB_DSN'])){
+if(!array_key_exists('DB_DSN', $_SERVER)){
     $dotenv = \Dotenv\Dotenv::createImmutable(dirname(__FILE__) . '/../');
     $dotenv->load();
 }
@@ -11,7 +11,10 @@ if(!isset($_SERVER['DB_DSN'])){
 $config = [
     'id' => 'basic-console',
     'basePath' => dirname(__DIR__),
-    'bootstrap' => ['log'],
+    'bootstrap' => [
+        'log',
+        'queue'
+    ],
     'controllerNamespace' => 'app\commands',
     'aliases' => [
         '@bower' => '@vendor/bower-asset',
@@ -38,6 +41,23 @@ $config = [
             'ruleTable' => '{{%auth_rule}}',
             'itemChildTable' => '{{%auth_item_child}}',
             'defaultRoles' => ['guest']
+        ],
+        'queue' => [
+            'class' => \yii\queue\db\Queue::class,
+            'as log' => \yii\queue\LogBehavior::class,
+            'db' => 'db',
+            'tableName' => '{{%queue}}',
+            'channel' => 'default',
+            'mutex' => \yii\mutex\MysqlMutex::class
+        ]
+    ],
+    'controllerMap' => [
+        'migrate' => [
+            'class' => 'yii\console\controllers\MigrateController',
+            'migrationPath' => null,
+            'migrationNamespaces' => [
+                'yii\queue\db\migrations'
+            ]
         ]
     ],
     'params' => $params,

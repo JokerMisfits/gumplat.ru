@@ -271,12 +271,25 @@ $this->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15
     <?php 
         echo '<span>История сообщений:</span><hr class="text-danger my-2">';
         if(isset($model->tg_user_id)){
-            //todo ЕСЛИ нет сообщения то echo '<span>Ничего не найдено.</span>';
-            echo '<span>ПРИДУМАТЬ МЕТОД ПОДГРУЗКИ СООБЩЕНИЙ</span><hr class="text-danger my-2">';
-            echo 'ФОРМА ОТПРАВКИ СООБЩЕНИЙ';
+            $json = json_decode($model->messages, true);
+            if(!array_key_exists(0, $json) == '{}'){
+                echo '<span class="not-set">Ничего не найдено.</span>';
+            }
+            else{
+                //todo написать вывод сообщений когда будет структура сообщений Zzz
+            }
+            echo '<hr class="text-danger my-2">';
+            echo '<div class="form-floating text-dark col-12 col-md-8 col-lg-6 offset-md-2 offset-lg-3">';
+            echo '<textarea id="messageTextarea" class="form-control" placeholder="" id="floatingTextarea"></textarea>';
+            echo '<label id="messageTextLabel" for="floatingTextarea">Форма отправки сообщений в telegram</label>';
+            echo '</div>';
+            echo '<div class="d-flex justify-content-center my-2 mx-1">' . yii\helpers\Html::a('Отправить', ['message', 'id' => $model->id, 'tg_user_id' => $model->tg_user_id], [
+                'class' => 'btn btn-success col-12 col-md-8 col-lg-6',
+                'id' => 'sendMessageButton'
+            ]) . '</div>';
         }
         else{
-            echo '<span>ID пользователя в telegram не задан</span>';
+            echo '<span class="not-set">ID пользователя в telegram не задан</span>';
         }
     ?>
     
@@ -316,4 +329,20 @@ $this->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15
             button.innerText = 'Показать результаты рассмотрения';
         }
     }
+</script>
+
+<script>
+    var sendMessageButton = document.getElementById("sendMessageButton");
+    var messageTextarea = document.getElementById("messageTextarea");
+    sendMessageButton.addEventListener("click", function(event){
+        event.preventDefault();
+        var messageValue = encodeURIComponent(messageTextarea.value);
+        if(messageValue.length < 6 || messageValue.length > 2000){
+            document.getElementById("messageTextLabel").innerHTML = '<span class="text-danger">Сообщение должно быть больше 6 символов и меньше 2000 символов!</span>';
+        }
+        else{
+            let currentHref = sendMessageButton.getAttribute("href");
+            window.location.href = currentHref + "&message=" + messageValue;
+        }
+    });
 </script>
