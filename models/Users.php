@@ -22,7 +22,7 @@ use yii;
 class Users extends yii\db\ActiveRecord implements yii\web\IdentityInterface{
     public string $password_repeat = '';
     public bool $rememberMe = true;
-    private static false|object $_user = false;
+    private static null|object $_user = null;
 
     /**
      * {@inheritdoc}
@@ -208,11 +208,8 @@ class Users extends yii\db\ActiveRecord implements yii\web\IdentityInterface{
      *
      */
     private function getUser() : void{
-        if(self::$_user === false){
+        if(self::$_user === null){
             self::$_user = self::findByUsername($this->username);
-            if(self::$_user === null){
-                self::$_user = false;
-            }
         }
     }
 }
