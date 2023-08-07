@@ -49,6 +49,10 @@ class Tickets extends \yii\db\ActiveRecord{
             [['email'], 'string', 'min' => 5],
             [['comment'], 'string', 'min' => 4],
             [['name', 'surname', 'phone', 'email', 'title'], 'string', 'max' => 255],
+            [['name', 'surname', 'phone', 'email', 'title', 'text', 'comment', 'messages'], 'trim'],
+            [['name', 'surname', 'phone', 'email', 'comment'], 'default'],
+            ['status', 'default', 'value' => 0],
+            ['user_id', 'default', 'value' => \Yii::$app->params['systemUserId']],
             ['phone', 'match', 'pattern' => '/^((\+7|7|8)+([0-9]){10})$/', 'message' => 'Недействительный номер'],
             [['category_id'], 'exist', 'skipOnError' => true, 'targetClass' => Categories::class, 'targetAttribute' => ['category_id' => 'id']],
             [['city_id'], 'exist', 'skipOnError' => true, 'targetClass' => Cities::class, 'targetAttribute' => ['city_id' => 'id']],
@@ -82,37 +86,7 @@ class Tickets extends \yii\db\ActiveRecord{
 
     public function beforeSave($insert) : bool{
         if(parent::beforeSave($insert)){
-            if($this->name != null){
-                $this->name = trim($this->name);
-                if($this->name === ''){
-                    $this->name = null;
-                }
-            }
-            if($this->surname != null){
-                $this->surname = trim($this->surname);
-                if($this->surname === ''){
-                    $this->surname = null;
-                }
-            }
-            if($this->phone != null){
-                $this->phone = trim($this->phone);
-                if($this->phone === ''){
-                    $this->phone = null;
-                }
-            }
-            if($this->email != null){
-                $this->email = trim($this->email);
-                if($this->email === ''){
-                    $this->email = null;
-                }
-            }
-            if($this->comment != null){
-                $this->comment = trim($this->comment);
-                if($this->comment === ''){
-                    $this->comment = null;
-                }
-            }
-            if($this->messages === null){
+            if($this->messages === '' || $this->messages === null){
                 $this->messages = '{}';
             }
             return true;

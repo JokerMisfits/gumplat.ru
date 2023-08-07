@@ -100,9 +100,15 @@ class CategoryController extends AppController{
      * @throws \yii\web\NotFoundHttpException if the model cannot be found
      */
     public function actionDelete(int $id) : \yii\web\Response{
-        if(Tickets::find()->where(['category_id' => $id])->count() === 0){
-            if(Documents::find()->where(['category_id' => $id])->count() === 0){
-                $this->findModel($id)->delete();
+        if(Tickets::find()->where(['category_id' => $id])->limit(1)->count() === 0){
+            if(Documents::find()->where(['category_id' => $id])->limit(1)->count() === 0){
+                $model = $this->findModel($id);
+                if($model->delete() !== false){
+                    \Yii::$app->session->addFlash('success', 'Категория ' . $model->name . ' успешно удалена.');  
+                }
+                else{
+                    \Yii::$app->session->addFlash('error', 'Произошла ошибка при удалении категории ' . $model->name . '.');  
+                }
             }
             else{
                 \Yii::$app->getSession()->addFlash('error', 'Данная категория еще используется! '. \yii\helpers\Html::a(\yii\helpers\Html::encode('Перейти к данным документам'), \yii\helpers\Url::to(['documents/', 'DocumentSearch[category_id]' => $id]), ['class' => 'link-dark link-offset-2 link-underline-opacity-50 link-underline-opacity-100-hover', 'title' => 'Перейти']));

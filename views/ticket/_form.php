@@ -44,7 +44,7 @@
 
     <?= $form->field($model, 'email')->textInput(['maxlength' => true, 'minlength' => 5])->input('email'); ?>
 
-    <?= $form->field($model, 'comment')->textarea(['rows' => 2]); ?>
+    <?= $form->field($model, 'comment')->textarea(['rows' => 2])->hint('Пример:' . '<br>' . '06/08/23 Взято в работу, прозвон клиента' . '<br>' . '07/08/23 Запрос документов у клиента' . '<br>' . '24/08/23 Документы не были получены => обращение закрыто.'); ?>
 
     <?= $form->field($model, 'category_id')->dropDownList(yii\helpers\ArrayHelper::map($categories::find()->all(), 'id', 'name'), ['prompt' => 'Выберите категорию']); ?>
 

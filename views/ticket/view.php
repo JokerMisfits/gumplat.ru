@@ -87,7 +87,7 @@ $this->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15
                             setModalHeader("$model->title");
                         JS;
                         $this->registerJs($js);
-                        if(strlen($model->title) > 16){
+                        if(strlen($model->title) > 32){
                             $js = <<<JS
                             showTextMore("$model->text", 'title');
                         JS;
@@ -151,7 +151,7 @@ $this->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15
                     'label' => 'Текст обращения',
                     'contentOptions' => ['id' => 'ticket-view-text'],
                     'value' => function($model){
-                        if(strlen($model->text) > 16){
+                        if(strlen($model->text) > 32){
                             $js = <<<JS
                                 showTextMore("$model->text", 'text');
                             JS;
@@ -160,7 +160,6 @@ $this->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15
                         return $model->text;
                     }
                 ],
-                //'tg_user_id',
                 [
                     'attribute' => 'status',
                     'label' => 'Статус обращения',
@@ -221,7 +220,7 @@ $this->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15
                 [
                     'attribute' => 'creation_date',
                     'label' => 'Дата создания обращения',
-                    'value' => function ($model) {
+                    'value' => function($model){
                         $dateTime = new DateTime($model->creation_date, null);
                         return Yii::$app->formatter->asDatetime($dateTime, 'php:d.m.Y H:i:s');
                     }
@@ -229,7 +228,7 @@ $this->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15
                 [
                     'attribute' => 'last_change',
                     'label' => 'Дата последнего изменения',
-                    'value' => function ($model) {
+                    'value' => function($model){
                         $dateTime = new DateTime($model->last_change, null);
                         return Yii::$app->formatter->asDatetime($dateTime, 'php:d.m.Y H:i:s');
                     }
@@ -245,14 +244,11 @@ $this->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15
         <div id="ticket-view-sidebar-content" class="px-2 pb-2">
             <?php
                 if(isset($model->category_id)){
-                    $modelCategories = new Categories;
-                    $modelCategories->id = $model->category_id;
-                    $files = $modelCategories->getDocuments();
-                    if($files->count() > 0){
-                        $files = $files->all();
-                        $count = count($files);
+                    $documents = Categories::findOne($model->category_id)->documents;
+                    if(count($documents) > 0){
+                        $count = count($documents);
                         for($i = 0; $i < $count; $i++){
-                            echo '<div class="col-12 mt-1 text-center"><span class="text-nowrap">' . yii\helpers\Html::a($files[$i]->base_name . '.' . $files[$i]->extension, ['download/' . $files[$i]->id], ['class' => 'link-primary link-offset-2 link-underline-opacity-50 link-underline-opacity-100-hover', 'title' => 'Скачать', 'target' => '_blank']) . '</span></div>';
+                            echo '<div class="col-12 mt-1 text-center"><span class="text-nowrap">' . yii\helpers\Html::a($documents[$i]->base_name . '.' . $documents[$i]->extension, ['download/' . $documents[$i]->id], ['class' => 'link-primary link-offset-2 link-underline-opacity-50 link-underline-opacity-100-hover', 'title' => 'Скачать', 'target' => '_blank']) . '</span></div>';
                         }
                     }
                     else{

@@ -99,8 +99,14 @@ class CityController extends AppController{
      * @throws \yii\web\NotFoundHttpException if the model cannot be found
      */
     public function actionDelete(int $id) : string|\yii\web\Response{
-        if(Tickets::find()->where(['city_id' => $id])->count() === 0){
-            $this->findModel($id)->delete();
+        if(Tickets::find()->where(['city_id' => $id])->limit(1)->count() === 0){
+            $model = $this->findModel($id);
+            if($model->delete() !== false){
+                \Yii::$app->session->addFlash('success', 'Город ' . $model->name . ' успешно удален.');  
+            }
+            else{
+                \Yii::$app->session->addFlash('error', 'Произошла ошибка при удалении города ' . $model->name . '.');  
+            }
         }
         else{
             \Yii::$app->getSession()->addFlash('error', 'Данный город еще используется! '. \yii\helpers\Html::a(\yii\helpers\Html::encode('Перейти к данным обращениям'), \yii\helpers\Url::to(['tickets/', 'TicketSearch[city_id]' => $id]), ['class' => 'link-dark link-offset-2 link-underline-opacity-50 link-underline-opacity-100-hover', 'title' => 'Перейти']));

@@ -70,10 +70,6 @@ class UserController extends AppController{
      */
     public function actionCreate() : string|\yii\web\Response|\yii\widgets\ActiveForm{
         $model = new Users(['scenario' => 'signup']);
-        if(\Yii::$app->request->isAjax && $model->load(\Yii::$app->request->post())){
-            \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
-            return \yii\widgets\ActiveForm::validate($model);
-        }
         if($model->load(\Yii::$app->request->post())){
                 if(isset(\Yii::$app->request->post('Users')['password_repeat']) && \Yii::$app->request->post('Users')['password_repeat'] === $model->password){
                 $model->auth_key = \Yii::$app->security->generateRandomString(64);

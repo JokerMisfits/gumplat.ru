@@ -64,10 +64,6 @@ class TicketController extends AppController{
     public function actionCreate() : string|\yii\web\Response{
         $model = new Tickets();
         $model->user_id = \Yii::$app->params['systemUserId'];
-        if(\Yii::$app->request->isAjax && $model->load(\Yii::$app->request->post())){
-            \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
-            return \yii\widgets\ActiveForm::validate($model);
-        }
         if($model->load(\yii::$app->request->post())){
             if($model->validate()){
                 if($model->save()){
@@ -77,6 +73,8 @@ class TicketController extends AppController{
                     \Yii::$app->session->addFlash('error', 'Произошла ошибка при создании обращения');                  
                     return $this->render('create', [
                         'model' => $model,
+                        'cities' => new Cities(),
+                        'users' => new Users(),
                         'categories' => new Categories()
                     ]);
                 }
@@ -84,6 +82,8 @@ class TicketController extends AppController{
             else{
                 return $this->render('create', [
                     'model' => $model,
+                    'cities' => new Cities(),
+                    'users' => new Users(),
                     'categories' => new Categories()
                 ]);
             }
@@ -147,7 +147,12 @@ class TicketController extends AppController{
      */
     public function actionDelete(int $id) : \yii\web\Response{
         if(\Yii::$app->user->can('admin')){
-            $this->findModel($id)->delete();
+            if($this->findModel($id)->delete() !== false){
+                \Yii::$app->session->addFlash('success', 'Обращение №' . $id . ' успешно удалено.');    
+            }
+            else{
+                \Yii::$app->session->addFlash('error', 'Произошла ошибка при удалении обращения №' . $id . '.');    
+            }
             return $this->redirect(['index']);
         }
         else{
@@ -163,9 +168,9 @@ class TicketController extends AppController{
      */
     public function actionMessage(int $id, int $tg_user_id, string $message) : \yii\web\Response{
         $model = $this->findModel($id);
-        $transaction = \Yii::$app->db->beginTransaction();
+        $transaction = $model->getDb()->beginTransaction();
         try{
-            $messages = json_decode($model->messages, true);
+            $messages = json_decode($model->messages, true);//todo Переписать, тк изначально Activerecord Должен вернуть декодированный массив
             $messages[count($messages)] = $message;
             $model->messages = json_encode($messages);
             $model->updateAttributes(['messages']);

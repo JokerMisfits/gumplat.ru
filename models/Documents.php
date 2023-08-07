@@ -22,7 +22,7 @@ class Documents extends \yii\db\ActiveRecord{
 
     public static string $extensions = 'jpg, png, heic, pdf, doc, docx, txt, csv, ppt';
 
-    private static int $maxSize = 20;
+    private static int $maxSize = 20;//Значение может отличаться от максимального значения в php.ini default = 2
 
     /**
      * {@inheritdoc}

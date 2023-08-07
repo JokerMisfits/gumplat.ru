@@ -76,7 +76,7 @@ class DocumentController extends AppController{
                             $model->extension = $model->file->extension;
                             $model->file = null;
                             $model->path = realpath(\Yii::getAlias('@web')) . '/uploads/' . $model->name . '.' . $model->extension;
-                            $transaction = \Yii::$app->db->beginTransaction();
+                            $transaction = $model->getDb()->beginTransaction();
                             if($model->save(false)){
                                 $transaction->commit();
                                 \Yii::$app->session->addFlash('success', 'Файл успешно добавлен.');
@@ -142,14 +142,24 @@ class DocumentController extends AppController{
         $model = $this->findModel($id);
         if(file_exists($model->path)){
             if(unlink($model->path)){
-                $model->delete();
+                if($model->delete() !== false){
+                    \Yii::$app->session->addFlash('success', 'Документ ' . $model->base_name . '.' . $model->extension . ' успешно удален.');   
+                }
+                else{
+                    \Yii::$app->session->addFlash('error', 'Произошла ошибка при удалении файла.');   
+                }
             }
             else{
                 \Yii::$app->session->addFlash('error', 'Произошла ошибка при удалении файла.');
             }
         }
         else{
-            $model->delete();
+            if($model->delete() !== false){
+                \Yii::$app->session->addFlash('success', 'Документ ' . $model->base_name . '.' . $model->extension . ' успешно удален.');   
+            }
+            else{
+                \Yii::$app->session->addFlash('error', 'Произошла ошибка при удалении файла.');   
+            }
         }
         return $this->redirect(['index']);
     }
