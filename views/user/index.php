@@ -1,11 +1,8 @@
 <?php
-
 use app\models\Users;
-
 /** @var yii\web\View $this */
 /** @var app\models\UserSearch $searchModel */
 /** @var yii\data\ActiveDataProvider $dataProvider */
-
 $this->title = 'Сотрудники';
 $this->params['breadcrumbs'][] = $this->title;
 ?>

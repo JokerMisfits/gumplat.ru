@@ -32,12 +32,6 @@ $config = [
         'errorHandler' => [
             'errorAction' => 'site/error'
         ],
-        'mailer' => [
-            'class' => \yii\symfonymailer\Mailer::class,
-            'viewPath' => '@app/mail',
-            // send all mails to a file by default.
-            'useFileTransport' => true
-        ],
         'log' => [
             'traceLevel' => YII_DEBUG ? 3 : 0,
             'targets' => [
@@ -52,7 +46,7 @@ $config = [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
-                '<action:(index|login|logout)>' => 'site/<action>',
+                '<action:(index|verify-tg|login|login-by-access-token|logout)>' => 'site/<action>',
                 'tickets' => 'ticket/index',
                 'cities' => 'city/index',
                 'categories' => 'category/index',

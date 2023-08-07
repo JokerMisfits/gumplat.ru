@@ -18,16 +18,21 @@ $this->params['breadcrumbs'][] = $this->title;
                     'class' => 'btn btn-danger my-2 mx-1',
                     'data' => [
                         'confirm' => 'Вы уверены, что хотите заблокировать учетную запись данному сотруднику?',
-                        'method' => 'post',
+                        'method' => 'post'
                     ]
                 ]);
                 echo yii\helpers\Html::a('Сбросить пароль', ['reset', 'id' => $model->id], [
                     'class' => 'btn btn-outline-danger my-2 mx-1',
                     'data' => [
                         'confirm' => 'Вы уверены, что хотите сбросить пароль у данного сотрудника?',
-                        'method' => 'post',
+                        'method' => 'post'
                     ]
                 ]);
+                if(!isset($model->tg_user_id)){
+                    echo yii\helpers\Html::a(\Yii::$app->cache->get('tg' . $model->id) !== false ? 'Показать проверочный код' : 'Привязать telegram', ['tg-verify', 'id' => $model->id], [
+                        'class' => 'btn btn-outline-primary my-2 mx-1'
+                    ]);
+                }
             }
         ?>
     </p>

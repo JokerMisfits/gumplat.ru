@@ -11,6 +11,7 @@ use yii;
  * @property string $username Имя пользователя
  * @property string $password Пароль
  * @property string $password_repeat Пароль
+ * @property int|null $tg_user_id ID пользователя в telegram
  * @property string $snm ФИО сотрудника
  * @property string|null $auth_key Кука
  * @property string|null $access_token Код авторизации
@@ -52,11 +53,14 @@ class Users extends yii\db\ActiveRecord implements yii\web\IdentityInterface{
             [['rememberMe'], 'required', 'on' => 'login'],
             [['username'], 'string', 'min' => 4],
             [['password', 'password_repeat'], 'string', 'min' => 6],
+            [['tg_user_id'], 'integer'],
             [['username'], 'string', 'max' => 32],
             [['password', 'auth_key', 'access_token'], 'string', 'max' => 64],
             [['password_repeat'], 'string', 'max' => 64],
+            [['tg_user_id'], 'unique'],
             [['username'], 'unique', 'except' => 'login'],
             [['username', 'password', 'snm'], 'trim'],
+            [['tg_user_id'], 'default'],
             [['password'], 'validateModelPassword', 'on' => 'login'],
             ['username', 'match', 'pattern' => '/^[a-z]\w*$/i','message' => '{attribute} должно начинаться и содержать символы только латинского алфавита']
         ];
@@ -72,6 +76,7 @@ class Users extends yii\db\ActiveRecord implements yii\web\IdentityInterface{
             'password' => 'Пароль',
             'password_repeat' => 'Подтвердить пароль',
             'rememberMe' => 'Запомнить меня',
+            'tg_user_id' => 'ID пользователя в telegram',
             'snm' => 'ФИО сотрудника',
             'auth_key' => 'Кука',
             'access_token' => 'Код авторизации',
@@ -109,9 +114,8 @@ class Users extends yii\db\ActiveRecord implements yii\web\IdentityInterface{
      * {@inheritdoc}
      */
 
-    public static function findIdentityByAccessToken($token, $type = null) : false{
-        return false;
-        //return static::findOne(['access_token' => $token]);
+    public static function findIdentityByAccessToken($token, $type = null) : yii\web\IdentityInterface|null{
+        return static::findOne(['access_token' => $token]);
     }
 
     /**
@@ -121,7 +125,7 @@ class Users extends yii\db\ActiveRecord implements yii\web\IdentityInterface{
      * @return static|null
      */
 
-    private static function findByUsername($username) : static|null{
+    private static function findByUsername($username) : yii\web\IdentityInterface|null{
         return static::findOne(['username' => $username]);
     }
 

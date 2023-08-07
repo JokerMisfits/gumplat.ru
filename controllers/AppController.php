@@ -4,26 +4,32 @@ namespace app\controllers;
 
 class AppController extends \yii\web\Controller{
 
+    /**
+     * {@inheritdoc}
+     * @return array
+     */
     public function behaviors() : array{
         return [
             'access' => [
                 'class' => \yii\filters\AccessControl::class,
                 'rules' => [
                     [
-                        'actions' => ['login'],
                         'allow' => true,
+                        'actions' => ['login', 'login-by-access-token', 'verify-tg'],
                         'roles' => ['?']
                     ],
                     [
                         'allow' => true,
                         'roles' => ['user']
-                    ]
+                    ],
                 ]
             ],
             'verbs' => [
                 'class' => \yii\filters\VerbFilter::class,
                 'actions' => [
                     'logout' => ['POST'],
+                    'verify-tg' => ['POST'],
+                    'login-by-access-token' => ['GET']
                 ]
             ]
         ];
@@ -34,11 +40,6 @@ class AppController extends \yii\web\Controller{
         var_dump($data);
         echo "</pre>";
         if($mode){exit(0);}
-    }
-    
-    public function beforeAction($action) : bool{
-        \Yii::$app->session->set('csrf', md5(uniqid(rand(), true)));
-        return parent::beforeAction($action);
     }
 
     /** 

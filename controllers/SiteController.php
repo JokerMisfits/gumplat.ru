@@ -8,15 +8,12 @@ class SiteController extends AppController{
 
     /**
      * {@inheritdoc}
+     * @return array
      */
     public function actions() : array{
         return [
             'error' => [
                 'class' => 'yii\web\ErrorAction'
-            ],
-            'captcha' => [
-                'class' => 'yii\captcha\CaptchaAction',
-                'fixedVerifyCode' => YII_ENV_TEST ? 'testme' : null
             ]
         ];
     }
@@ -73,5 +70,45 @@ class SiteController extends AppController{
     public function actionLogout() : \yii\web\Response{
         \Yii::$app->user->logout();
         return $this->goHome();
+    }
+
+    /**
+     * Verify action.
+     *
+     * @return \yii\web\Response
+     * @throws \yii\web\ForbiddenHttpException if the model cannot be found
+     */
+    public function actionVerifyTg(int $id, string $code, string $hash) : \yii\web\Response{
+        if(\Yii::$app->request->isPost && isset($code) && isset($hash)){
+            if(md5($_SERVER['API_KEY_0'] . $code . $_SERVER['API_KEY_0']) === $hash){
+                $code = explode('||' , $code);
+                $verify = \Yii::$app->cache->get('tg' . $code[1]);
+                if($verify !== false && $verify == $code[0]){
+                    $model = Users::findOne(['id' => $code[1]]);
+                    if(!isset($model->tg_user_id)){
+                        if($model->updateAttributes(['tg_user_id' => $id, 'access_token' => \Yii::$app->security->generateRandomString(64)]) > 0){
+                            exit('Ваш аккаунт успешно подтвержден. Данную страницу можно закрывать.');
+                        }
+                    }
+                }
+            }
+        }
+        throw new \yii\web\ForbiddenHttpException('Доступ запрещен.');
+    }
+
+    /**
+     * @param int $id ID
+     * @return \yii\web\response
+     * @throws \yii\web\NotFoundHttpException
+     */
+    public function actionLoginByAccessToken(int $id, int $tg_user_id, string $token, string $hash){
+        if(md5($_SERVER['API_KEY_0'] . $id . $tg_user_id . $token . $_SERVER['API_KEY_0']) === $hash){
+            $user = Users::findIdentityByAccessToken($token);
+            if($user !== null){
+                \Yii::$app->user->login($user);
+                return $this->redirect(['tickets']);
+            }
+        }
+        throw new \yii\web\NotFoundHttpException('Страница не найдена.');
     }
 }

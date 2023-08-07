@@ -230,6 +230,22 @@ class UserController extends AppController{
     }
 
     /**
+     * @param int $id ID
+     * @return \yii\web\response
+     */
+    public function actionTgVerify(int $id) : \yii\web\response{
+        if(\Yii::$app->cache->get('tg' . $id) === false){
+            $verifyCode = \Yii::$app->security->generateRandomString(6);
+            \Yii::$app->cache->set('tg' . $id, $verifyCode, 3600);
+        }
+        else{
+            $verifyCode = \Yii::$app->cache->get('tg' . $id);
+        }
+        \Yii::$app->session->addFlash('success', 'Код необходимо ввести в бота telegram: ' . $verifyCode . '||' . $id . '<br>Код будет действовать 1 час.');
+        return $this->redirect(['view', 'id' => $id]);
+    }
+
+    /**
      * Finds the Users model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param int $id ID
@@ -237,7 +253,7 @@ class UserController extends AppController{
      * @throws \yii\web\NotFoundHttpException if the model cannot be found
      */
     protected function findModel(int $id) : Users{
-        if(($model = users::findOne(['id' => $id])) !== null){
+        if(($model = Users::findOne(['id' => $id])) !== null){
             return $model;
         }
         throw new \yii\web\NotFoundHttpException('Страница не найдена.');
