@@ -234,15 +234,19 @@ class UserController extends AppController{
      * @return \yii\web\response
      */
     public function actionTgVerify(int $id) : \yii\web\response{
-        if(\Yii::$app->cache->get('tg' . $id) === false){
-            $verifyCode = \Yii::$app->security->generateRandomString(6);
-            \Yii::$app->cache->set('tg' . $id, $verifyCode, 3600);
+        $model = $this->findModel($id);
+        if(!isset($model->tg_user_id)){
+            if(\Yii::$app->cache->get('tg' . $id) === false){
+                $verifyCode = \Yii::$app->security->generateRandomString(6);
+                \Yii::$app->cache->set('tg' . $id, $verifyCode, 3600);
+            }
+            else{
+                $verifyCode = \Yii::$app->cache->get('tg' . $id);
+            }
+            \Yii::$app->session->addFlash('success', 'Код необходимо ввести в бота telegram: ' . $verifyCode . '*||*' . $id . '<br>Код будет действовать 1 час.');
+            return $this->redirect(['view', 'id' => $id]);
         }
-        else{
-            $verifyCode = \Yii::$app->cache->get('tg' . $id);
-        }
-        \Yii::$app->session->addFlash('success', 'Код необходимо ввести в бота telegram: ' . $verifyCode . '||' . $id . '<br>Код будет действовать 1 час.');
-        return $this->redirect(['view', 'id' => $id]);
+        throw new \yii\web\NotFoundHttpException('Страница не найдена.');
     }
 
     /**

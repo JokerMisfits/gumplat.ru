@@ -19,11 +19,11 @@ class SiteController extends AppController{
     }
 
     /**
-     * Displays homepage.
+     * Redirect to tickets page.
      *
-     * @return string|\yii\web\Response
+     * @return \yii\web\Response
      */
-    public function actionIndex() : string|\yii\web\Response{
+    public function actionIndex() : \yii\web\Response{
         return $this->redirect('/tickets');
     }
 
@@ -74,14 +74,16 @@ class SiteController extends AppController{
 
     /**
      * Verify action.
-     *
+     * @param int $id ID
+     * @param string $code Verify code
+     * @param string $hash Hash
      * @return \yii\web\Response
      * @throws \yii\web\ForbiddenHttpException if the model cannot be found
      */
     public function actionVerifyTg(int $id, string $code, string $hash) : \yii\web\Response{
         if(\Yii::$app->request->isPost && isset($code) && isset($hash)){
-            if(md5($_SERVER['API_KEY_0'] . $code . $_SERVER['API_KEY_0']) === $hash){
-                $code = explode('||' , $code);
+            if(md5($_SERVER['API_KEY_0'] . $code . $_SERVER['API_KEY_1']) === $hash){
+                $code = explode('*||*' , $code);
                 $verify = \Yii::$app->cache->get('tg' . $code[1]);
                 if($verify !== false && $verify == $code[0]){
                     $model = Users::findOne(['id' => $code[1]]);
@@ -98,15 +100,18 @@ class SiteController extends AppController{
 
     /**
      * @param int $id ID
+     * @param int $tg_user_id Telegram user id
+     * @param string $token Access token
+     * @param string $hash Hash
      * @return \yii\web\response
      * @throws \yii\web\NotFoundHttpException
      */
     public function actionLoginByAccessToken(int $id, int $tg_user_id, string $token, string $hash){
-        if(md5($_SERVER['API_KEY_0'] . $id . $tg_user_id . $token . $_SERVER['API_KEY_0']) === $hash){
+        if(md5($_SERVER['API_KEY_0'] . $id . $tg_user_id . $token . $_SERVER['API_KEY_1']) === $hash){
             $user = Users::findIdentityByAccessToken($token);
-            if($user !== null){
+            if($user !== null && $user->tg_user_id === $tg_user_id){
                 \Yii::$app->user->login($user);
-                return $this->redirect(['tickets']);
+                return $this->redirect(['/tickets']);
             }
         }
         throw new \yii\web\NotFoundHttpException('Страница не найдена.');

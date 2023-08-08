@@ -14,6 +14,7 @@ class CategoryController extends AppController{
     
     /**
      * @inheritDoc
+     * @return array
      */
     public function behaviors() : array{
         return array_merge(

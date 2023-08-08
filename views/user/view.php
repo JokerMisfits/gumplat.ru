@@ -28,11 +28,11 @@ $this->params['breadcrumbs'][] = $this->title;
                         'method' => 'post'
                     ]
                 ]);
-                if(!isset($model->tg_user_id)){
-                    echo yii\helpers\Html::a(\Yii::$app->cache->get('tg' . $model->id) !== false ? 'Показать проверочный код' : 'Привязать telegram', ['tg-verify', 'id' => $model->id], [
-                        'class' => 'btn btn-outline-primary my-2 mx-1'
-                    ]);
-                }
+            }
+            if((($model->id < 10 && Yii::$app->user->identity->id === Yii::$app->params['developerUserId']) || $model->id >= 10) && !isset($model->tg_user_id)){
+                echo yii\helpers\Html::a(\Yii::$app->cache->get('tg' . $model->id) !== false ? 'Показать проверочный код' : 'Привязать telegram', ['tg-verify', 'id' => $model->id], [
+                    'class' => 'btn btn-outline-primary my-2 mx-1'
+                ]);
             }
         ?>
     </p>

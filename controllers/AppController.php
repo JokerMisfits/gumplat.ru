@@ -35,10 +35,16 @@ class AppController extends \yii\web\Controller{
         ];
     }
 
+    /**
+     * {@inheritdoc}
+     * @param mixed $data Data
+     * @param bool $mode Debug mode
+     * @return void
+     */
     protected static function debug(mixed $data, $mode = false) : void{
-        echo "<pre>";
+        echo '<pre>';
         var_dump($data);
-        echo "</pre>";
+        echo '</pre>';
         if($mode){exit(0);}
     }
 

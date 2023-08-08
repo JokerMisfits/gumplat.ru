@@ -3,7 +3,7 @@
         'name' => 'yiisoft/yii2-app-basic',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => 'b93f7fa8675af934209b3ab7d0571c78a5af3d70',
+        'reference' => '431664494032186de9e0246e0d301a5031f59f19',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -823,7 +823,7 @@
         'yiisoft/yii2-app-basic' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => 'b93f7fa8675af934209b3ab7d0571c78a5af3d70',
+            'reference' => '431664494032186de9e0246e0d301a5031f59f19',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
