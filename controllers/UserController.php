@@ -144,9 +144,7 @@ class UserController extends AppController{
      * @throws \yii\web\NotFoundHttpException|\yii\web\ForbiddenHttpException if the model cannot be found or forbidden
      */
     public function actionDelete(int $id) : \yii\web\Response{
-        throw new \yii\web\ForbiddenHttpException('Доступ только у разработчиков');//Если включить, дописать удаление роли user у пользователя перед удалением
-        // $this->findModel($id)->delete();
-        // return $this->redirect(['index']);
+        throw new \yii\web\ForbiddenHttpException('Доступ запрещен.');
     }
 
     /**

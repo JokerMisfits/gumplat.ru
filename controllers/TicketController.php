@@ -119,13 +119,14 @@ class TicketController extends AppController{
                     else{
                         $updates[$id] = $model->getDirtyAttributes();
                         if($model->save()){
+                            \Yii::$app->session->addFlash('success', 'Обращение успешно изменено.');
                             $cache = \Yii::$app->cache->get('updates');
                             if($cache === false){
-                                \Yii::$app->cache->set('updates' . $updates, 86400);
+                                \Yii::$app->cache->set('updates', $updates, null);
                             }
                             else{
                                 $cache[$id] = $updates[$id];
-                                \Yii::$app->cache->set('updates' . $cache, 86400);
+                                \Yii::$app->cache->set('updates', $cache, null);
                             }
                             return $this->redirect(['view', 'id' => $model->id]);
                         }
@@ -223,11 +224,11 @@ class TicketController extends AppController{
                 $transaction->commit();
                 $cache = \Yii::$app->cache->get('updates');
                 if($cache === false){
-                    \Yii::$app->cache->set('updates' . $updates, 86400);
+                    \Yii::$app->cache->set('updates', $updates, null);
                 }
                 else{
                     $cache[$id] = $updates[$id];
-                    \Yii::$app->cache->set('updates' . $cache, 86400);
+                    \Yii::$app->cache->set('updates', $cache, null);
                 }
                 \Yii::$app->session->addFlash('success', 'Сообщение успешно отправлено.');
             }
@@ -299,11 +300,11 @@ class TicketController extends AppController{
                             $transaction->commit();
                             $cache = \Yii::$app->cache->get('updates');
                             if($cache === false){
-                                \Yii::$app->cache->set('updates' . $updates, 86400);
+                                \Yii::$app->cache->set('updates', $updates, null);
                             }
                             else{
                                 $cache[$id] = $updates[$id];
-                                \Yii::$app->cache->set('updates' . $cache, 86400);
+                                \Yii::$app->cache->set('updates', $cache, null);
                             }
                             \Yii::$app->session->addFlash('success', 'Сообщение успешно отправлено.');
                         }

@@ -23,7 +23,7 @@ class SiteController extends AppController{
      * @return bool
      */
     public function beforeAction($action) : bool{;
-        if($action->id === 'verify-tg' || $action->id === 'check-updates' || $action->id === 'login-by-access-token'){
+        if($action->id === 'verify-tg' || $action->id === 'check-updates'){
             $this->enableCsrfValidation = false;
         }
         return parent::beforeAction($action);
@@ -131,14 +131,14 @@ class SiteController extends AppController{
      */
     public function actionCheckUpdates() : bool|array|string{
         $params = \Yii::$app->request->post();
-        if(array_key_exists('hash', $params['hash']) && $params['hash'] === md5($_SERVER['API_KEY_0'] . $_SERVER['API_KEY_1'])){
+        if(array_key_exists('hash', $params) && $params['hash'] === md5($_SERVER['API_KEY_0'] . $_SERVER['API_KEY_1'])){
             $resolve = \Yii::$app->cache->get('updates');
             if($resolve === false){
-                return $resolve;
+                return json_encode($resolve);
             }
             else{
                 \Yii::$app->cache->delete('updates');
-                return $resolve;
+                return json_encode($resolve);
             }
         }
         else{
