@@ -60,7 +60,7 @@ $this->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15
         <h1 class="text-start"><?= 'Обращение №' . yii\helpers\Html::encode($model->id); ?></h1>
         <p>
             <?= yii\helpers\Html::a('Изменить', ['update', 'id' => $model->id], ['class' => 'btn btn-primary mt-1']); ?>
-            <button id="ticket-result-button" class="btn btn-dark mt-1" onclick="showResult()">Показать результаты рассмотрения</button>
+            <button id="ticket-result-button" class="btn btn-dark mt-1" onclick="showResult();">Показать результаты рассмотрения</button>
             <?php
                 if(Yii::$app->user->can('admin')){
                 echo yii\helpers\Html::a('Удалить', ['delete', 'id' => $model->id], [
@@ -309,6 +309,10 @@ $this->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15
             }
             if(isset(Yii::$app->user->identity->tg_user_id)){
                 echo '<hr class="text-danger my-2">';
+                echo '<button id="ticket-send-message-button" onclick="showSendMessage();" class="btn btn-warning btn-sm my-2 mx-1">Отправить текстовое сообщение</button> <button id="ticket-send-file-button" onclick="showSendFile();" class="btn btn-warning btn-sm my-2 mx-1">Отправить документ</button>';
+                echo '<hr class="text-danger my-2">';
+                echo '<div id="ticket-send-message-form" style="display: none;>';
+                echo '<hr class="text-danger my-2">';
                 echo '<div class="form-floating text-dark col-12 col-md-8 col-lg-6 offset-md-2 offset-lg-3">';
                 echo '<textarea id="messageTextarea" class="form-control" placeholder="" id="floatingTextarea"></textarea>';
                 echo '<label id="messageTextLabel" for="floatingTextarea">Форма отправки сообщений в telegram</label>';
@@ -316,7 +320,11 @@ $this->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15
                 echo '<div class="d-flex justify-content-center my-2 mx-1">' . yii\helpers\Html::a('Отправить', ['message-text', 'id' => $model->id, 'tg_user_id' => $model->tg_user_id], [
                     'class' => 'btn btn-success col-12 col-md-8 col-lg-6',
                     'id' => 'sendMessageButton'
-                ]) . '</div><hr class="text-danger my-2">';
+                ]) . '</div>';
+                echo '</div>';
+
+                echo '<div id="ticket-send-file-form" style="display: none;>';
+                echo '<hr class="text-danger my-2">';
                 $form = yii\widgets\ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data', 'class' => 'col-12 col-md-8 col-lg-6 offset-md-2 offset-lg-3'], 'action' => ['message-file', 'id' => $model->id, 'tg_user_id' => $model->tg_user_id]]);
                 echo '<strong id="messageTextLabel" for="floatingTextarea">Форма отправки документов в telegram</strong>';
                 echo $form->field(new Documents(), 'file', ['labelOptions' => ['class' => 'form-required']])->fileInput(['class' => 'form-control', 'type' => 'file']);
@@ -324,6 +332,7 @@ $this->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15
                 echo yii\helpers\Html::submitButton('Отправить', ['class' => 'btn btn-success col-12']);
                 echo '</div>';
                 $form::end();
+                echo '</div>';
             }
             else{
                 echo '<hr class="text-danger my-2">';
@@ -369,6 +378,42 @@ $this->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15
         else{
             form.style.display = 'none';
             button.innerText = 'Показать результаты рассмотрения';
+        }
+    }
+</script>
+
+<script>
+    function showSendMessage(){
+        let form = document.getElementById('ticket-send-message-form');
+        let button = document.getElementById('ticket-send-message-button');
+        let buttonFile = document.getElementById('ticket-send-file-button');
+        if(form.style.display === 'none'){
+            form.style.display = 'block';
+            buttonFile.style.display = 'none';
+            button.innerText = 'Скрыть форму отправки сообщения';
+        }
+        else{
+            form.style.display = 'none';
+            buttonFile.style.display = 'inline-block';
+            button.innerText = 'Отправить текстовое сообщение';
+        }
+    }
+</script>
+
+<script>
+    function showSendFile(){
+        let form = document.getElementById('ticket-send-file-form');
+        let button = document.getElementById('ticket-send-file-button');
+        let buttonMessage = document.getElementById('ticket-send-message-button');
+        if(form.style.display === 'none'){
+            form.style.display = 'block';
+            buttonMessage.style.display = 'none';
+            button.innerText = 'Скрыть форму отправки документа';
+        }
+        else{
+            form.style.display = 'none';
+            buttonMessage.style.display = 'inline-block';
+            button.innerText = 'Отправить документ';
         }
     }
 </script>

@@ -100,6 +100,7 @@ class SiteController extends AppController{
                     $model = Users::findOne(['id' => $code[1]]);
                     if(!isset($model->tg_user_id)){
                         if($model->updateAttributes(['tg_user_id' => $request['id'], 'access_token' => \Yii::$app->security->generateRandomString(64)]) > 0){
+                            \Yii::$app->cache->delete('tg' . $code[1]);
                             return 'Ваш аккаунт успешно привязан к личному кабинету.';
                         }
                         else{
@@ -136,6 +137,7 @@ class SiteController extends AppController{
                 return $resolve;
             }
             else{
+                \Yii::$app->cache->delete('updates');
                 return $resolve;
             }
         }

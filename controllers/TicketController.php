@@ -116,6 +116,20 @@ class TicketController extends AppController{
                     if($model->comment == '' || !isset($model->comment) || strlen($model->comment) < 5){
                         \Yii::$app->session->addFlash('error', 'Необходимо заполнить результаты рассмотрения, перед закрытием обращения.');     
                     }
+                    else{
+                        $updates[$id] = $model->getDirtyAttributes();
+                        if($model->save()){
+                            $cache = \Yii::$app->cache->get('updates');
+                            if($cache === false){
+                                \Yii::$app->cache->set('updates' . $updates, 86400);
+                            }
+                            else{
+                                $cache[$id] = $updates[$id];
+                                \Yii::$app->cache->set('updates' . $cache, 86400);
+                            }
+                            return $this->redirect(['view', 'id' => $model->id]);
+                        }
+                    }
                 }
                 else{
                     if($model->save()){
@@ -149,11 +163,17 @@ class TicketController extends AppController{
      */
     public function actionDelete(int $id) : \yii\web\Response{
         if(\Yii::$app->user->can('admin')){
-            if($this->findModel($id)->delete() !== false){
-                \Yii::$app->session->addFlash('success', 'Обращение №' . $id . ' успешно удалено.');    
+            $model = $this->findModel($id);
+            if($model->tg_user_id === null){
+                if($model->delete() !== false){
+                    \Yii::$app->session->addFlash('success', 'Обращение №' . $id . ' успешно удалено.');    
+                }
+                else{
+                    \Yii::$app->session->addFlash('error', 'Произошла ошибка при удалении обращения №' . $id . '.');    
+                }
             }
             else{
-                \Yii::$app->session->addFlash('error', 'Произошла ошибка при удалении обращения №' . $id . '.');    
+                \Yii::$app->session->addFlash('warning', 'Запрещено удалять обращения созданные при помощи бота в telegram, это действие может навредить целостности данных.'); 
             }
             return $this->redirect(['index']);
         }
@@ -182,6 +202,7 @@ class TicketController extends AppController{
             $model->messages = $messages;
             $model->limit = 3;
             $model->is_new = 0;
+            $updates[$id] = $model->getDirtyAttributes();
             $model->updateAttributes(['messages', 'limit', 'is_new']);
             $data = [
                 'chat_id' => $tg_user_id,
@@ -198,8 +219,16 @@ class TicketController extends AppController{
                     'resize_keyboard' => true
                 ]
             ];
-            if(AppController::curlSendMessage($data) !== false){
+            if(AppController::curlSendData($data) !== false){
                 $transaction->commit();
+                $cache = \Yii::$app->cache->get('updates');
+                if($cache === false){
+                    \Yii::$app->cache->set('updates' . $updates, 86400);
+                }
+                else{
+                    $cache[$id] = $updates[$id];
+                    \Yii::$app->cache->set('updates' . $cache, 86400);
+                }
                 \Yii::$app->session->addFlash('success', 'Сообщение успешно отправлено.');
             }
             else{
@@ -229,12 +258,12 @@ class TicketController extends AppController{
                 'document' => \Yii::$app->params['host'] . '/web/documents/' . $_FILES['Documents']['name']['file'],
                 'chat_id' => $tg_user_id
             ];
-            $response = json_decode(AppController::curlSendMessage($data, '/sendDocument'), true);
+            $response = json_decode(AppController::curlSendData($data, '/sendDocument'), true);
             if(array_key_exists('ok', $response) && $response['ok'] === true){
                 $data = [
                     'file_id' => $response['result']['document']['file_id']
                 ];
-                $response = json_decode(AppController::curlSendMessage($data, '/getFile'), true);
+                $response = json_decode(AppController::curlSendData($data, '/getFile'), true);
                 if(array_key_exists('ok', $response) && $response['ok'] === true){
                     $model = $this->findModel($id);
                     $transaction = $model->getDb()->beginTransaction();
@@ -266,9 +295,16 @@ class TicketController extends AppController{
                                 'resize_keyboard' => true
                             ]
                         ];
-                        if(AppController::curlSendMessage($data) !== false){
+                        if(AppController::curlSendData($data) !== false){
                             $transaction->commit();
-                            \Yii::$app->cache->set('updates' . $updates, 86400);
+                            $cache = \Yii::$app->cache->get('updates');
+                            if($cache === false){
+                                \Yii::$app->cache->set('updates' . $updates, 86400);
+                            }
+                            else{
+                                $cache[$id] = $updates[$id];
+                                \Yii::$app->cache->set('updates' . $cache, 86400);
+                            }
                             \Yii::$app->session->addFlash('success', 'Сообщение успешно отправлено.');
                         }
                         else{
