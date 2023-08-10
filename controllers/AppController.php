@@ -15,7 +15,7 @@ class AppController extends \yii\web\Controller{
                 'rules' => [
                     [
                         'allow' => true,
-                        'actions' => ['login', 'login-by-access-token', 'verify-tg'],
+                        'actions' => ['login', 'verify-tg', 'check-updates', 'login-by-access-token'],
                         'roles' => ['?']
                     ],
                     [
@@ -29,6 +29,7 @@ class AppController extends \yii\web\Controller{
                 'actions' => [
                     'logout' => ['POST'],
                     'verify-tg' => ['POST'],
+                    'check-updates' => ['POST'],
                     'login-by-access-token' => ['GET']
                 ]
             ]
@@ -59,7 +60,7 @@ class AppController extends \yii\web\Controller{
         curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
         curl_setopt($ch, CURLOPT_POST, true);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json', 'accept: application/json'));
         $result = curl_exec($ch);
         if($result === false){
             \Yii::error('Ошибка отправки сообщения в telegram: ' . curl_error($ch), 'curl');

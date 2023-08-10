@@ -21,6 +21,9 @@ namespace app\models;
  * @property int|null $category_id ID категории
  * @property int|null $city_id ID города
  * @property int|null $user_id ID пользователя
+ * @property int $limit limit сообщений 
+ * @property int $is_new Есть ли новое сообщение? 
+ * @property string|null $tg_username Username пользователя в telegram 
  *
  * @property Categories $category
  * @property Cities $city 
@@ -40,7 +43,7 @@ class Tickets extends \yii\db\ActiveRecord{
      */
     public function rules() : array{
         return [
-            [['tg_user_id', 'status', 'category_id', 'city_id', 'user_id'], 'integer'],
+            [['tg_user_id', 'status', 'category_id', 'city_id', 'user_id', 'limit', 'is_new'], 'integer'],
             [['title', 'text'], 'required'],
             [['text', 'comment'], 'string'],
             [['creation_date', 'last_change', 'messages'], 'safe'],
@@ -48,7 +51,7 @@ class Tickets extends \yii\db\ActiveRecord{
             [['phone'], 'string', 'min' => 3],
             [['email'], 'string', 'min' => 5],
             [['comment'], 'string', 'min' => 4],
-            [['name', 'surname', 'phone', 'email', 'title'], 'string', 'max' => 255],
+            [['name', 'surname', 'phone', 'email', 'title', 'tg_username'], 'string', 'max' => 255],
             [['name', 'surname', 'phone', 'email', 'title', 'text', 'comment', 'messages'], 'trim'],
             [['name', 'surname', 'phone', 'email', 'comment'], 'default'],
             ['status', 'default', 'value' => 0],
@@ -80,7 +83,10 @@ class Tickets extends \yii\db\ActiveRecord{
             'last_change' => 'Дата последнего изменения',
             'category_id' => 'Категория обращения',
             'city_id' => 'Город',
-            'user_id' => 'Ответственный'
+            'user_id' => 'Ответственный',
+            'limit' => 'Лимит сообщений от пользователя',
+            'is_new' => 'Есть ли новое сообщение?',
+            'tg_username' => 'Имя пользователя в telegram',
         ];
     }
 

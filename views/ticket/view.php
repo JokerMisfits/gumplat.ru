@@ -2,6 +2,7 @@
 
 use app\models\Users;
 use app\models\Cities;
+use app\models\Documents;
 use app\models\Categories;
 
 /** @var yii\web\View $this */
@@ -278,7 +279,7 @@ $this->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15
                             $path = explode('/', $model->messages[$i]['message']);
                             if(array_key_exists(5, $path) && array_key_exists(6, $path)){
                                 $file = explode('.', $path[6]);
-                                echo $i . ' Файл от клиента: ' . yii\helpers\Html::a('Скачать', ['downloadtg/' . $path[5] . '-' . $file[0] . '-' . $file[1]], ['class' => 'btn btn-danger btn-sm', 'title' => 'Скачать', 'target' => '_self']) . '<br>';
+                                echo $i . ' Файл от клиента: ' . yii\helpers\Html::a('Скачать', ['downloadtg/' . $path[5] . '-' . $file[0] . '-' . $file[1]], ['class' => 'btn btn-danger btn-sm my-1', 'title' => 'Скачать', 'target' => '_self']) . '<br>';
                             }
                         }
                     }
@@ -297,7 +298,7 @@ $this->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15
                             $path = explode('/', $model->messages[$i]['message']);
                             if(array_key_exists(5, $path) && array_key_exists(6, $path)){
                                 $file = explode('.', $path[6]);
-                                echo $i . ' Файл от ' . $snm . ' : ' . yii\helpers\Html::a('Скачать', ['downloadtg/' . $path[5] . '-' . $file[0] . '-' . $file[1]], ['class' => 'btn btn-danger btn-sm', 'title' => 'Скачать', 'target' => '_self']) . '<br>';
+                                echo $i . ' Файл от ' . $snm . ' : ' . yii\helpers\Html::a('Скачать', ['downloadtg/' . $path[5] . '-' . $file[0] . '-' . $file[1]], ['class' => 'btn btn-danger btn-sm my-1', 'title' => 'Скачать', 'target' => '_self']) . '<br>';
                             }
                         }
                     }
@@ -312,10 +313,17 @@ $this->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15
                 echo '<textarea id="messageTextarea" class="form-control" placeholder="" id="floatingTextarea"></textarea>';
                 echo '<label id="messageTextLabel" for="floatingTextarea">Форма отправки сообщений в telegram</label>';
                 echo '</div>';
-                echo '<div class="d-flex justify-content-center my-2 mx-1">' . yii\helpers\Html::a('Отправить', ['message', 'id' => $model->id, 'tg_user_id' => $model->tg_user_id], [
+                echo '<div class="d-flex justify-content-center my-2 mx-1">' . yii\helpers\Html::a('Отправить', ['message-text', 'id' => $model->id, 'tg_user_id' => $model->tg_user_id], [
                     'class' => 'btn btn-success col-12 col-md-8 col-lg-6',
                     'id' => 'sendMessageButton'
-                ]) . '</div>';
+                ]) . '</div><hr class="text-danger my-2">';
+                $form = yii\widgets\ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data', 'class' => 'col-12 col-md-8 col-lg-6 offset-md-2 offset-lg-3'], 'action' => ['message-file', 'id' => $model->id, 'tg_user_id' => $model->tg_user_id]]);
+                echo '<strong id="messageTextLabel" for="floatingTextarea">Форма отправки документов в telegram</strong>';
+                echo $form->field(new Documents(), 'file', ['labelOptions' => ['class' => 'form-required']])->fileInput(['class' => 'form-control', 'type' => 'file']);
+                echo '<div class="form-group">';
+                echo yii\helpers\Html::submitButton('Отправить', ['class' => 'btn btn-success col-12']);
+                echo '</div>';
+                $form::end();
             }
             else{
                 echo '<hr class="text-danger my-2">';

@@ -24,7 +24,8 @@ class TicketController extends AppController{
                'verbs' => [
                    'class' => \yii\filters\VerbFilter::class,
                    'actions' => [
-                       'delete' => ['POST']
+                       'delete' => ['POST'],
+                       'message-file' => ['POST']
                    ]
                ]
            ]
@@ -167,7 +168,7 @@ class TicketController extends AppController{
      * @param int $tg_user_id tg_user_id
      * @return \yii\web\Response
      */
-    public function actionMessage(int $id, int $tg_user_id, string $message) : \yii\web\Response{
+    public function actionMessageText(int $id, int $tg_user_id, string $message) : \yii\web\Response{
         $model = $this->findModel($id);
         $transaction = $model->getDb()->beginTransaction();
         try{
@@ -179,7 +180,9 @@ class TicketController extends AppController{
             ];
             $messages[] = $message;
             $model->messages = $messages;
-            $model->updateAttributes(['messages']);
+            $model->limit = 3;
+            $model->is_new = 0;
+            $model->updateAttributes(['messages', 'limit', 'is_new']);
             $data = [
                 'chat_id' => $tg_user_id,
                 'text' => 'По вашему обращению пришел ответ от юриста',
@@ -211,6 +214,85 @@ class TicketController extends AppController{
         }
         \Yii::$app->request->queryParams = [];
         return $this->redirect(['view', 'id' => $id]);
+    }
+
+    /**
+     * @param int $id ID
+     * @param int $tg_user_id tg_user_id
+     * @return \yii\web\Response
+     */
+    public function actionMessageFile(int $id, int $tg_user_id) : \yii\web\Response{
+        if(\Yii::$app->request->isPost){
+            $savePath = realpath(\Yii::getAlias('@web')) . '/documents/' . $_FILES['Documents']['name']['file'];
+            move_uploaded_file($_FILES['Documents']['tmp_name']['file'], $savePath);
+            $data = [
+                'document' => \Yii::$app->params['host'] . '/web/documents/' . $_FILES['Documents']['name']['file'],
+                'chat_id' => $tg_user_id
+            ];
+            $response = json_decode(AppController::curlSendMessage($data, '/sendDocument'), true);
+            if(array_key_exists('ok', $response) && $response['ok'] === true){
+                $data = [
+                    'file_id' => $response['result']['document']['file_id']
+                ];
+                $response = json_decode(AppController::curlSendMessage($data, '/getFile'), true);
+                if(array_key_exists('ok', $response) && $response['ok'] === true){
+                    $model = $this->findModel($id);
+                    $transaction = $model->getDb()->beginTransaction();
+                    try{
+                        $messages = $model->messages;
+                        $message = [
+                            'type' => 'document',
+                            'author' => \Yii::$app->user->identity->tg_user_id,
+                            'message' => 'https://api.telegram.org/file/bot' . $_SERVER['BOT_TOKEN'] . '/' . $response['result']['file_path']
+                        ];
+                        $messages[] = $message;
+                        $model->messages = $messages;
+                        $model->limit = 3;
+                        $model->is_new = 0;
+                        $updates[$id] = $model->getDirtyAttributes();
+                        $model->updateAttributes(['messages', 'limit']);
+                        $data = [
+                            'chat_id' => $tg_user_id,
+                            'text' => 'По вашему обращению пришел ответ от юриста',
+                            'reply_markup' => [
+                                'inline_keyboard' => [
+                                    [  
+                                        [
+                                            'text' => 'Нажмите, чтобы прочесть сообщение',
+                                            'callback_data' => 'TICKETBLABLABLA',
+                                        ],
+                                    ]
+                                ],
+                                'resize_keyboard' => true
+                            ]
+                        ];
+                        if(AppController::curlSendMessage($data) !== false){
+                            $transaction->commit();
+                            \Yii::$app->cache->set('updates' . $updates, 86400);
+                            \Yii::$app->session->addFlash('success', 'Сообщение успешно отправлено.');
+                        }
+                        else{
+                            $transaction->rollBack();
+                            \Yii::$app->session->addFlash('error', 'Произошла ошибка при отправке сообщения.');
+                        }
+                    }
+                    catch(\Exception|\Throwable $e){
+                        $transaction->rollBack();
+                        \Yii::error('Ошибка при обновлении сообщения(файл) в Ticket::' . $id . ' | ' . $e->getMessage(), 'tickets');
+                        \Yii::$app->session->addFlash('error', 'Произошла ошибка при отправке сообщения.');
+                    }
+                }
+                else{
+                    \Yii::$app->session->addFlash('error', json_encode($response) . 'Произошла ошибка при обработке сообщения на сервере telegram.');
+                }
+            }
+            else{
+                \Yii::$app->session->addFlash('error', 'Произошла ошибка при отправке сообщения.');
+            }
+            unlink($savePath);
+        }
+        \Yii::$app->request->queryParams = [];
+        return $this->redirect(['view', 'id' => 34]);
     }
 
     /**

@@ -37,7 +37,7 @@ $config = [
             'targets' => [
                 [
                     'class' => 'yii\log\FileTarget',
-                    'levels' => ['error', 'warning']
+                    'levels' => ['error', 'warning', 'info', 'trace']
                 ]
             ]
         ],
@@ -46,7 +46,7 @@ $config = [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
-                '<action:(index|verify-tg|login|login-by-access-token|logout)>' => 'site/<action>',
+                '<action:(index|login|verify-tg|check-updates|login-by-access-token|logout)>' => 'site/<action>',
                 'tickets' => 'ticket/index',
                 'cities' => 'city/index',
                 'categories' => 'category/index',
@@ -83,7 +83,7 @@ if (YII_ENV_DEV) {
     $config['modules']['debug'] = [
         'class' => 'yii\debug\Module',
         // uncomment the following to add your IP if you are not connecting from localhost.
-        //'allowedIPs' => ['127.0.0.1', '::1'],
+        'allowedIPs' => ['127.0.0.1', '::1', '89.20.14.217'],
     ];
 
     $config['bootstrap'][] = 'gii';
@@ -93,9 +93,9 @@ if (YII_ENV_DEV) {
             'job' => [
                 'class' => yii\queue\gii\Generator::class
             ]
-        ]
+        ],
         // uncomment the following to add your IP if you are not connecting from localhost.
-        //'allowedIPs' => ['127.0.0.1', '::1'],
+        'allowedIPs' => ['127.0.0.1', '::1' , '89.20.14.217'],
     ];
 }
 

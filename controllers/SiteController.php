@@ -23,7 +23,7 @@ class SiteController extends AppController{
      * @return bool
      */
     public function beforeAction($action) : bool{;
-        if($action->id === 'verify-tg' || $action->id === 'login-by-access-token'){
+        if($action->id === 'verify-tg' || $action->id === 'check-updates' || $action->id === 'login-by-access-token'){
             $this->enableCsrfValidation = false;
         }
         return parent::beforeAction($action);
@@ -88,43 +88,60 @@ class SiteController extends AppController{
      * @param int $id tg_user_id
      * @param string $code Verify code
      * @param string $hash Hash
-     * @return string|\yii\web\Response
-     * @throws \yii\web\ForbiddenHttpException if the model cannot be found
+     * @return string
      */
-    public function actionVerifyTg() : string|\yii\web\Response{
-        if(\Yii::$app->request->isPost){
-            $request = \Yii::$app->request->post();
-            if(array_key_exists('id', $request) && array_key_exists('code', $request) && array_key_exists('hash', $request)){
-                if(md5($_SERVER['API_KEY_0'] . $request['code'] . $_SERVER['API_KEY_1']) === $request['hash']){
-                    $code = explode('*||*' , $request['code']);
-                    $verify = \Yii::$app->cache->get('tg' . $code[1]);
-                    if($verify !== false && $verify == $code[0]){
-                        $model = Users::findOne(['id' => $code[1]]);
-                        if(!isset($model->tg_user_id)){
-                            if($model->updateAttributes(['tg_user_id' => $request['id'], 'access_token' => \Yii::$app->security->generateRandomString(64)]) > 0){
-                                return 'Ваш аккаунт успешно привязан к личному кабинету.';
-                            }
-                            else{
-                                return 'Ошибка записи в базу данных.';
-                            }
+    public function actionVerifyTg() : string{
+        $request = \Yii::$app->request->post();
+        if(array_key_exists('id', $request) && array_key_exists('code', $request) && array_key_exists('hash', $request)){
+            if(md5($_SERVER['API_KEY_0'] . $request['code'] . $_SERVER['API_KEY_1']) === $request['hash']){
+                $code = explode('*||*' , $request['code']);
+                $verify = \Yii::$app->cache->get('tg' . $code[1]);
+                if($verify !== false && $verify == $code[0]){
+                    $model = Users::findOne(['id' => $code[1]]);
+                    if(!isset($model->tg_user_id)){
+                        if($model->updateAttributes(['tg_user_id' => $request['id'], 'access_token' => \Yii::$app->security->generateRandomString(64)]) > 0){
+                            return 'Ваш аккаунт успешно привязан к личному кабинету.';
                         }
                         else{
-                            return 'По данному коду, telegram уже привязан.';
+                            return 'Ошибка записи в базу данных.';
                         }
                     }
                     else{
-                        return 'Срок действия данного кода истек.';
+                        return 'По данному коду, telegram уже привязан.';
                     }
                 }
                 else{
-                    return 'Ошибка хеша.';
+                    return 'Срок действия данного кода истек.';
                 }
             }
             else{
-                return 'Неверный запрос.';
+                return 'Ошибка хеша.';
             }
         }
-        throw new \yii\web\ForbiddenHttpException('Доступ запрещен.');
+        else{
+            return 'Неверный запрос.';
+        }
+    }
+
+    /**
+     * CheckUpdates action.
+     * @param string $hash Hash
+     * @return bool|array|string
+     */
+    public function actionCheckUpdates() : bool|array|string{
+        $params = \Yii::$app->request->post();
+        if(array_key_exists('hash', $params['hash']) && $params['hash'] === md5($_SERVER['API_KEY_0'] . $_SERVER['API_KEY_1'])){
+            $resolve = \Yii::$app->cache->get('updates');
+            if($resolve === false){
+                return $resolve;
+            }
+            else{
+                return $resolve;
+            }
+        }
+        else{
+            return 'Ошибка хеша.';
+        }
     }
 
     /**
