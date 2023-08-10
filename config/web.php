@@ -51,6 +51,7 @@ $config = [
                 'cities' => 'city/index',
                 'categories' => 'category/index',
                 'documents' => 'document/index',
+                'users' => 'user/index',
                 'download/<id:\d+>' => 'document/download-file'
             ]
         ],

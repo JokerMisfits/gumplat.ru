@@ -45,9 +45,9 @@ $this->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15
             </div>
             <div class="modal-body" id="ModalContent">Текст</div>
             <div class="modal-footer">
-                <div class="col-12 text-start">
+                <!-- <div class="col-12 text-start">
                     <a href="https://t.me/Xo_Diamond_XO" class="link-danger link-offset-2 link-underline-opacity-30 link-underline-opacity-100-hover" title="Напишите, чтобы заказать расширение функционала проекта.">Связь с разработчиком</a> <i class="fas fa-laptop-code"></i>
-                </div>
+                </div> -->
                 <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Закрыть</button>
             </div>
         </div>
@@ -253,7 +253,7 @@ $this->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15
                     }
                     else{
                         echo '<span class="not-set">Файлы в заданной категории отсутствуют</span>';
-                    }
+                    }      
                 }
                 else{
                     echo '<span class="not-set">Категория не задана</span>';
@@ -267,22 +267,27 @@ $this->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15
     <?php 
         echo '<span>История сообщений:</span><hr class="text-danger my-2">';
         if(isset($model->tg_user_id)){
-            $json = json_decode($model->messages, true);
-            if(!array_key_exists(0, $json) == '{}'){
-                echo '<span class="not-set">Ничего не найдено.</span>';
+            if(array_key_exists(1, $model->messages)){
+                var_dump($model->messages);
             }
             else{
-                //todo написать вывод сообщений когда будет структура сообщений Zzz
+                echo '<span class="not-set">Ничего не найдено.</span>';
             }
-            echo '<hr class="text-danger my-2">';
-            echo '<div class="form-floating text-dark col-12 col-md-8 col-lg-6 offset-md-2 offset-lg-3">';
-            echo '<textarea id="messageTextarea" class="form-control" placeholder="" id="floatingTextarea"></textarea>';
-            echo '<label id="messageTextLabel" for="floatingTextarea">Форма отправки сообщений в telegram</label>';
-            echo '</div>';
-            echo '<div class="d-flex justify-content-center my-2 mx-1">' . yii\helpers\Html::a('Отправить', ['message', 'id' => $model->id, 'tg_user_id' => $model->tg_user_id], [
-                'class' => 'btn btn-success col-12 col-md-8 col-lg-6',
-                'id' => 'sendMessageButton'
-            ]) . '</div>';
+            if(isset(Yii::$app->user->identity->tg_user_id)){
+                echo '<hr class="text-danger my-2">';
+                echo '<div class="form-floating text-dark col-12 col-md-8 col-lg-6 offset-md-2 offset-lg-3">';
+                echo '<textarea id="messageTextarea" class="form-control" placeholder="" id="floatingTextarea"></textarea>';
+                echo '<label id="messageTextLabel" for="floatingTextarea">Форма отправки сообщений в telegram</label>';
+                echo '</div>';
+                echo '<div class="d-flex justify-content-center my-2 mx-1">' . yii\helpers\Html::a('Отправить', ['message', 'id' => $model->id, 'tg_user_id' => $model->tg_user_id], [
+                    'class' => 'btn btn-success col-12 col-md-8 col-lg-6',
+                    'id' => 'sendMessageButton'
+                ]) . '</div>';
+            }
+            else{
+                echo '<hr class="text-danger my-2">';
+                echo '<span class="not-set">Для отправки сообщений необходимо привязать ваш telegram к личному кабинету</span>';
+            }
         }
         else{
             echo '<span class="not-set">ID пользователя в telegram не задан</span>';

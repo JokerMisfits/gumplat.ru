@@ -26,8 +26,16 @@ $this->params['breadcrumbs'][] = $this->title;
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
             'name',
-            'y',
-            'x',
+            [
+                'attribute' => 'y',
+                'label' => 'Широта',
+                'filter' => ''
+            ],
+            [
+                'attribute' => 'x',
+                'label' => 'Долгота',
+                'filter' => ''
+            ],
             [
                 'attribute' => 'territory',
                 'label' => 'Новая территория',

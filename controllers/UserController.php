@@ -237,7 +237,7 @@ class UserController extends AppController{
         $model = $this->findModel($id);
         if(!isset($model->tg_user_id)){
             if(\Yii::$app->cache->get('tg' . $id) === false){
-                $verifyCode = \Yii::$app->security->generateRandomString(6);
+                $verifyCode = 'verify' . \Yii::$app->security->generateRandomString(6);
                 \Yii::$app->cache->set('tg' . $id, $verifyCode, 3600);
             }
             else{

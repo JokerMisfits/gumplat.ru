@@ -15,7 +15,7 @@ namespace app\models;
  * @property string $title Заголовок обращения
  * @property string $text Текст обращения
  * @property string|null $comment Результаты рассмотрения
- * @property string $messages Сообщения
+ * @property string|array $messages Сообщения
  * @property string $creation_date Дата создания обращения
  * @property string $last_change Дата последнего изменения
  * @property int|null $category_id ID категории
@@ -87,7 +87,7 @@ class Tickets extends \yii\db\ActiveRecord{
     public function beforeSave($insert) : bool{
         if(parent::beforeSave($insert)){
             if($this->messages === '' || $this->messages === null){
-                $this->messages = '{}';
+                $this->messages = [];
             }
             return true;
         }
