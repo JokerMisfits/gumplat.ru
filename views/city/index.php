@@ -17,7 +17,7 @@ $this->params['breadcrumbs'][] = $this->title;
     </p>
 </div>
 
-    <?php yii\widgets\Pjax::begin(); ?>
+<?php yii\widgets\Pjax::begin(); ?>
 
 <div class="table-responsive text-nowrap">
     <?= yii\grid\GridView::widget([
@@ -79,6 +79,6 @@ $this->params['breadcrumbs'][] = $this->title;
     ?>
 </div>
 
-    <?php yii\widgets\Pjax::end(); ?>
+<?php yii\widgets\Pjax::end(); ?>
 
 </div>

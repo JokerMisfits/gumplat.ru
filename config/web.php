@@ -52,7 +52,8 @@ $config = [
                 'categories' => 'category/index',
                 'documents' => 'document/index',
                 'users' => 'user/index',
-                'download/<id:\d+>' => 'document/download-file'
+                'download/<id:\d+>' => 'document/download-file',
+                'downloadtg/<path:[\w-]+>' => 'document/download-file-from-tg'
             ]
         ],
         'authManager' => [

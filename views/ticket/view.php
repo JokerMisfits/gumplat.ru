@@ -248,7 +248,7 @@ $this->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15
                     if(count($documents) > 0){
                         $count = count($documents);
                         for($i = 0; $i < $count; $i++){
-                            echo '<div class="col-12 mt-1 text-center"><span class="text-nowrap">' . yii\helpers\Html::a($documents[$i]->base_name . '.' . $documents[$i]->extension, ['download/' . $documents[$i]->id], ['class' => 'link-primary link-offset-2 link-underline-opacity-50 link-underline-opacity-100-hover', 'title' => 'Скачать', 'target' => '_blank']) . '</span></div>';
+                            echo '<div class="col-12 mt-1 text-center"><span class="text-nowrap">' . yii\helpers\Html::a($documents[$i]->base_name . '.' . $documents[$i]->extension, ['download/' . $documents[$i]->id], ['class' => 'link-primary link-offset-2 link-underline-opacity-50 link-underline-opacity-100-hover', 'title' => 'Скачать', 'target' => '_self']) . '</span></div>';
                         }
                     }
                     else{
@@ -268,7 +268,40 @@ $this->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15
         echo '<span>История сообщений:</span><hr class="text-danger my-2">';
         if(isset($model->tg_user_id)){
             if(array_key_exists(1, $model->messages)){
-                var_dump($model->messages);
+                $count = count($model->messages);
+                for($i = 1; $i < $count; $i++){
+                    if($model->messages[$i]['author'] === 'member'){
+                        if($model->messages[$i]['type'] === 'text'){
+                            echo $i . ' Сообщение от клиента: ' . $model->messages[$i]['message'] . '<br>';
+                        }
+                        else{
+                            $path = explode('/', $model->messages[$i]['message']);
+                            if(array_key_exists(5, $path) && array_key_exists(6, $path)){
+                                $file = explode('.', $path[6]);
+                                echo $i . ' Файл от клиента: ' . yii\helpers\Html::a('Скачать', ['downloadtg/' . $path[5] . '-' . $file[0] . '-' . $file[1]], ['class' => 'btn btn-danger btn-sm', 'title' => 'Скачать', 'target' => '_self']) . '<br>';
+                            }
+                        }
+                    }
+                    else{
+                        $snm = Users::findOne(['tg_user_id' => $model->messages[$i]['author']]);
+                        if($snm !== null){
+                            $snm = $snm->snm . '(юрист)';
+                        }
+                        else{
+                            $snm = 'юриста';
+                        }
+                        if($model->messages[$i]['type'] === 'text'){
+                            echo $i . ' Ответ от ' . $snm . ' : ' . $model->messages[$i]['message'] . '<br>';
+                        }
+                        else{
+                            $path = explode('/', $model->messages[$i]['message']);
+                            if(array_key_exists(5, $path) && array_key_exists(6, $path)){
+                                $file = explode('.', $path[6]);
+                                echo $i . ' Файл от ' . $snm . ' : ' . yii\helpers\Html::a('Скачать', ['downloadtg/' . $path[5] . '-' . $file[0] . '-' . $file[1]], ['class' => 'btn btn-danger btn-sm', 'title' => 'Скачать', 'target' => '_self']) . '<br>';
+                            }
+                        }
+                    }
+                }
             }
             else{
                 echo '<span class="not-set">Ничего не найдено.</span>';

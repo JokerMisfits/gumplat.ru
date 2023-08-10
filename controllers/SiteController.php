@@ -19,6 +19,17 @@ class SiteController extends AppController{
     }
 
     /**
+     * {@inheritdoc}
+     * @return bool
+     */
+    public function beforeAction($action) : bool{;
+        if($action->id === 'verify-tg' || $action->id === 'login-by-access-token'){
+            $this->enableCsrfValidation = false;
+        }
+        return parent::beforeAction($action);
+    }
+
+    /**
      * Redirect to tickets page.
      *
      * @return \yii\web\Response
@@ -77,22 +88,40 @@ class SiteController extends AppController{
      * @param int $id tg_user_id
      * @param string $code Verify code
      * @param string $hash Hash
-     * @return \yii\web\Response
+     * @return string|\yii\web\Response
      * @throws \yii\web\ForbiddenHttpException if the model cannot be found
      */
-    public function actionVerifyTg(int $id, string $code, string $hash) : \yii\web\Response{
-        if(\Yii::$app->request->isPost && isset($code) && isset($hash)){
-            if(md5($_SERVER['API_KEY_0'] . $code . $_SERVER['API_KEY_1']) === $hash){
-                $code = explode('*||*' , $code);
-                $verify = \Yii::$app->cache->get('tg' . $code[1]);
-                if($verify !== false && $verify == $code[0]){
-                    $model = Users::findOne(['id' => $code[1]]);
-                    if(!isset($model->tg_user_id)){
-                        if($model->updateAttributes(['tg_user_id' => $id, 'access_token' => \Yii::$app->security->generateRandomString(64)]) > 0){
-                            exit('Ваш аккаунт успешно подтвержден. Данную страницу можно закрывать.');
+    public function actionVerifyTg() : string|\yii\web\Response{
+        if(\Yii::$app->request->isPost){
+            $request = \Yii::$app->request->post();
+            if(array_key_exists('id', $request) && array_key_exists('code', $request) && array_key_exists('hash', $request)){
+                if(md5($_SERVER['API_KEY_0'] . $request['code'] . $_SERVER['API_KEY_1']) === $request['hash']){
+                    $code = explode('*||*' , $request['code']);
+                    $verify = \Yii::$app->cache->get('tg' . $code[1]);
+                    if($verify !== false && $verify == $code[0]){
+                        $model = Users::findOne(['id' => $code[1]]);
+                        if(!isset($model->tg_user_id)){
+                            if($model->updateAttributes(['tg_user_id' => $request['id'], 'access_token' => \Yii::$app->security->generateRandomString(64)]) > 0){
+                                return 'Ваш аккаунт успешно привязан к личному кабинету.';
+                            }
+                            else{
+                                return 'Ошибка записи в базу данных.';
+                            }
+                        }
+                        else{
+                            return 'По данному коду, telegram уже привязан.';
                         }
                     }
+                    else{
+                        return 'Срок действия данного кода истек.';
+                    }
                 }
+                else{
+                    return 'Ошибка хеша.';
+                }
+            }
+            else{
+                return 'Неверный запрос.';
             }
         }
         throw new \yii\web\ForbiddenHttpException('Доступ запрещен.');

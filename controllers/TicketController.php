@@ -171,9 +171,14 @@ class TicketController extends AppController{
         $model = $this->findModel($id);
         $transaction = $model->getDb()->beginTransaction();
         try{
-            $messages = json_decode($model->messages, true);//todo Переписать, тк изначально Activerecord Должен вернуть декодированный массив
-            $messages[count($messages)] = $message;
-            $model->messages = json_encode($messages);
+            $messages = $model->messages;
+            $message = [
+                'type' => 'text',
+                'author' => \Yii::$app->user->identity->tg_user_id,
+                'message' => $message
+            ];
+            $messages[] = $message;
+            $model->messages = $messages;
             $model->updateAttributes(['messages']);
             $data = [
                 'chat_id' => $tg_user_id,
@@ -202,7 +207,7 @@ class TicketController extends AppController{
         catch(\Exception|\Throwable $e){
             $transaction->rollBack();
             \Yii::error('Ошибка при обновлении сообщения в Ticket::' . $id . ' | ' . $e->getMessage(), 'tickets');
-            \Yii::$app->session->setFlash('error', 'Произошла ошибка при отправке сообщения.');
+            \Yii::$app->session->addFlash('error', 'Произошла ошибка при отправке сообщения.');
         }
         \Yii::$app->request->queryParams = [];
         return $this->redirect(['view', 'id' => $id]);
