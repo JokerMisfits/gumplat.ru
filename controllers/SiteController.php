@@ -74,7 +74,7 @@ class SiteController extends AppController{
 
     /**
      * Verify action.
-     * @param int $id ID
+     * @param int $id tg_user_id
      * @param string $code Verify code
      * @param string $hash Hash
      * @return \yii\web\Response
