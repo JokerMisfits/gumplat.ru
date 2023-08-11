@@ -305,7 +305,7 @@ class TicketController extends AppController{
             unlink($savePath);
         }
         \Yii::$app->request->queryParams = [];
-        return $this->redirect(['view', 'id' => 34]);
+        return $this->redirect(['view', 'id' => $id]);
     }
 
     /**
