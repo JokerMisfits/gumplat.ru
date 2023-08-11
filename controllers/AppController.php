@@ -56,7 +56,7 @@ class AppController extends \yii\web\Controller{
      */
     protected static function curlSendData(array $data, string $method = '/sendMessage') : bool|string{
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, 'https://api.telegram.org/bot' . $_SERVER['BOT_TOKEN'] . $method);
+        curl_setopt($ch, CURLOPT_URL, 'https://api.telegram.org/bot' . $_SERVER['BOT_FILE_TOKEN'] . $method);
         curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
         curl_setopt($ch, CURLOPT_POST, true);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);

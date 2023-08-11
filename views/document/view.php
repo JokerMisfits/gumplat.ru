@@ -34,7 +34,7 @@ yii\web\YiiAsset::register($this);
             'extension',
             [
                 'attribute' => 'creation_date',
-                'label' => 'Дата создания обращения',
+                'label' => 'Дата добавления документа',
                 'value' => function ($model) {
                     $dateTime = new DateTime($model->creation_date, null);
                     return Yii::$app->formatter->asDatetime($dateTime, 'php:d.m.Y H:i:s');

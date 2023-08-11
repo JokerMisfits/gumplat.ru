@@ -42,7 +42,8 @@ class TicketController extends AppController{
         $dataProvider = $searchModel->search(\yii::$app->request->get());
         return $this->render('index', [
             'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider
+            'dataProvider' => $dataProvider,
+            'cities' => Cities::find()->asArray()->all()
         ]);
     }
 
@@ -248,6 +249,12 @@ class TicketController extends AppController{
             ];
             $response = json_decode(AppController::curlSendData($data, '/sendDocument'), true);
             if(array_key_exists('ok', $response) && $response['ok'] === true){
+                if(array_key_exists('thumbnail', $response['result']['document']) || array_key_exists('thumb', $response['result']['document'])){
+                    $type = 'photo';
+                }
+                else{
+                    $type = 'document';
+                }
                 $data = [
                     'file_id' => $response['result']['document']['file_id']
                 ];
@@ -258,7 +265,7 @@ class TicketController extends AppController{
                     try{
                         $messages = $model->messages;
                         $message = [
-                            'type' => 'document',
+                            'type' => $type,
                             'author' => \Yii::$app->user->identity->tg_user_id,
                             'message' => 'https://api.telegram.org/file/bot' . $_SERVER['BOT_FILE_TOKEN'] . '/' . $response['result']['file_path']
                         ];
@@ -287,10 +294,12 @@ class TicketController extends AppController{
                     }
                 }
                 else{
-                    \Yii::$app->session->addFlash('error', json_encode($response) . 'Произошла ошибка при обработке сообщения на сервере telegram.');
+                    \Yii::error('Ошибка при подгрузке файла в директорию бота в telegram ' . json_encode($response), 'tickets');
+                    \Yii::$app->session->addFlash('error', 'Произошла ошибка при обработке сообщения на сервере telegram.');
                 }
             }
             else{
+                \Yii::error('Ошибка при отправке сообщения(файл) в telegram ' . json_encode($response), 'tickets');
                 \Yii::$app->session->addFlash('error', 'Произошла ошибка при отправке сообщения.');
             }
             unlink($savePath);

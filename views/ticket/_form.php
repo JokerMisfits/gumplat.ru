@@ -1,5 +1,4 @@
 <?php
-
 /** @var yii\web\View $this */
 /** @var app\models\Tickets $model */
 /** @var app\models\Cities $cities */
@@ -7,7 +6,6 @@
 /** @var app\models\Categories $categories */
 /** @var yii\widgets\ActiveForm $form */
 /** @var array|string $action */
-
 ?>
 
 <div class="tickets-form">

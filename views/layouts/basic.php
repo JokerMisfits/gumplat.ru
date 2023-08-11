@@ -1,6 +1,7 @@
 <?php
 /** @var yii\web\View $this */
 /** @var string $content */
+
 app\assets\AppAsset::register($this);
 $this->registerCsrfMetaTags();
 $this->registerMetaTag(['charset' => Yii::$app->charset], 'charset');
@@ -10,7 +11,7 @@ $this->registerMetaTag(['name' => 'keywords', 'content' => $this->params['meta_k
 $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/png', 'href' => Yii::getAlias('@web/images/favicon.png')]);
 $name = Yii::$app->name;
 ?>
-<?php $this->beginPage() ?>
+<?php $this->beginPage(); ?>
 <!DOCTYPE html>
 <html lang="<?= Yii::$app->language; ?>" class="h-100">
 <head>
@@ -18,7 +19,7 @@ $name = Yii::$app->name;
     <?php $this->head(); ?>
 </head>
 <body class="d-flex flex-column h-100">
-<?php $this->beginBody() ?>
+<?php $this->beginBody(); ?>
 
 <header id="header">
     <?php

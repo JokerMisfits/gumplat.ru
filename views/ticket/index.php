@@ -1,17 +1,17 @@
 <?php
-
 use app\models\Users;
 use app\models\Cities;
 use app\models\Tickets;
 use app\models\Categories;
 
-
 /** @var yii\web\View $this */
 /** @var app\models\TicketSearch $searchModel */
 /** @var yii\data\ActiveDataProvider $dataProvider */
+/** @var Cities $cities */
 
 $this->title = 'Обращения';
 $this->params['breadcrumbs'][] = $this->title;
+$this->registerJsFile('https://api-maps.yandex.ru/2.1/?apikey=0296c13d-3743-4d3f-84fa-abc8f75f3562&lang=ru_RU', ['async' => 'async', $this::POS_HEAD]);
 ?>
 <div class="tickets-index">
 
@@ -149,6 +149,8 @@ $this->params['breadcrumbs'][] = $this->title;
     ]); 
     ?>
 </div>
+
+<?php echo '<div id="map" style="display:none; width: 100%; height: 500px;">' . $this->render('map', ['view' => $this, 'model' => $cities]) . '</div>'; //inline-block?>
 
 <?php yii\widgets\Pjax::end(); ?>
 

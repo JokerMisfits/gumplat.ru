@@ -186,11 +186,11 @@ class DocumentController extends AppController{
      */
     public function actionDownloadFileFromTg(string $path) : \yii\web\Response{
         $path = explode('-', $path);
-        $realPath = 'https://api.telegram.org/file/bot' . $_SERVER['BOT_TOKEN'] . '/' . $path[0] . '/' . $path[1] . '.' . $path[2];
+        $realPath = 'https://api.telegram.org/file/bot' . $_SERVER['BOT_FILE_TOKEN'] . '/' . $path[0] . '/' . $path[1] . '.' . $path[2];
         return \Yii::$app->response->sendContentAsFile(
             file_get_contents($realPath),
             $path[1] . '.' . $path[2],
-            ['inline' => true] // inline = true для отображения в браузере, false для загрузки
+            ['inline' => true]
         );
     }
 
