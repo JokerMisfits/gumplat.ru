@@ -131,14 +131,14 @@ class SiteController extends AppController{
      */
     public function actionCheckUpdates() : bool|array|string{
         $params = \Yii::$app->request->post();
-        if(array_key_exists('hash', $params) && $params['hash'] === md5($_SERVER['API_KEY_0'] . $_SERVER['API_KEY_1'])){
+        if(array_key_exists('hash', $params) && $params['hash'] === md5($_SERVER['API_KEY_0'] . 'update' . $_SERVER['API_KEY_1'])){
             $resolve = \Yii::$app->cache->get('updates');
             if($resolve === false){
-                return json_encode($resolve);
+                return json_encode($resolve, JSON_PRETTY_PRINT);
             }
             else{
                 \Yii::$app->cache->delete('updates');
-                return json_encode($resolve);
+                return json_encode($resolve, JSON_PRETTY_PRINT);
             }
         }
         else{

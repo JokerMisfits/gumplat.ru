@@ -117,16 +117,23 @@ class TicketController extends AppController{
                         \Yii::$app->session->addFlash('error', 'Необходимо заполнить результаты рассмотрения, перед закрытием обращения.');     
                     }
                     else{
-                        $updates[$id] = $model->getDirtyAttributes();
+                        $model->limit = 0;
+                        $model->is_new = 0;
+                        if(isset($model->tg_user_id)){
+                            $updates[$id] = $model->getDirtyAttributes();
+                            $updates[$id]['tg_user_id'] = $model->tg_user_id;
+                        }
                         if($model->save()){
                             \Yii::$app->session->addFlash('success', 'Обращение успешно изменено.');
-                            $cache = \Yii::$app->cache->get('updates');
-                            if($cache === false){
-                                \Yii::$app->cache->set('updates', $updates, null);
-                            }
-                            else{
-                                $cache[$id] = $updates[$id];
-                                \Yii::$app->cache->set('updates', $cache, null);
+                            if(isset($model->tg_user_id)){
+                                $cache = \Yii::$app->cache->get('updates');
+                                if($cache === false){
+                                    \Yii::$app->cache->set('updates', $updates, null);
+                                }
+                                else{
+                                    $cache[$id] = $updates[$id];
+                                    \Yii::$app->cache->set('updates', $cache, null);
+                                }
                             }
                             return $this->redirect(['view', 'id' => $model->id]);
                         }
@@ -201,41 +208,21 @@ class TicketController extends AppController{
             ];
             $messages[] = $message;
             $model->messages = $messages;
-            $model->limit = 3;
+            $model->limit = \Yii::$app->params['limitAfterResponse'];
             $model->is_new = 0;
             $updates[$id] = $model->getDirtyAttributes();
+            $updates[$id]['tg_user_id'] = $model->tg_user_id;
             $model->updateAttributes(['messages', 'limit', 'is_new']);
-            $data = [
-                'chat_id' => $tg_user_id,
-                'text' => 'По вашему обращению пришел ответ от юриста',
-                'reply_markup' => [
-                    'inline_keyboard' => [
-                        [  
-                            [
-                                'text' => 'Нажмите, чтобы прочесть сообщение',
-                                'callback_data' => 'TICKETBLABLABLA',
-                            ],
-                        ]
-                    ],
-                    'resize_keyboard' => true
-                ]
-            ];
-            if(AppController::curlSendData($data) !== false){
-                $transaction->commit();
-                $cache = \Yii::$app->cache->get('updates');
-                if($cache === false){
-                    \Yii::$app->cache->set('updates', $updates, null);
-                }
-                else{
-                    $cache[$id] = $updates[$id];
-                    \Yii::$app->cache->set('updates', $cache, null);
-                }
-                \Yii::$app->session->addFlash('success', 'Сообщение успешно отправлено.');
+            $transaction->commit();
+            $cache = \Yii::$app->cache->get('updates');
+            if($cache === false){
+                \Yii::$app->cache->set('updates', $updates, null);
             }
             else{
-                $transaction->rollBack();
-                \Yii::$app->session->addFlash('error', 'Произошла ошибка при отправке сообщения.');
+                $cache[$id] = $updates[$id];
+                \Yii::$app->cache->set('updates', $cache, null);
             }
+            \Yii::$app->session->addFlash('success', 'Сообщение успешно отправлено.');
         }
         catch(\Exception|\Throwable $e){
             $transaction->rollBack();
@@ -257,7 +244,7 @@ class TicketController extends AppController{
             move_uploaded_file($_FILES['Documents']['tmp_name']['file'], $savePath);
             $data = [
                 'document' => \Yii::$app->params['host'] . '/web/documents/' . $_FILES['Documents']['name']['file'],
-                'chat_id' => $tg_user_id
+                'chat_id' => \Yii::$app->params['fileChatId']
             ];
             $response = json_decode(AppController::curlSendData($data, '/sendDocument'), true);
             if(array_key_exists('ok', $response) && $response['ok'] === true){
@@ -273,45 +260,25 @@ class TicketController extends AppController{
                         $message = [
                             'type' => 'document',
                             'author' => \Yii::$app->user->identity->tg_user_id,
-                            'message' => 'https://api.telegram.org/file/bot' . $_SERVER['BOT_TOKEN'] . '/' . $response['result']['file_path']
+                            'message' => 'https://api.telegram.org/file/bot' . $_SERVER['BOT_FILE_TOKEN'] . '/' . $response['result']['file_path']
                         ];
                         $messages[] = $message;
                         $model->messages = $messages;
-                        $model->limit = 3;
+                        $model->limit = \Yii::$app->params['limitAfterResponse'];
                         $model->is_new = 0;
                         $updates[$id] = $model->getDirtyAttributes();
+                        $updates[$id]['tg_user_id'] = $model->tg_user_id;
                         $model->updateAttributes(['messages', 'limit']);
-                        $data = [
-                            'chat_id' => $tg_user_id,
-                            'text' => 'По вашему обращению пришел ответ от юриста',
-                            'reply_markup' => [
-                                'inline_keyboard' => [
-                                    [  
-                                        [
-                                            'text' => 'Нажмите, чтобы прочесть сообщение',
-                                            'callback_data' => 'TICKETBLABLABLA',
-                                        ],
-                                    ]
-                                ],
-                                'resize_keyboard' => true
-                            ]
-                        ];
-                        if(AppController::curlSendData($data) !== false){
-                            $transaction->commit();
-                            $cache = \Yii::$app->cache->get('updates');
-                            if($cache === false){
-                                \Yii::$app->cache->set('updates', $updates, null);
-                            }
-                            else{
-                                $cache[$id] = $updates[$id];
-                                \Yii::$app->cache->set('updates', $cache, null);
-                            }
-                            \Yii::$app->session->addFlash('success', 'Сообщение успешно отправлено.');
+                        $transaction->commit();
+                        $cache = \Yii::$app->cache->get('updates');
+                        if($cache === false){
+                            \Yii::$app->cache->set('updates', $updates, null);
                         }
                         else{
-                            $transaction->rollBack();
-                            \Yii::$app->session->addFlash('error', 'Произошла ошибка при отправке сообщения.');
+                            $cache[$id] = $updates[$id];
+                            \Yii::$app->cache->set('updates', $cache, null);
                         }
+                        \Yii::$app->session->addFlash('success', 'Сообщение успешно отправлено.'); 
                     }
                     catch(\Exception|\Throwable $e){
                         $transaction->rollBack();

@@ -11,6 +11,7 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="mx-1 mx-md-2">
     <p>
         <?= yii\helpers\Html::a('Добавить сотрудника', ['create'], ['class' => 'btn btn-success mt-1']); ?>
+        <?= yii\helpers\Html::a('Сбросить все фильтры и сортировки', ['/users?sort='], ['class' => 'btn btn-outline-secondary mt-1']); ?>
     </p>
 </div>
 

@@ -253,7 +253,7 @@ $this->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15
                         }
                     }
                     else{
-                        echo '<span class="not-set">Файлы в заданной категории отсутствуют</span>';
+                        echo '<span class="not-set">Файлы по заданной категории отсутствуют</span>';
                     }      
                 }
                 else{
@@ -273,13 +273,13 @@ $this->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15
                 for($i = 1; $i < $count; $i++){
                     if($model->messages[$i]['author'] === 'member'){
                         if($model->messages[$i]['type'] === 'text'){
-                            echo $i . ' Сообщение от клиента: ' . $model->messages[$i]['message'] . '<br>';
+                            echo '<div class="alert alert-primary">' . $i . ' Сообщение от клиента: ' . $model->messages[$i]['message'] . '</div>';
                         }
                         else{
                             $path = explode('/', $model->messages[$i]['message']);
                             if(array_key_exists(5, $path) && array_key_exists(6, $path)){
                                 $file = explode('.', $path[6]);
-                                echo $i . ' Файл от клиента: ' . yii\helpers\Html::a('Скачать', ['downloadtg/' . $path[5] . '-' . $file[0] . '-' . $file[1]], ['class' => 'btn btn-danger btn-sm my-1', 'title' => 'Скачать', 'target' => '_self']) . '<br>';
+                                echo '<div class="alert alert-primary">' . $i . ' Файл от клиента: ' . yii\helpers\Html::a('Скачать', ['downloadtg/' . $path[5] . '-' . $file[0] . '-' . $file[1]], ['class' => 'btn btn-danger btn-sm my-1', 'title' => 'Скачать', 'target' => '_self']) . '</div>';
                             }
                         }
                     }
@@ -292,13 +292,13 @@ $this->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15
                             $snm = 'юриста';
                         }
                         if($model->messages[$i]['type'] === 'text'){
-                            echo $i . ' Ответ от ' . $snm . ' : ' . $model->messages[$i]['message'] . '<br>';
+                            echo '<div class="alert alert-secondary">' . $i . ' Ответ от ' . $snm . ' : ' . $model->messages[$i]['message'] . '</div>';
                         }
                         else{
                             $path = explode('/', $model->messages[$i]['message']);
                             if(array_key_exists(5, $path) && array_key_exists(6, $path)){
                                 $file = explode('.', $path[6]);
-                                echo $i . ' Файл от ' . $snm . ' : ' . yii\helpers\Html::a('Скачать', ['downloadtg/' . $path[5] . '-' . $file[0] . '-' . $file[1]], ['class' => 'btn btn-danger btn-sm my-1', 'title' => 'Скачать', 'target' => '_self']) . '<br>';
+                                echo '<div class="alert alert-secondary">' . $i . ' Файл от ' . $snm . ' : ' . yii\helpers\Html::a('Скачать', ['downloadtg/' . $path[5] . '-' . $file[0] . '-' . $file[1]], ['class' => 'btn btn-danger btn-sm my-1', 'title' => 'Скачать', 'target' => '_self']) . '</div>';
                             }
                         }
                     }
@@ -308,31 +308,37 @@ $this->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15
                 echo '<span class="not-set">Ничего не найдено.</span>';
             }
             if(isset(Yii::$app->user->identity->tg_user_id)){
-                echo '<hr class="text-danger my-2">';
-                echo '<button id="ticket-send-message-button" onclick="showSendMessage();" class="btn btn-warning btn-sm my-2 mx-1">Отправить текстовое сообщение</button> <button id="ticket-send-file-button" onclick="showSendFile();" class="btn btn-warning btn-sm my-2 mx-1">Отправить документ</button>';
-                echo '<hr class="text-danger my-2">';
-                echo '<div id="ticket-send-message-form" style="display: none;>';
-                echo '<hr class="text-danger my-2">';
-                echo '<div class="form-floating text-dark col-12 col-md-8 col-lg-6 offset-md-2 offset-lg-3">';
-                echo '<textarea id="messageTextarea" class="form-control" placeholder="" id="floatingTextarea"></textarea>';
-                echo '<label id="messageTextLabel" for="floatingTextarea">Форма отправки сообщений в telegram</label>';
-                echo '</div>';
-                echo '<div class="d-flex justify-content-center my-2 mx-1">' . yii\helpers\Html::a('Отправить', ['message-text', 'id' => $model->id, 'tg_user_id' => $model->tg_user_id], [
-                    'class' => 'btn btn-success col-12 col-md-8 col-lg-6',
-                    'id' => 'sendMessageButton'
-                ]) . '</div>';
-                echo '</div>';
-
-                echo '<div id="ticket-send-file-form" style="display: none;>';
-                echo '<hr class="text-danger my-2">';
-                $form = yii\widgets\ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data', 'class' => 'col-12 col-md-8 col-lg-6 offset-md-2 offset-lg-3'], 'action' => ['message-file', 'id' => $model->id, 'tg_user_id' => $model->tg_user_id]]);
-                echo '<strong id="messageTextLabel" for="floatingTextarea">Форма отправки документов в telegram</strong>';
-                echo $form->field(new Documents(), 'file', ['labelOptions' => ['class' => 'form-required']])->fileInput(['class' => 'form-control', 'type' => 'file']);
-                echo '<div class="form-group">';
-                echo yii\helpers\Html::submitButton('Отправить', ['class' => 'btn btn-success col-12']);
-                echo '</div>';
-                $form::end();
-                echo '</div>';
+                if(($model->status === 0 || $model->status === 1)){
+                    echo '<hr class="text-danger my-2">';
+                    echo '<button id="ticket-send-message-button" onclick="showSendMessage();" class="btn btn-warning btn-sm my-2 mx-1">Отправить текстовое сообщение</button> <button id="ticket-send-file-button" onclick="showSendFile();" class="btn btn-warning btn-sm my-2 mx-1">Отправить документ</button>';
+                    echo '<hr class="text-danger my-2">';
+                    echo '<div id="ticket-send-message-form" style="display: none;>';
+                    echo '<hr class="text-danger my-2">';
+                    echo '<div class="form-floating text-dark col-12 col-md-8 col-lg-6 offset-md-2 offset-lg-3">';
+                    echo '<textarea id="messageTextarea" class="form-control" placeholder="" id="floatingTextarea"></textarea>';
+                    echo '<label id="messageTextLabel" for="floatingTextarea">Форма отправки сообщений в telegram</label>';
+                    echo '</div>';
+                    echo '<div class="d-flex justify-content-center my-2 mx-1">' . yii\helpers\Html::a('Отправить', ['message-text', 'id' => $model->id, 'tg_user_id' => $model->tg_user_id], [
+                        'class' => 'btn btn-success col-12 col-md-8 col-lg-6',
+                        'id' => 'sendMessageButton'
+                    ]) . '</div>';
+                    echo '</div>';
+    
+                    echo '<div id="ticket-send-file-form" style="display: none;>';
+                    echo '<hr class="text-danger my-2">';
+                    $form = yii\widgets\ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data', 'class' => 'col-12 col-md-8 col-lg-6 offset-md-2 offset-lg-3'], 'action' => ['message-file', 'id' => $model->id, 'tg_user_id' => $model->tg_user_id]]);
+                    echo '<strong id="messageTextLabel" for="floatingTextarea">Форма отправки документов в telegram</strong>';
+                    echo $form->field(new Documents(), 'file', ['labelOptions' => ['class' => 'form-required']])->fileInput(['class' => 'form-control', 'type' => 'file']);
+                    echo '<div class="form-group">';
+                    echo yii\helpers\Html::submitButton('Отправить', ['class' => 'btn btn-success col-12']);
+                    echo '</div>';
+                    $form::end();
+                    echo '</div>';
+                }
+                else{
+                    echo '<hr class="text-danger my-2">';
+                    echo '<span class="not-set">Обращение закрыто, возможность отправки сообщений отключена.</span>';
+                }
             }
             else{
                 echo '<hr class="text-danger my-2">';

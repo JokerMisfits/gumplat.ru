@@ -26,6 +26,7 @@ $progress = round((($folderSize * 100) / Yii::$app->params['maxFileStorageSize']
 <div class="mx-1 mx-md-2">
     <p>
         <?= yii\helpers\Html::a('Добавить документ', ['create'], ['class' => 'btn btn-success mt-1']); ?>
+        <?= yii\helpers\Html::a('Сбросить все фильтры и сортировки', ['/documents?sort='], ['class' => 'btn btn-outline-secondary mt-1']); ?>
     </p>
 </div>
 
