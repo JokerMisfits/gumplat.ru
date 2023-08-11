@@ -277,9 +277,15 @@ $this->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15
                         }
                         else{
                             $path = explode('/', $model->messages[$i]['message']);
+                            if($path[4] === 'bot' . $_SERVER['BOT_TOKEN']){
+                                $bot = 'main';
+                            }
+                            else{
+                                $bot = 'file';
+                            }
                             if(array_key_exists(5, $path) && array_key_exists(6, $path)){
                                 $file = explode('.', $path[6]);
-                                echo '<div class="alert alert-primary">' . $i . ' Файл от клиента: ' . yii\helpers\Html::a('Скачать', ['downloadtg/' . $path[5] . '-' . $file[0] . '-' . $file[1]], ['class' => 'btn btn-danger btn-sm my-1', 'title' => 'Скачать', 'target' => '_self']) . '</div>';
+                                echo '<div class="alert alert-primary">' . $i . ' Файл от клиента: ' . yii\helpers\Html::a('Скачать', ['downloadtg/' . $bot . '-' . $path[5] . '-' . $file[0] . '-' . $file[1]], ['class' => 'btn btn-danger btn-sm my-1', 'title' => 'Скачать', 'target' => '_self']) . '</div>';
                             }
                         }
                     }
@@ -296,9 +302,15 @@ $this->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15
                         }
                         else{
                             $path = explode('/', $model->messages[$i]['message']);
+                            if($path[4] === 'bot' . $_SERVER['BOT_TOKEN']){
+                                $bot = 'main';
+                            }
+                            else{
+                                $bot = 'file';
+                            }
                             if(array_key_exists(5, $path) && array_key_exists(6, $path)){
                                 $file = explode('.', $path[6]);
-                                echo '<div class="alert alert-secondary">' . $i . ' Файл от ' . $snm . ' : ' . yii\helpers\Html::a('Скачать', ['downloadtg/' . $path[5] . '-' . $file[0] . '-' . $file[1]], ['class' => 'btn btn-danger btn-sm my-1', 'title' => 'Скачать', 'target' => '_self']) . '</div>';
+                                echo '<div class="alert alert-secondary">' . $i . ' Файл от ' . $snm . ' : ' . yii\helpers\Html::a('Скачать', ['downloadtg/' . $bot . '-' . $path[5] . '-' . $file[0] . '-' . $file[1]], ['class' => 'btn btn-danger btn-sm my-1', 'title' => 'Скачать', 'target' => '_self']) . '</div>';
                             }
                         }
                     }
