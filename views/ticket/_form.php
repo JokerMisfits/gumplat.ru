@@ -1,11 +1,17 @@
 <?php
+use app\models\Users;
+use app\models\Cities;
+use app\models\Categories;
+
 /** @var yii\web\View $this */
 /** @var app\models\Tickets $model */
-/** @var app\models\Cities $cities */
-/** @var app\models\Users $users */
-/** @var app\models\Categories $categories */
 /** @var yii\widgets\ActiveForm $form */
-/** @var array|string $action */
+/** @var string $action */
+
+$users = [];
+$users = Users::find()->select(['id', 'snm'])->rightJoin('auth_assignment', 'users.id = auth_assignment.user_id')->where(['>=', 'id', 10])->orderBy(['id' => SORT_ASC])->asArray()->all();
+$users[] = Users::find()->select(['id', 'snm'])->where(['id' => Yii::$app->params['systemUserId']])->asArray()->orderBy(['id' => SORT_ASC])->one();
+sort($users);
 ?>
 
 <div class="tickets-form">
@@ -32,8 +38,6 @@
 
     <?= $form->field($model, 'text', ['labelOptions' => ['class' => 'form-required']])->textarea(['rows' => 3]); ?>
 
-    <?php // echo $form->field($model, 'tg_user_id', ['labelOptions' => ['class' => 'form-question-ticket-create-tg-user-id']])->textInput(['maxlength' => true]); ?>
-
     <?= $form->field($model, 'name')->textInput(['maxlength' => true]); ?>
 
     <?= $form->field($model, 'surname')->textInput(['maxlength' => true]); ?>
@@ -44,16 +48,16 @@
 
     <?= $form->field($model, 'comment')->textarea(['rows' => 2])->hint('Пример:' . '<br>' . '06/08/23 Взято в работу, прозвон клиента' . '<br>' . '07/08/23 Запрос документов у клиента' . '<br>' . '24/08/23 Документы не были получены => обращение закрыто.'); ?>
 
-    <?= $form->field($model, 'category_id')->dropDownList(yii\helpers\ArrayHelper::map($categories::find()->all(), 'id', 'name'), ['prompt' => 'Выберите категорию']); ?>
+    <?= $form->field($model, 'category_id')->dropDownList(yii\helpers\ArrayHelper::map(Categories::find()->select(['id', 'name'])->all(), 'id', 'name'), ['prompt' => 'Выберите категорию']); ?>
 
-    <?= $form->field($model, 'city_id')->dropDownList(yii\helpers\ArrayHelper::map($cities::find()->where(['territory' => 0])->all(), 'id', 'name') + ['Новая территория' => yii\helpers\ArrayHelper::map($cities::find()->where(['territory' => 1])->all(), 'id', 'name')], ['prompt' => 'Выберите город']); ?>
+    <?= $form->field($model, 'city_id')->dropDownList(yii\helpers\ArrayHelper::map(Cities::find()->where(['territory' => 0])->select(['id', 'name'])->all(), 'id', 'name') + ['Новая территория' => yii\helpers\ArrayHelper::map(Cities::find()->where(['territory' => 1])->select(['id', 'name'])->all(), 'id', 'name')], ['prompt' => 'Выберите город']); ?>
 
-    <?= $form->field($model, 'user_id')->dropDownList(yii\helpers\ArrayHelper::map($users::find()->where(['or', ['id' => Yii::$app->params['systemUserId']], ['>=', 'id', 10]])->all(), 'id', 'snm'), ['prompt' => 'Выберите сотрудника']); ?>
+    <?= $form->field($model, 'user_id')->dropDownList(yii\helpers\ArrayHelper::map($users, 'id', 'snm'), ['prompt' => 'Выберите сотрудника']); ?>
 
     <?= $form->field($model, 'status')->dropDownList($statusOptions); ?>
 
     <div class="form-group">
-        <?= yii\helpers\Html::submitButton('Сохранить', ['class' => 'btn btn-success']) ?>
+        <?= yii\helpers\Html::submitButton('Сохранить', ['class' => 'btn btn-success']); ?>
     </div>
 
     <?php yii\widgets\ActiveForm::end(); ?>

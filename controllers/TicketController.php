@@ -2,10 +2,8 @@
 
 namespace app\controllers;
 
-use app\models\Users;
 use app\models\Cities;
 use app\models\Tickets;
-use app\models\Categories;
 use app\models\TicketSearch;
 
 /**
@@ -75,19 +73,13 @@ class TicketController extends AppController{
                 else{
                     \Yii::$app->session->addFlash('error', 'Произошла ошибка при создании обращения');                  
                     return $this->render('create', [
-                        'model' => $model,
-                        'cities' => new Cities(),
-                        'users' => new Users(),
-                        'categories' => new Categories()
+                        'model' => $model
                     ]);
                 }
             }
             else{
                 return $this->render('create', [
-                    'model' => $model,
-                    'cities' => new Cities(),
-                    'users' => new Users(),
-                    'categories' => new Categories()
+                    'model' => $model
                 ]);
             }
         }
@@ -95,10 +87,7 @@ class TicketController extends AppController{
             $model->loadDefaultValues();
         }
         return $this->render('create', [
-            'model' => $model,
-            'cities' => new Cities(),
-            'users' => new Users(),
-            'categories' => new Categories()
+            'model' => $model
         ]);
     }
 
@@ -148,18 +137,12 @@ class TicketController extends AppController{
             }
             else{
                 return $this->render('update', [
-                    'model' => $model,
-                    'cities' => new Cities(),
-                    'users' => new Users(),
-                    'categories' => new Categories()
+                    'model' => $model
                 ]);
             }
         }
         return $this->render('update', [
-            'model' => $model,
-            'cities' => new Cities(),
-            'users' => new Users(),
-            'categories' => new Categories()
+            'model' => $model
         ]);
     }
 
@@ -182,12 +165,12 @@ class TicketController extends AppController{
                 }
             }
             else{
-                \Yii::$app->session->addFlash('warning', 'Запрещено удалять обращения созданные при помощи бота в telegram, это действие может навредить целостности данных.'); 
+                \Yii::$app->session->addFlash('warning', 'Запрещено удалять обращения созданные при помощи бота в telegram, это действие навредит целостности данных.'); 
             }
             return $this->redirect(['index']);
         }
         else{
-            throw new \yii\web\ForbiddenHttpException('Доступ только у администраторов');
+            throw new \yii\web\ForbiddenHttpException('Доступ запрещен.');
         }
     }
 

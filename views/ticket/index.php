@@ -79,7 +79,7 @@ $this->registerJsFile('https://api-maps.yandex.ru/2.1/?apikey=0296c13d-3743-4d3f
                         return $model->category_id;
                     }
                 },
-                'filter' => yii\helpers\ArrayHelper::map(Categories::find()->all(), 'id', 'name'),
+                'filter' => yii\helpers\ArrayHelper::map(Categories::find()->asArray()->all(), 'id', 'name'),
                 'filterInputOptions' => ['class' => 'form-control selectpicker', 'data-style' => 'btn-primary', 'prompt' => 'Все']
             ],
             [
@@ -93,7 +93,7 @@ $this->registerJsFile('https://api-maps.yandex.ru/2.1/?apikey=0296c13d-3743-4d3f
                         return $model->city_id;
                     }
                 },
-                'filter' => yii\helpers\ArrayHelper::map(Cities::find()->where(['territory' => 0])->all(), 'id', 'name') + ['Новая территория' => yii\helpers\ArrayHelper::map(Cities::find()->where(['territory' => 1])->all(), 'id', 'name')],
+                'filter' => yii\helpers\ArrayHelper::map(Cities::find()->where(['territory' => 0])->asArray()->all(), 'id', 'name') + ['Новая территория' => yii\helpers\ArrayHelper::map(Cities::find()->where(['territory' => 1])->asArray()->all(), 'id', 'name')],
                 'filterInputOptions' => ['class' => 'form-control selectpicker', 'data-style' => 'btn-primary', 'prompt' => 'Все']
             ],
             [
@@ -107,7 +107,7 @@ $this->registerJsFile('https://api-maps.yandex.ru/2.1/?apikey=0296c13d-3743-4d3f
                         return $model->user_id;
                     }
                 },
-                'filter' => yii\helpers\ArrayHelper::map(Users::find()->where(['or', ['id' => Yii::$app->params['systemUserId']], ['>=', 'id', 10]])->all(), 'id', 'snm'),
+                'filter' => yii\helpers\ArrayHelper::map(Users::find()->where(['or', ['id' => Yii::$app->params['systemUserId']], ['>=', 'id', 10]])->asArray()->all(), 'id', 'snm'),
                 'filterInputOptions' => ['class' => 'form-control selectpicker', 'data-style' => 'btn-primary', 'prompt' => 'Все']
             ],
             [

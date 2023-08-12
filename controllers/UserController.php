@@ -54,7 +54,7 @@ class UserController extends AppController{
      */
     public function actionView(int $id) : string{
         if($id < 10 && \Yii::$app->user->identity->id >= 10){
-            throw new \yii\web\ForbiddenHttpException('Доступ только у разработчиков');
+            throw new \yii\web\ForbiddenHttpException('Доступ запрещен.');
         }
         else{
             return $this->render('view', [
@@ -123,7 +123,7 @@ class UserController extends AppController{
      */
     public function actionUpdate(int $id) : string|\yii\web\Response{
         if($id < 10 && \Yii::$app->user->identity->id >= 10){
-            throw new \yii\web\ForbiddenHttpException('Доступ только у разработчиков');
+            throw new \yii\web\ForbiddenHttpException('Доступ запрещен.');
         }
         else{
             $model = $this->findModel($id);
