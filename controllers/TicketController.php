@@ -105,7 +105,7 @@ class TicketController extends AppController{
                         $model->limit = 0;
                         $model->is_new = 0;
                         if($model->save()){
-                            \Yii::$app->session->addFlash('success', 'Обращение успешно изменено.');
+                            \Yii::$app->session->addFlash('success', 'Обращение успешно закрыто.');
                             $updates['ticket'][$id]['status'] = $model->status;
                             $updates['ticket'][$id]['event'] = 'update';
                             $updates['ticket'][$id]['tg_user_id'] = $model->tg_user_id;
@@ -128,6 +128,7 @@ class TicketController extends AppController{
                 }
                 else{
                     if($model->save()){
+                        \Yii::$app->session->addFlash('success', 'Обращение успешно изменено.');
                         return $this->redirect(['view', 'id' => $id]);
                     }
                     else{
