@@ -86,7 +86,7 @@ class Tickets extends \yii\db\ActiveRecord{
             'user_id' => 'Ответственный',
             'limit' => 'Лимит сообщений от пользователя',
             'is_new' => 'Есть ли новое сообщение?',
-            'tg_username' => 'Имя пользователя в telegram',
+            'tg_username' => 'Имя пользователя в telegram'
         ];
     }
 

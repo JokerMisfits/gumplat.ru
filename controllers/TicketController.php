@@ -77,11 +77,6 @@ class TicketController extends AppController{
                     ]);
                 }
             }
-            else{
-                return $this->render('create', [
-                    'model' => $model
-                ]);
-            }
         }
         else{
             $model->loadDefaultValues();
@@ -109,36 +104,36 @@ class TicketController extends AppController{
                     else{
                         $model->limit = 0;
                         $model->is_new = 0;
-                        if(isset($model->tg_user_id)){
-                            $updates[$id] = $model->getDirtyAttributes();
-                            $updates[$id]['tg_user_id'] = $model->tg_user_id;
-                        }
                         if($model->save()){
                             \Yii::$app->session->addFlash('success', 'Обращение успешно изменено.');
+                            $updates['ticket'][$id]['status'] = $model->status;
+                            $updates['ticket'][$id]['event'] = 'update';
+                            $updates['ticket'][$id]['tg_user_id'] = $model->tg_user_id;
                             if(isset($model->tg_user_id)){
                                 $cache = \Yii::$app->cache->get('updates');
                                 if($cache === false){
                                     \Yii::$app->cache->set('updates', $updates, null);
                                 }
                                 else{
-                                    $cache[$id] = $updates[$id];
+                                    $cache['ticket'][$id] = $updates['ticket'][$id];
                                     \Yii::$app->cache->set('updates', $cache, null);
                                 }
                             }
-                            return $this->redirect(['view', 'id' => $model->id]);
+                            return $this->redirect(['view', 'id' => $id]);
+                        }
+                        else{
+                            \Yii::$app->session->addFlash('error', 'Произошла ошибка при обновлении обращения.');
                         }
                     }
                 }
                 else{
                     if($model->save()){
-                        return $this->redirect(['view', 'id' => $model->id]);
+                        return $this->redirect(['view', 'id' => $id]);
+                    }
+                    else{
+                        \Yii::$app->session->addFlash('error', 'Произошла ошибка при обновлении обращения.'); 
                     }
                 }
-            }
-            else{
-                return $this->render('update', [
-                    'model' => $model
-                ]);
             }
         }
         return $this->render('update', [
@@ -184,18 +179,18 @@ class TicketController extends AppController{
         $model = $this->findModel($id);
         $transaction = $model->getDb()->beginTransaction();
         try{
-            $messages = $model->messages;
             $message = [
                 'type' => 'text',
                 'author' => \Yii::$app->user->identity->tg_user_id,
                 'message' => $message
             ];
-            $messages[] = $message;
-            $model->messages = $messages;
+            $model->messages[] = $message;
             $model->limit = \Yii::$app->params['limitAfterResponse'];
             $model->is_new = 0;
-            $updates[$id] = $model->getDirtyAttributes();
-            $updates[$id]['tg_user_id'] = $model->tg_user_id;
+            $updates['ticket'][$id]['messages'] = $model->messages;
+            $updates['ticket'][$id]['event'] = 'message';
+            $updates['ticket'][$id]['author'] = $tg_user_id;
+            $updates['ticket'][$id]['tg_user_id'] = $model->tg_user_id;
             $model->updateAttributes(['messages', 'limit', 'is_new']);
             $transaction->commit();
             $cache = \Yii::$app->cache->get('updates');
@@ -203,7 +198,7 @@ class TicketController extends AppController{
                 \Yii::$app->cache->set('updates', $updates, null);
             }
             else{
-                $cache[$id] = $updates[$id];
+                $cache['ticket'][$id] = $updates['ticket'][$id];
                 \Yii::$app->cache->set('updates', $cache, null);
             }
             \Yii::$app->session->addFlash('success', 'Сообщение успешно отправлено.');
@@ -246,18 +241,18 @@ class TicketController extends AppController{
                     $model = $this->findModel($id);
                     $transaction = $model->getDb()->beginTransaction();
                     try{
-                        $messages = $model->messages;
                         $message = [
                             'type' => $type,
                             'author' => \Yii::$app->user->identity->tg_user_id,
                             'message' => 'https://api.telegram.org/file/bot' . $_SERVER['BOT_FILE_TOKEN'] . '/' . $response['result']['file_path']
                         ];
-                        $messages[] = $message;
-                        $model->messages = $messages;
+                        $model->messages[] = $message;
                         $model->limit = \Yii::$app->params['limitAfterResponse'];
                         $model->is_new = 0;
-                        $updates[$id] = $model->getDirtyAttributes();
-                        $updates[$id]['tg_user_id'] = $model->tg_user_id;
+                        $updates['ticket'][$id]['messages'] = $model->messages;
+                        $updates['ticket'][$id]['event'] = 'message';
+                        $updates['ticket'][$id]['author'] = $tg_user_id;
+                        $updates['ticket'][$id]['tg_user_id'] = $model->tg_user_id;
                         $model->updateAttributes(['messages', 'limit']);
                         $transaction->commit();
                         $cache = \Yii::$app->cache->get('updates');
@@ -265,7 +260,7 @@ class TicketController extends AppController{
                             \Yii::$app->cache->set('updates', $updates, null);
                         }
                         else{
-                            $cache[$id] = $updates[$id];
+                            $cache['ticket'][$id] = $updates['ticket'][$id];
                             \Yii::$app->cache->set('updates', $cache, null);
                         }
                         \Yii::$app->session->addFlash('success', 'Сообщение успешно отправлено.'); 

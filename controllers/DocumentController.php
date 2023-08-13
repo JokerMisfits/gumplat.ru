@@ -3,7 +3,6 @@
 namespace app\controllers;
 
 use app\models\Documents;
-use app\models\Categories;
 use app\models\DocumentSearch;
 
 /**
@@ -86,19 +85,11 @@ class DocumentController extends AppController{
                                 $transaction->rollBack();
                                 unlink($model->path);
                                 \Yii::$app->session->addFlash('error', 'Ошибка загрузки файла.');
-                                return $this->render('create', [
-                                    'model' => $model,
-                                    'categories' => new Categories()
-                                ]);
                             }
                         }
                     }
                     else{
                         \Yii::$app->session->addFlash('error', 'Ошибка загрузки файла.');
-                        return $this->render('create', [
-                            'model' => $model,
-                            'categories' => new Categories()
-                        ]);
                     }
                     return $this->redirect(['view', 'id' => $model->id]);
                 }
@@ -107,8 +98,7 @@ class DocumentController extends AppController{
                 $model->loadDefaultValues();
             }
             return $this->render('create', [
-                'model' => $model,
-                'categories' => new Categories()
+                'model' => $model
             ]);
         }
     }
@@ -124,11 +114,10 @@ class DocumentController extends AppController{
         $model = $this->findModel($id);
         $model->scenario = 'update';
         if(\Yii::$app->request->post() && $model->load(\yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+            return $this->redirect(['view', 'id' => $id]);
         }
         return $this->render('update', [
-            'model' => $model,
-            'categories' => new Categories()
+            'model' => $model
         ]);
     }
 

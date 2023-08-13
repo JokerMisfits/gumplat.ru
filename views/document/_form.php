@@ -1,8 +1,8 @@
 <?php
+use app\models\Categories;
 /** @var yii\web\View $this */
 /** @var app\models\Documents $model */
 /** @var yii\widgets\ActiveForm $form */
-/** @var app\models\Categories $categories */
 /** @var string $action */
 ?>
 
@@ -15,7 +15,7 @@
             echo 'Доступные фоматы для загрузки: ' . $model->getExtensions() . '<hr class="text-primary my-2">';
             echo $form->field($model, 'file', ['labelOptions' => ['class' => 'form-required']])->fileInput(['class' => 'form-control', 'type' => 'file']);
         }
-        echo $form->field($model, 'category_id', ['labelOptions' => ['class' => 'form-required']])->dropDownList(yii\helpers\ArrayHelper::map($categories::find()->all(), 'id', 'name'), ['prompt' => 'Выберите категорию', 'class' => 'form-control']);
+        echo $form->field($model, 'category_id', ['labelOptions' => ['class' => 'form-required']])->dropDownList(yii\helpers\ArrayHelper::map(Categories::find()->all(), 'id', 'name'), ['prompt' => 'Выберите категорию', 'class' => 'form-control']);
     ?>
 
     <div class="form-group">

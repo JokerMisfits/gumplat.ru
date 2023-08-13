@@ -64,8 +64,24 @@ class CategoryController extends AppController{
     public function actionCreate() : string|\yii\web\Response{
         $model = new Categories();
         if (\Yii::$app->request->isPost){
-            if ($model->load(\yii::$app->request->post()) && $model->save()) {
-                return $this->redirect(['view', 'id' => $model->id]);
+            if ($model->load(\yii::$app->request->post())){
+                if($model->save()){
+                    \Yii::$app->session->addFlash('success', 'Категория успешно добавлена.');
+                    $updates['category'][$model->id] = $model->name;
+                    $updates['category'][$model->id]['event'] = 'create';
+                    $cache = \Yii::$app->cache->get('updates');
+                    if($cache === false){
+                        \Yii::$app->cache->set('updates', $updates, null);
+                    }
+                    else{
+                        $cache['category'][$model->id] = $updates['category'][$model->id];
+                        \Yii::$app->cache->set('updates', $cache, null);
+                    }
+                    return $this->redirect(['view', 'id' => $model->id]);
+                }
+                else{
+                    \Yii::$app->session->addFlash('error', 'Произошла ошибка при добавлении категории.');
+                }
             }
         }
         else{
@@ -85,8 +101,27 @@ class CategoryController extends AppController{
      */
     public function actionUpdate(int $id) : string|\yii\web\Response{
         $model = $this->findModel($id);
-        if(\Yii::$app->request->isPost && $model->load(\yii::$app->request->post()) && $model->save()){
-            return $this->redirect(['view', 'id' => $model->id]);
+        if(\Yii::$app->request->isPost && $model->load(\yii::$app->request->post())){
+            if($model->save()){
+                \Yii::$app->session->addFlash('success', 'Город успешно обновлен.');
+                $updates['category'][$id] = $model->name;
+                $updates['category'][$id]['event'] = 'update';
+                $cache = \Yii::$app->cache->get('updates');
+                if($cache === false){
+                    \Yii::$app->cache->set('updates', $updates, null);
+                }
+                else{
+                    if(array_key_exists($model->id, $cache['category']) && $cache['category'][$model->id]['event'] === 'create'){
+                        $updates['category'][$id]['event'] = 'create';
+                    }
+                    $cache['category'][$id] = $updates['category'][$id];
+                    \Yii::$app->cache->set('updates', $cache, null);
+                }
+                return $this->redirect(['view', 'id' => $id]);
+            }
+            else{
+                \Yii::$app->session->addFlash('error', 'Произошла ошибка при обновлении категории.');
+            }
         }
         return $this->render('update', [
             'model' => $model
@@ -105,7 +140,16 @@ class CategoryController extends AppController{
             if(Documents::find()->where(['category_id' => $id])->limit(1)->count() === 0){
                 $model = $this->findModel($id);
                 if($model->delete() !== false){
-                    \Yii::$app->session->addFlash('success', 'Категория ' . $model->name . ' успешно удалена.');  
+                    \Yii::$app->session->addFlash('success', 'Категория ' . $model->name . ' успешно удалена.');
+                    $updates['category'][$id]['event'] = 'delete';
+                    $cache = \Yii::$app->cache->get('updates');
+                    if($cache === false){
+                        \Yii::$app->cache->set('updates', $updates, null);
+                    }
+                    else{
+                        $cache['category'][$id] = $updates['category'][$id];
+                        \Yii::$app->cache->set('updates', $cache, null);
+                    }  
                 }
                 else{
                     \Yii::$app->session->addFlash('error', 'Произошла ошибка при удалении категории ' . $model->name . '.');  

@@ -66,9 +66,9 @@ class UserController extends AppController{
     /**
      * Creates a new Users model.
      * If creation is successful, the browser will be redirected to the 'view' page.
-     * @return string|\yii\web\Response|\yii\widgets\ActiveForm
+     * @return string|\yii\web\Response
      */
-    public function actionCreate() : string|\yii\web\Response|\yii\widgets\ActiveForm{
+    public function actionCreate() : string|\yii\web\Response{
         $model = new Users(['scenario' => 'signup']);
         if($model->load(\Yii::$app->request->post())){
                 if(isset(\Yii::$app->request->post('Users')['password_repeat']) && \Yii::$app->request->post('Users')['password_repeat'] === $model->password){
@@ -81,37 +81,20 @@ class UserController extends AppController{
                         return $this->redirect(['view', 'id' => $model->id]);
                     }
                     else{
-                        \Yii::$app->session->addFlash('error', 'Произошла ошибка при регистрации');                  
-                        $model->password = '';
-                        $model->password_repeat = '';
-                        return $this->render('create', [
-                            'model' => $model
-                        ]);
+                        \Yii::$app->session->addFlash('error', 'Произошла ошибка при регистрации');
                     }
-                }
-                else{
-                    $model->password = '';
-                    $model->password_repeat = '';
-                    return $this->render('create', [
-                        'model' => $model
-                    ]);
                 }
             }
             else{
                 \Yii::$app->session->addFlash('error', 'Пароли должны совпадать');
-                $model->password = '';
-                $model->password_repeat = '';
-                $model->auth_key = '';
-                return $this->render('create', [
-                    'model' => $model
-                ]);
             }
         }
-        else{
-            return $this->render('create', [
-                'model' => $model
-            ]);
-        }
+        $model->password = '';
+        $model->password_repeat = '';
+        $model->auth_key = '';
+        return $this->render('create', [
+            'model' => $model
+        ]);
     }
 
     /**
@@ -127,8 +110,26 @@ class UserController extends AppController{
         }
         else{
             $model = $this->findModel($id);
-            if(\Yii::$app->request->isPost && $model->load(\Yii::$app->request->post()) && $model->save()){
-                return $this->redirect(['view', 'id' => $model->id]);
+            if(\Yii::$app->request->isPost && $model->load(\Yii::$app->request->post())){
+                if(isset($model->tg_user_id)){
+                    $updates['user'][$id] = $model->getDirtyAttributes();
+                    $updates['user'][$id]['event'] = 'update';
+                    $updates['user'][$id]['tg_user_id'] = $model->tg_user_id;
+                }
+                if($model->save()){
+                    \Yii::$app->session->addFlash('success', 'Сотрудник успешно изменен.');
+                    if(isset($model->tg_user_id)){
+                        $cache = \Yii::$app->cache->get('updates');
+                        if($cache === false){
+                            \Yii::$app->cache->set('updates', $updates, null);
+                        }
+                        else{
+                            $cache['user'][$id] = $updates['user'][$id];
+                            \Yii::$app->cache->set('updates', $cache, null);
+                        }
+                    }
+                    return $this->redirect(['view', 'id' => $id]);
+                }
             }
             return $this->render('update', [
                 'model' => $model
@@ -159,10 +160,36 @@ class UserController extends AppController{
             if(\Yii::$app->user->identity->id === \Yii::$app->params['developerUserId'] && $id !== \Yii::$app->user->identity->id){
                 if(\Yii::$app->authManager->checkAccess($id, 'user')){
                     \Yii::$app->authManager->revoke(\Yii::$app->authManager->getRole('user'), $id);
+                    $tgUserId = $this->findModel($id)->tg_user_id;
+                    if(isset($tgUserId)){
+                        $updates['user'][$id]['event'] = 'ban';
+                        $updates['user'][$id]['tg_user_id'] = $tgUserId;
+                        $cache = \Yii::$app->cache->get('updates');
+                        if($cache === false){
+                            \Yii::$app->cache->set('updates', $updates, null);
+                        }
+                        else{
+                            $cache['user'][$id] = $updates['user'][$id];
+                            \Yii::$app->cache->set('updates', $cache, null);
+                        }
+                    }
                     \Yii::$app->session->addFlash('success', 'Сотрудник успешно заблокирован');
                 }
                 else{
                     \Yii::$app->authManager->assign(\Yii::$app->authManager->getRole('user'), $id);
+                    $tgUserId = $this->findModel($id)->tg_user_id;
+                    if(isset($tgUserId)){
+                        $updates['user'][$id]['event'] = 'unban';
+                        $updates['user'][$id]['tg_user_id'] = $tgUserId;
+                        $cache = \Yii::$app->cache->get('updates');
+                        if($cache === false){
+                            \Yii::$app->cache->set('updates', $updates, null);
+                        }
+                        else{
+                            $cache['user'][$id] = $updates['user'][$id];
+                            \Yii::$app->cache->set('updates', $cache, null);
+                        }
+                    }
                     \Yii::$app->session->addFlash('success', 'Сотрудник успешно разблокирован');
                 }
 
@@ -173,13 +200,39 @@ class UserController extends AppController{
         }
         else{
             if($id !== \Yii::$app->user->identity->id){
-                if(!\Yii::$app->authManager->checkAccess($id, 'admin')){
+                if(!\Yii::$app->authManager->checkAccess($id, 'admin') || \Yii::$app->user->identity->id === \Yii::$app->params['developerUserId']){
                     if(\Yii::$app->authManager->checkAccess($id, 'user')){
                         \Yii::$app->authManager->revoke(\Yii::$app->authManager->getRole('user'), $id);
+                        $tgUserId = $this->findModel($id)->tg_user_id;
+                        if(isset($tgUserId)){
+                            $updates['user'][$id]['event'] = 'ban';
+                            $updates['user'][$id]['tg_user_id'] = $tgUserId;
+                            $cache = \Yii::$app->cache->get('updates');
+                            if($cache === false){
+                                \Yii::$app->cache->set('updates', $updates, null);
+                            }
+                            else{
+                                $cache['user'][$id] = $updates['user'][$id];
+                                \Yii::$app->cache->set('updates', $cache, null);
+                            }
+                        }
                         \Yii::$app->session->addFlash('success', 'Сотрудник успешно заблокирован');
                     }
                     else{
                         \Yii::$app->authManager->assign(\Yii::$app->authManager->getRole('user'), $id);
+                        $tgUserId = $this->findModel($id)->tg_user_id;
+                        if(isset($tgUserId)){
+                            $updates['user'][$id]['event'] = 'unban';
+                            $updates['user'][$id]['tg_user_id'] = $tgUserId;
+                            $cache = \Yii::$app->cache->get('updates');
+                            if($cache === false){
+                                \Yii::$app->cache->set('updates', $updates, null);
+                            }
+                            else{
+                                $cache['user'][$id] = $updates['user'][$id];
+                                \Yii::$app->cache->set('updates', $cache, null);
+                            }
+                        }
                         \Yii::$app->session->addFlash('success', 'Сотрудник успешно разблокирован');
                     }
                 }
