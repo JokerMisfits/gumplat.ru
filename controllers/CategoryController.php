@@ -67,7 +67,7 @@ class CategoryController extends AppController{
             if ($model->load(\yii::$app->request->post())){
                 if($model->save()){
                     \Yii::$app->session->addFlash('success', 'Категория успешно добавлена.');
-                    $updates['category'][$model->id] = $model->name;
+                    $updates['category'][$model->id]['name'] = $model->name;
                     $updates['category'][$model->id]['event'] = 'create';
                     $cache = \Yii::$app->cache->get('updates');
                     if($cache === false){
@@ -104,7 +104,7 @@ class CategoryController extends AppController{
         if(\Yii::$app->request->isPost && $model->load(\yii::$app->request->post())){
             if($model->save()){
                 \Yii::$app->session->addFlash('success', 'Город успешно обновлен.');
-                $updates['category'][$id] = $model->name;
+                $updates['category'][$id]['name'] = $model->name;
                 $updates['category'][$id]['event'] = 'update';
                 $cache = \Yii::$app->cache->get('updates');
                 if($cache === false){

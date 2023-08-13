@@ -66,7 +66,7 @@ class CityController extends AppController{
             if($model->load(\yii::$app->request->post())){
                 if($model->save()){
                     \Yii::$app->session->addFlash('success', 'Город успешно добавлен.');
-                    $updates['city'][$model->id] = $model->name;
+                    $updates['city'][$model->id]['name'] = $model->name;
                     $updates['city'][$model->id]['event'] = 'create';
                     $cache = \Yii::$app->cache->get('updates');
                     if($cache === false){
@@ -103,7 +103,7 @@ class CityController extends AppController{
         if(\Yii::$app->request->isPost && $model->load(\yii::$app->request->post())){
             if($model->save()){
                 \Yii::$app->session->addFlash('success', 'Город успешно обновлен.');
-                $updates['city'][$id] = $model->name;
+                $updates['city'][$id]['name'] = $model->name;
                 $updates['city'][$id]['event'] = 'update';
                 $cache = \Yii::$app->cache->get('updates');
                 if($cache === false){

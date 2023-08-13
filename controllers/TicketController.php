@@ -107,7 +107,7 @@ class TicketController extends AppController{
                         if($model->save()){
                             \Yii::$app->session->addFlash('success', 'Обращение успешно закрыто.');
                             $updates['ticket'][$id]['status'] = $model->status;
-                            $updates['ticket'][$id]['event'] = 'update';
+                            $updates['ticket'][$id]['event'] = 'delete';
                             $updates['ticket'][$id]['tg_user_id'] = $model->tg_user_id;
                             if(isset($model->tg_user_id)){
                                 $cache = \Yii::$app->cache->get('updates');
@@ -176,7 +176,7 @@ class TicketController extends AppController{
      * @param int $tg_user_id tg_user_id
      * @return \yii\web\Response
      */
-    public function actionMessageText(int $id, int $tg_user_id, string $message) : \yii\web\Response{
+    public function actionMessageText(int $id, string $message) : \yii\web\Response{
         $model = $this->findModel($id);
         $transaction = $model->getDb()->beginTransaction();
         try{
@@ -185,12 +185,12 @@ class TicketController extends AppController{
                 'author' => \Yii::$app->user->identity->tg_user_id,
                 'message' => $message
             ];
-            $model->messages[] = $message;
+            $messages[] = $message;
+            $model->messages = $messages;
             $model->limit = \Yii::$app->params['limitAfterResponse'];
             $model->is_new = 0;
             $updates['ticket'][$id]['messages'] = $model->messages;
-            $updates['ticket'][$id]['event'] = 'message';
-            $updates['ticket'][$id]['author'] = $tg_user_id;
+            $updates['ticket'][$id]['event'] = 'update';
             $updates['ticket'][$id]['tg_user_id'] = $model->tg_user_id;
             $model->updateAttributes(['messages', 'limit', 'is_new']);
             $transaction->commit();
@@ -218,7 +218,7 @@ class TicketController extends AppController{
      * @param int $tg_user_id tg_user_id
      * @return \yii\web\Response
      */
-    public function actionMessageFile(int $id, int $tg_user_id) : \yii\web\Response{
+    public function actionMessageFile(int $id) : \yii\web\Response{
         if(\Yii::$app->request->isPost){
             $savePath = realpath(\Yii::getAlias('@web')) . '/documents/' . $_FILES['Documents']['name']['file'];
             move_uploaded_file($_FILES['Documents']['tmp_name']['file'], $savePath);
@@ -247,12 +247,12 @@ class TicketController extends AppController{
                             'author' => \Yii::$app->user->identity->tg_user_id,
                             'message' => 'https://api.telegram.org/file/bot' . $_SERVER['BOT_FILE_TOKEN'] . '/' . $response['result']['file_path']
                         ];
-                        $model->messages[] = $message;
+                        $messages[] = $message;
+                        $model->messages = $messages;
                         $model->limit = \Yii::$app->params['limitAfterResponse'];
                         $model->is_new = 0;
                         $updates['ticket'][$id]['messages'] = $model->messages;
                         $updates['ticket'][$id]['event'] = 'message';
-                        $updates['ticket'][$id]['author'] = $tg_user_id;
                         $updates['ticket'][$id]['tg_user_id'] = $model->tg_user_id;
                         $model->updateAttributes(['messages', 'limit']);
                         $transaction->commit();

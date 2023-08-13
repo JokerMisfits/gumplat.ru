@@ -112,7 +112,7 @@ class UserController extends AppController{
             $model = $this->findModel($id);
             if(\Yii::$app->request->isPost && $model->load(\Yii::$app->request->post())){
                 if(isset($model->tg_user_id)){
-                    $updates['user'][$id] = $model->getDirtyAttributes();
+                    $updates['user'][$id]['snm'] = $model->snm;
                     $updates['user'][$id]['event'] = 'update';
                     $updates['user'][$id]['tg_user_id'] = $model->tg_user_id;
                 }

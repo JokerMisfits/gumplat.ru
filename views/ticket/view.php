@@ -330,7 +330,7 @@ $this->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15
                     echo '<textarea id="messageTextarea" class="form-control" placeholder="" id="floatingTextarea"></textarea>';
                     echo '<label id="messageTextLabel" for="floatingTextarea">Форма отправки сообщений в telegram</label>';
                     echo '</div>';
-                    echo '<div class="d-flex justify-content-center my-2 mx-1">' . yii\helpers\Html::a('Отправить', ['message-text', 'id' => $model->id, 'tg_user_id' => $model->tg_user_id], [
+                    echo '<div class="d-flex justify-content-center my-2 mx-1">' . yii\helpers\Html::a('Отправить', ['message-text', 'id' => $model->id], [
                         'class' => 'btn btn-success col-12 col-md-8 col-lg-6',
                         'id' => 'sendMessageButton'
                     ]) . '</div>';
@@ -338,7 +338,7 @@ $this->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15
     
                     echo '<div id="ticket-send-file-form" style="display: none;>';
                     echo '<hr class="text-danger my-2">';
-                    $form = yii\widgets\ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data', 'class' => 'col-12 col-md-8 col-lg-6 offset-md-2 offset-lg-3'], 'action' => ['message-file', 'id' => $model->id, 'tg_user_id' => $model->tg_user_id]]);
+                    $form = yii\widgets\ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data', 'class' => 'col-12 col-md-8 col-lg-6 offset-md-2 offset-lg-3'], 'action' => ['message-file', 'id' => $model->id]]);
                     echo '<strong id="messageTextLabel" for="floatingTextarea">Форма отправки документов в telegram</strong>';
                     echo $form->field(new Documents(), 'file', ['labelOptions' => ['class' => 'form-required']])->fileInput(['class' => 'form-control', 'type' => 'file']);
                     echo '<div class="form-group">';
