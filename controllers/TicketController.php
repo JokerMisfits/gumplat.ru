@@ -229,7 +229,7 @@ class TicketController extends AppController{
             ];
             $response = json_decode(AppController::curlSendData($data, '/sendDocument'), true);
             if(array_key_exists('ok', $response) && $response['ok'] === true){
-                if(array_key_exists('thumbnail', $response['result']['document']) || array_key_exists('thumb', $response['result']['document'])){
+                if((array_key_exists('thumbnail', $response['result']['document']) || array_key_exists('thumb', $response['result']['document'])) && $response['result']['document']['mime_type'] !== 'application/pdf'){
                     $type = 'photo';
                 }
                 else{
