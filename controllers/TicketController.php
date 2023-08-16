@@ -225,6 +225,7 @@ class TicketController extends AppController{
             move_uploaded_file($_FILES['Documents']['tmp_name']['file'], $savePath);
             $data = [
                 'document' => \Yii::$app->params['host'] . '/web/documents/' . $name,
+                'caption' => $_FILES['Documents']['name']['file'],
                 'chat_id' => \Yii::$app->params['fileChatId']
             ];
             $response = json_decode(AppController::curlSendData($data, '/sendDocument'), true);
