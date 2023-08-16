@@ -171,7 +171,7 @@ class DocumentController extends AppController{
 
     /**
      * @param string $path path
-     * @return \yii\web\Response
+     * @return string|\yii\web\Response
      */
     public function actionDownloadFileFromTg(string $path) : \yii\web\Response{
         $path = explode('-', $path);
@@ -182,6 +182,10 @@ class DocumentController extends AppController{
             $token = $_SERVER['BOT_FILE_TOKEN'];
         }
         $realPath = 'https://api.telegram.org/file/bot' . $token . '/' . $path[1] . '/' . $path[2] . '.' . $path[3];
+
+        \Yii::$app->response->headers->set('Content-Type', 'application/octet-stream');
+        \Yii::$app->response->headers->set('Content-Disposition', 'attachment; filename="' . $path[2] . '.' . $path[3] . '"');
+
         return \Yii::$app->response->sendContentAsFile(
             file_get_contents($realPath),
             $path[2] . '.' . $path[3],
