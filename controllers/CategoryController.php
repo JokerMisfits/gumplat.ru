@@ -107,7 +107,7 @@ class CategoryController extends AppController{
         $model = $this->findModel($id);
         if(\Yii::$app->request->isPost && $model->load(\yii::$app->request->post())){
             if($model->save()){
-                \Yii::$app->session->addFlash('success', 'Категория успешно обновлен.');
+                \Yii::$app->session->addFlash('success', 'Категория успешно обновлена.');
                 $updates['category'][$id]['name'] = $model->name;
                 $updates['category'][$id]['event'] = 'update';
                 $cache = \Yii::$app->cache->get('updates');
