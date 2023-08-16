@@ -55,7 +55,7 @@ class Documents extends \yii\db\ActiveRecord{
             [['name'], 'unique'],
             [['category_id'], 'exist', 'skipOnError' => true, 'targetClass' => Categories::class, 'targetAttribute' => ['category_id' => 'id']],
             [['file', 'except' => 'uploadTg'], 'file','skipOnEmpty' => false, 'extensions' => self::$extensions, 'maxSize' => self::$maxSize * 1024 * 1024],
-            [['file', 'on' => 'uploadTg'], 'file','skipOnEmpty' => false, 'extensions' => self::$extensionsTg, 'maxSize' => self::$maxSize * 1024 * 1024]
+            [['file', 'on' => 'uploadTg'], 'file','skipOnEmpty' => false, 'extensions' => self::$extensionsTg, 'maxSize' => 10 * 1024 * 1024]
         ];
     }
 

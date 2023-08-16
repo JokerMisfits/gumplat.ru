@@ -30,10 +30,10 @@ $this->registerJsFile('https://api-maps.yandex.ru/2.1/?apikey=0296c13d-3743-4d3f
 <div class="table-responsive text-nowrap">
     <?php 
         if(Yii::$app->user->can('admin')){
-            $template = '{view} {update} {delete}';
+            $template = '{update} {delete}';
         }
         else{
-            $template = '{view} {update}';
+            $template = '{update}';
         }
         echo yii\grid\GridView::widget([
         'dataProvider' => $dataProvider,
@@ -131,6 +131,9 @@ $this->registerJsFile('https://api-maps.yandex.ru/2.1/?apikey=0296c13d-3743-4d3f
             }
             ]
         ],
+        'rowOptions' => function ($model, $key, $index, $grid) {
+            return ['onclick' => 'window.location.href = "' . \yii\helpers\Url::to(['ticket/view', 'id' => $model->id]) . '"'];
+        },
         'pager' => [
             'class' => yii\widgets\LinkPager::class,
             'options' => [
