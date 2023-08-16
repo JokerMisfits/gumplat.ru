@@ -25,7 +25,14 @@ $this->params['breadcrumbs'][] = $this->title;
     <?= yii\widgets\DetailView::widget([
         'model' => $model,
         'attributes' => [
-            'name'
+            'name',
+            [
+                'attribute' => 'ticketsCount',
+                'label' => 'Количество обращений',
+                'value' => function($model){
+                    return count($model->tickets);
+                }
+            ]
         ]
     ]);
     ?>

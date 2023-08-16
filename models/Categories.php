@@ -39,7 +39,8 @@ class Categories extends \yii\db\ActiveRecord{
     public function attributeLabels() : array{
         return [
             'id' => 'ID',
-            'name' => 'Название категории'
+            'name' => 'Название категории',
+            'ticketsCount' => 'Количество обращений'
         ];
     }
 
