@@ -275,7 +275,7 @@ $this->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15
                     echo '<div id="ticket-send-file-form" style="display: none;>';
                     echo '<hr class="text-danger my-2">';
                     $form = yii\widgets\ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data', 'class' => 'col-12 col-md-8 col-lg-6 offset-md-2 offset-lg-3'], 'action' => ['message-file', 'id' => $model->id]]);
-                    echo $form->field(new Documents(), 'file', ['labelOptions' => ['class' => 'form-required']])->fileInput(['class' => 'form-control', 'type' => 'file'])->label('Файл');
+                    echo $form->field(new Documents(['scenario' => 'uploadTg']), 'file', ['labelOptions' => ['class' => 'form-required']])->fileInput(['class' => 'form-control', 'type' => 'file'])->label('Файл');
                     echo '<div class="form-group">';
                     echo yii\helpers\Html::submitButton('Отправить', ['class' => 'btn btn-success col-12']);
                     echo '</div>';

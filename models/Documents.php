@@ -21,6 +21,7 @@ class Documents extends \yii\db\ActiveRecord{
     public $file;
 
     public static string $extensions = 'jpg, jpeg, png, heic, pdf, doc, docx, txt, csv, xlsx, ppt';
+    public static string $extensionsTg = 'jpg, jpeg, png, pdf, txt, csv, xlsx, ppt';
 
     private static int $maxSize = 30;
 
@@ -35,6 +36,7 @@ class Documents extends \yii\db\ActiveRecord{
         $scenarios = parent::scenarios();
         $scenarios['upload'] = ['file', 'category_id'];
         $scenarios['update'] = ['category_id'];
+        $scenarios['uploadTg'] = ['file'];
         return $scenarios;
     }
 
@@ -52,7 +54,8 @@ class Documents extends \yii\db\ActiveRecord{
             [['extension'], 'string', 'max' => 10],
             [['name'], 'unique'],
             [['category_id'], 'exist', 'skipOnError' => true, 'targetClass' => Categories::class, 'targetAttribute' => ['category_id' => 'id']],
-            [['file'], 'file','skipOnEmpty' => false, 'extensions' => self::$extensions, 'maxSize' => self::$maxSize * 1024 * 1024]
+            [['file', 'except' => 'uploadTg'], 'file','skipOnEmpty' => false, 'extensions' => self::$extensions, 'maxSize' => self::$maxSize * 1024 * 1024],
+            [['file', 'on' => 'uploadTg'], 'file','skipOnEmpty' => false, 'extensions' => self::$extensionsTg, 'maxSize' => self::$maxSize * 1024 * 1024]
         ];
     }
 

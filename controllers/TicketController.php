@@ -2,9 +2,11 @@
 
 namespace app\controllers;
 
+use GuzzleHttp\Client;
 use app\models\Cities;
 use app\models\Tickets;
 use app\models\TicketSearch;
+use GuzzleHttp\RequestOptions;
 
 /**
  * TicketController implements the CRUD actions for Tickets model.
@@ -219,13 +221,16 @@ class TicketController extends AppController{
      */
     public function actionMessageFile(int $id) : \yii\web\Response{
         if(\Yii::$app->request->isPost){
-            $savePath = realpath(\Yii::getAlias('@web')) . '/documents/' . $_FILES['Documents']['name']['file'];
+            $name = explode('.', $_FILES['Documents']['name']['file']);
+            $name = \Yii::$app->security->generateRandomString(6) . '.' . end($name);
+            $savePath = realpath(\Yii::getAlias('@web')) . '/documents/' . $name;
             move_uploaded_file($_FILES['Documents']['tmp_name']['file'], $savePath);
             $data = [
-                'document' => \Yii::$app->params['host'] . '/web/documents/' . $_FILES['Documents']['name']['file'],
+                'document' => \Yii::$app->params['host'] . '/web/documents/' . $name,
+                'filename' => $name,
                 'chat_id' => \Yii::$app->params['fileChatId']
             ];
-            $response = json_decode(AppController::curlSendData($data, '/sendDocument'), true);
+            $response = json_decode(AppController::curlSendData($data, '/sendData'), true);
             if(array_key_exists('ok', $response) && $response['ok'] === true){
                 if(array_key_exists('thumbnail', $response['result']['document']) || array_key_exists('thumb', $response['result']['document'])){
                     $type = 'photo';
