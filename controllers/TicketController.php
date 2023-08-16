@@ -2,11 +2,9 @@
 
 namespace app\controllers;
 
-use GuzzleHttp\Client;
 use app\models\Cities;
 use app\models\Tickets;
 use app\models\TicketSearch;
-use GuzzleHttp\RequestOptions;
 
 /**
  * TicketController implements the CRUD actions for Tickets model.
