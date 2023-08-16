@@ -1,8 +1,8 @@
 <?php
 /** @var yii\web\View $this */
 /** @var app\models\Cities $model */
-$this->title = 'Добавление города';
-$this->params['breadcrumbs'][] = ['label' => 'Города', 'url' => ['index']];
+$this->title = 'Добавление Н. П.';
+$this->params['breadcrumbs'][] = ['label' => 'Н. П.', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 

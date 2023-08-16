@@ -3,6 +3,7 @@
 /** @var string $content */
 
 app\assets\AppAsset::register($this);
+$this->registerJsFile('https://telegram.org/js/telegram-web-app.js', ['position' => $this::POS_HEAD]);
 $this->registerCsrfMetaTags();
 $this->registerMetaTag(['charset' => Yii::$app->charset], 'charset');
 $this->registerMetaTag(['name' => 'viewport', 'content' => 'width=device-width, initial-scale=1, shrink-to-fit=no']);
@@ -64,7 +65,7 @@ $name = Yii::$app->name;
     $navItems = [
             ['label' => 'Обращения', 'url' => ['ticket/index']],
             ['label' => 'Категории', 'url' => ['category/index']],
-            ['label' => 'Города', 'url' => ['city/index']],
+            ['label' => 'Н. П.', 'url' => ['city/index']],
             ['label' => 'Документы', 'url' => ['document/index']]
     ];
     if(Yii::$app->user->can('admin')){
@@ -96,7 +97,7 @@ $name = Yii::$app->name;
 
 <main id="main" class="flex-shrink-0 col-12" role="main" style="margin-top: 60px;">
         <?php if(!empty($this->params['breadcrumbs'])):?>
-            <?= '<div class="m-1 m-md-2">' . yii\bootstrap5\Breadcrumbs::widget(['links' => $this->params['breadcrumbs']]) . '</div>'; ?>
+            <?= '<div class="m-1 m-md-2 text-wrap text-break">' . yii\bootstrap5\Breadcrumbs::widget(['links' => $this->params['breadcrumbs']]) . '</div>'; ?>
         <?php endif; ?>
         <?= app\widgets\Alert::widget(); ?>
         <?= $content; ?>

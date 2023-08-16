@@ -11,16 +11,14 @@
         'method' => 'get',
         'options' => [
             'data-pjax' => 1
-        ],
+        ]
     ]); ?>
-
-    <?= $form->field($model, 'id') ?>
 
     <?= $form->field($model, 'name') ?>
 
     <div class="form-group">
-        <?= yii\helpers\Html::submitButton('Search', ['class' => 'btn btn-primary']) ?>
-        <?= yii\helpers\Html::resetButton('Reset', ['class' => 'btn btn-outline-secondary']) ?>
+        <?= yii\helpers\Html::submitButton('Search', ['class' => 'btn btn-primary']); ?>
+        <?= yii\helpers\Html::resetButton('Reset', ['class' => 'btn btn-outline-secondary']); ?>
     </div>
 
     <?php yii\widgets\ActiveForm::end(); ?>

@@ -7,6 +7,8 @@ namespace app\models;
  */
 class CategorySearch extends Categories{
 
+    public $ticketsCount = 0;
+
     /**
      * {@inheritdoc}
      */
@@ -16,6 +18,7 @@ class CategorySearch extends Categories{
             [['name'], 'safe']
         ];
     }
+
 
     /**
      * {@inheritdoc}
@@ -33,7 +36,10 @@ class CategorySearch extends Categories{
      * @return \yii\data\ActiveDataProvider
      */
     public function search(array $params) : \yii\data\ActiveDataProvider{
-        $query = Categories::find();
+        $query = Categories::find()
+        ->select(['categories.*', 'COUNT(tickets.id) AS ticketsCount'])
+        ->leftJoin('tickets', 'categories.id = tickets.category_id')
+        ->groupBy('categories.id');
 
         // add conditions that should always apply here
 
@@ -43,6 +49,11 @@ class CategorySearch extends Categories{
                 'forcePageParam' => false,
                 'pageSizeParam' => false,
                 'pageSize' => 15
+            ],
+            'sort' => [
+                'defaultOrder' => [
+                    'name' => SORT_ASC
+                ]
             ]
         ]);
 

@@ -8,8 +8,7 @@ namespace app\models;
  * @property int $id ID
  * @property int|null $tg_user_id ID пользователя в telegram
  * @property int $status Статус обращения
- * @property string|null $name Имя
- * @property string|null $surname Фамилия
+ * @property string|null $snm ФИО
  * @property string|null $phone Номер телефона
  * @property string|null $email Почта
  * @property string $title Заголовок обращения
@@ -47,16 +46,17 @@ class Tickets extends \yii\db\ActiveRecord{
             [['title', 'text'], 'required'],
             [['text', 'comment'], 'string'],
             [['creation_date', 'last_change', 'messages'], 'safe'],
-            [['name', 'surname'], 'string', 'min' => 1],
+            [['snm'], 'string', 'min' => 1],
             [['phone'], 'string', 'min' => 3],
             [['email'], 'string', 'min' => 5],
             [['comment'], 'string', 'min' => 4],
-            [['name', 'surname', 'phone', 'email', 'title', 'tg_username'], 'string', 'max' => 255],
-            [['name', 'surname', 'phone', 'email', 'title', 'text', 'comment', 'messages'], 'trim'],
-            [['name', 'surname', 'phone', 'email', 'comment'], 'default'],
+            [['snm', 'phone', 'email', 'title', 'tg_username'], 'string', 'max' => 255],
+            [['snm', 'phone', 'email', 'title', 'text', 'comment', 'messages'], 'trim'],
+            [['snm', 'phone', 'email', 'comment'], 'default'],
             ['status', 'default', 'value' => 0],
+            ['status', 'in', 'range' => [0, 1, 2, 3]],
             ['user_id', 'default', 'value' => \Yii::$app->params['systemUserId']],
-            ['phone', 'match', 'pattern' => '/^((\+7|7|8)+([0-9]){10})$/', 'message' => 'Недействительный номер'],
+            ['phone', 'match', 'pattern' => '/^\+?[0-9]{1,}$/i', 'message' => 'Недействительный номер'],
             [['category_id'], 'exist', 'skipOnError' => true, 'targetClass' => Categories::class, 'targetAttribute' => ['category_id' => 'id']],
             [['city_id'], 'exist', 'skipOnError' => true, 'targetClass' => Cities::class, 'targetAttribute' => ['city_id' => 'id']],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => Users::class, 'targetAttribute' => ['user_id' => 'id']]
@@ -71,8 +71,7 @@ class Tickets extends \yii\db\ActiveRecord{
             'id' => 'ID',
             'tg_user_id' => 'ID пользователя в telegram',
             'status' => 'Статус обращения',
-            'name' => 'Имя',
-            'surname' => 'Фамилия',
+            'snm' => 'ФИО',
             'phone' => 'Номер телефона',
             'email' => 'Почта',
             'title' => 'Заголовок обращения',

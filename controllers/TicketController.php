@@ -98,8 +98,8 @@ class TicketController extends AppController{
         if($model->load(\yii::$app->request->post())){
             if($model->validate()){
                 if($model->status == 2 || $model->status == 3){
-                    if($model->comment == '' || !isset($model->comment) || strlen($model->comment) < 5){
-                        \Yii::$app->session->addFlash('error', 'Необходимо заполнить результаты рассмотрения, перед закрытием обращения.');     
+                    if($model->comment == '' || !isset($model->comment) || strlen($model->comment) < 6){
+                        \Yii::$app->session->addFlash('error', 'Необходимо заполнить результаты рассмотрения, перед закрытием обращения.<br>Минимум 6 символов.');     
                     }
                     else{
                         $model->limit = 0;
@@ -185,8 +185,7 @@ class TicketController extends AppController{
                 'author' => \Yii::$app->user->identity->tg_user_id,
                 'message' => $message
             ];
-            $messages[] = $message;
-            $model->messages = $messages;
+            $model->messages = array_merge($model->messages, [$message]);
             $model->limit = \Yii::$app->params['limitAfterResponse'];
             $model->is_new = 0;
             $updates['ticket'][$id]['messages'] = $model->messages;
@@ -247,8 +246,7 @@ class TicketController extends AppController{
                             'author' => \Yii::$app->user->identity->tg_user_id,
                             'message' => 'https://api.telegram.org/file/bot' . $_SERVER['BOT_FILE_TOKEN'] . '/' . $response['result']['file_path']
                         ];
-                        $messages[] = $message;
-                        $model->messages = $messages;
+                        $model->messages = array_merge($model->messages, [$message]);
                         $model->limit = \Yii::$app->params['limitAfterResponse'];
                         $model->is_new = 0;
                         $updates['ticket'][$id]['messages'] = $model->messages;

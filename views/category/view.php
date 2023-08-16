@@ -8,16 +8,16 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="categories-view container table-responsive pt-0 mb-4 border border-dark rounded bg-light">
 
-    <h1><?= yii\helpers\Html::encode($this->title); ?></h1>
+    <h1 class="text-wrap text-break"><?= yii\helpers\Html::encode($this->title); ?></h1>
 
     <p>
-        <?= yii\helpers\Html::a('Изменить', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
+        <?= yii\helpers\Html::a('Изменить', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']); ?>
         <?= yii\helpers\Html::a('Удалить', ['delete', 'id' => $model->id], [
             'class' => 'btn btn-danger',
             'data' => [
                 'confirm' => 'Вы уверены, что хотите удалить данную категорию?',
-                'method' => 'post',
-            ],
+                'method' => 'post'
+            ]
         ]);
         ?>
     </p>
@@ -25,7 +25,6 @@ $this->params['breadcrumbs'][] = $this->title;
     <?= yii\widgets\DetailView::widget([
         'model' => $model,
         'attributes' => [
-            //'id',
             'name'
         ]
     ]);

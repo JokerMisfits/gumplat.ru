@@ -26,7 +26,7 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'class' => yii\grid\ActionColumn::class,
                 'template' => '{view} {update}',
-                'urlCreator' => function ($action, Users $model, $key, $index, $column){
+                'urlCreator' => function($action, Users $model, $key, $index, $column){
                     return yii\helpers\Url::toRoute([$action, 'id' => $model->id]);
                  }
             ]

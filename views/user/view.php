@@ -8,7 +8,7 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="users-view container table-responsive pt-0 mb-4 border border-dark rounded bg-light">
 
-    <h1><?= yii\helpers\Html::encode($this->title); ?></h1>
+    <h1 class="text-wrap text-break"><?= yii\helpers\Html::encode($this->title); ?></h1>
 
     <p>
         <?php 

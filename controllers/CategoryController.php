@@ -38,6 +38,10 @@ class CategoryController extends AppController{
     public function actionIndex() : string{
         $searchModel = new CategorySearch();
         $dataProvider = $searchModel->search(\yii::$app->request->get());
+        $dataProvider->sort->attributes['ticketsCount'] = [
+            'asc' => ['ticketsCount' => SORT_ASC],
+            'desc' => ['ticketsCount' => SORT_DESC]
+        ];
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider
@@ -103,7 +107,7 @@ class CategoryController extends AppController{
         $model = $this->findModel($id);
         if(\Yii::$app->request->isPost && $model->load(\yii::$app->request->post())){
             if($model->save()){
-                \Yii::$app->session->addFlash('success', 'Город успешно обновлен.');
+                \Yii::$app->session->addFlash('success', 'Категория успешно обновлен.');
                 $updates['category'][$id]['name'] = $model->name;
                 $updates['category'][$id]['event'] = 'update';
                 $cache = \Yii::$app->cache->get('updates');

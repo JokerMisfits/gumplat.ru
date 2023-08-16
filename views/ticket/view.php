@@ -41,23 +41,17 @@ $this->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15
     <div class="modal-dialog modal-fullscreen modal-dialog-scrollable">
         <div class="modal-content bg-dark">
             <div class="modal-header">
-                <h1 class="modal-title fs-5" id="ModalLabel">Заголовок</h1>
-                <button type="button" class="btn btn-danger btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body" id="ModalContent">Текст</div>
-            <div class="modal-footer">
-                <!-- <div class="col-12 text-start">
-                    <a href="https://t.me/Xo_Diamond_XO" class="link-danger link-offset-2 link-underline-opacity-30 link-underline-opacity-100-hover" title="Напишите, чтобы заказать расширение функционала проекта.">Связь с разработчиком</a> <i class="fas fa-laptop-code"></i>
-                </div> -->
+                <h1 class="modal-title fs-5 text-wrap text-break" id="ModalLabel">Заголовок</h1>
                 <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Закрыть</button>
             </div>
+            <div class="modal-body text-wrap text-break" id="ModalContent">Текст</div>
         </div>
     </div>
 </div>
 
 <div class="tickets-view row p-0 m-0 table-responsive bg-light border-top border-bottom border-dark">
     <div id="tickets-view-content" class="col-12 col-md-9 border-end border-dark" style="padding: 0 0 0 2px;">
-        <h1 class="text-start"><?= 'Обращение №' . yii\helpers\Html::encode($model->id); ?></h1>
+        <h1 class="text-start text-wrap text-break"><?= 'Обращение №' . yii\helpers\Html::encode($model->id); ?></h1>
         <p>
             <?= yii\helpers\Html::a('Изменить', ['update', 'id' => $model->id], ['class' => 'btn btn-primary mt-1']); ?>
             <button id="ticket-result-button" class="btn btn-dark mt-1" onclick="showResult();">Показать результаты рассмотрения</button>
@@ -82,48 +76,38 @@ $this->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15
                 [
                     'attribute' => 'title',
                     'label' => 'Заголовок обращения',
-                    'contentOptions' => ['id' => 'ticket-view-title'],
+                    'contentOptions' => ['id' => 'ticket-view-title', 'class' => 'text-wrap text-break'],
                     'value' => function($model){
                         $js = <<<JS
-                            setModalHeader("$model->title");
+                            setModalHeader(`$model->title`);
                         JS;
                         $this->registerJs($js);
-                        if(strlen($model->title) > 32){
+                        if(strlen($model->title) > 16){
                             $js = <<<JS
-                            showTextMore("$model->text", 'title');
-                        JS;
-                        return $this->registerJs($js);
+                                showTextMore(`$model->title`, 'title');
+                            JS;
+                            return $this->registerJs($js);
                         }
                         return $model->title;
                     }
                 ],
                 [
-                    'attribute' => 'name',
-                    'label' => 'Имя',
+                    'attribute' => 'snm',
+                    'label' => 'ФИО',
+                    'contentOptions' => ['class' => 'text-wrap text-break'],
                     'value' => function($model){
-                        if(!isset($model->name) || $model->name === ''){
+                        if(!isset($model->snm) || $model->snm === ''){
                             return null;
                         }
                         else{
-                            return $model->name;
-                        }
-                    }
-                ],
-                [
-                    'attribute' => 'surname',
-                    'label' => 'Фамилия',
-                    'value' => function($model){
-                        if(!isset($model->surname) || $model->surname === ''){
-                            return null;
-                        }
-                        else{
-                            return $model->surname;
+                            return $model->snm;
                         }
                     }
                 ],
                 [
                     'attribute' => 'phone',
                     'label' => 'Номер телефона',
+                    'contentOptions' => ['class' => 'text-wrap text-break'],
                     'value' => function($model){
                         if(!isset($model->phone) || $model->phone === ''){
                             return null;
@@ -137,6 +121,7 @@ $this->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15
                 [
                     'attribute' => 'email',
                     'label' => 'Почта',
+                    'contentOptions' => ['class' => 'text-wrap text-break'],
                     'value' => function($model){
                         if(!isset($model->email) || $model->email === ''){
                             return null;
@@ -150,20 +135,21 @@ $this->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15
                 [
                     'attribute' => 'text',
                     'label' => 'Текст обращения',
-                    'contentOptions' => ['id' => 'ticket-view-text'],
+                    'contentOptions' => ['id' => 'ticket-view-text', 'class' => 'text-wrap text-break'],
                     'value' => function($model){
-                        if(strlen($model->text) > 32){
+                        if(strlen($model->text) > 16){
                             $js = <<<JS
-                                showTextMore("$model->text", 'text');
+                                showTextMore(`$model->text`, 'text');
                             JS;
                             return $this->registerJs($js);
                         }
                         return $model->text;
-                    }
+                    },
                 ],
                 [
                     'attribute' => 'status',
                     'label' => 'Статус обращения',
+                    'contentOptions' => ['class' => 'text-wrap text-break'],
                     'value' => function($model){
                         if($model->status == 0){
                             return 'Зарегистрировано';
@@ -178,13 +164,14 @@ $this->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15
                             return 'Не удовлетворено';
                         }
                         else{
-                            return '<span class="not-set">(не задано)</span>';
+                            return null;
                         }
                     }
                 ],
                 [
                     'attribute' => 'category_id',
                     'label' => 'Категория обращения',
+                    'contentOptions' => ['class' => 'text-wrap text-break'],
                     'value' => function($model){
                         if(isset($model->category_id)){
                             return Categories::findOne($model->category_id)->name;
@@ -196,7 +183,8 @@ $this->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15
                 ],
                 [
                     'attribute' => 'city_id',
-                    'label' => 'Город',
+                    'label' => 'Н. П.',
+                    'contentOptions' => ['class' => 'text-wrap text-break'],
                     'value' => function($model){
                         if(isset($model->city_id)){
                             return Cities::findOne($model->city_id)->name;
@@ -206,21 +194,22 @@ $this->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15
                         }
                     }
                 ],
-                [
-                    'attribute' => 'user_id',
-                    'label' => 'Ответственный',
-                    'value' => function($model){
-                        if(isset($model->user_id)){
-                            return Users::findOne($model->user_id)->snm;
-                        }
-                        else{
-                            return $model->user_id;
-                        }
-                    }
-                ],
+                // [
+                //     'attribute' => 'user_id',
+                //     'label' => 'Ответственный',
+                //     'value' => function($model){
+                //         if(isset($model->user_id)){
+                //             return Users::findOne($model->user_id)->snm;
+                //         }
+                //         else{
+                //             return $model->user_id;
+                //         }
+                //     }
+                // ],
                 [
                     'attribute' => 'creation_date',
                     'label' => 'Дата создания обращения',
+                    'contentOptions' => ['class' => 'text-wrap text-break'],
                     'value' => function($model){
                         $dateTime = new DateTime($model->creation_date, null);
                         return Yii::$app->formatter->asDatetime($dateTime, 'php:d.m.Y H:i:s');
@@ -229,6 +218,7 @@ $this->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15
                 [
                     'attribute' => 'last_change',
                     'label' => 'Дата последнего изменения',
+                    'contentOptions' => ['class' => 'text-wrap text-break'],
                     'value' => function($model){
                         $dateTime = new DateTime($model->last_change, null);
                         return Yii::$app->formatter->asDatetime($dateTime, 'php:d.m.Y H:i:s');
@@ -240,7 +230,7 @@ $this->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15
     </div>
     <div id="ticket-view-sidebar" class="col-12 col-md-3 p-0">
         <div id="ticket-view-sidebar-header" class="border-bottom border-dark text-center px-2">
-            <span class="text-nowrap"><?= $model->category_id !== null ? 'Документы по категории: ' . Categories::findOne($model->category_id)->name : 'Документы по категории:'; ?></span>
+            <span class="text-wrap text-break"><?= $model->category_id !== null ? 'Документы по категории: ' . Categories::findOne($model->category_id)->name : 'Документы по категории:'; ?></span>
         </div>
         <div id="ticket-view-sidebar-content" class="px-2 pb-2">
             <?php
@@ -251,10 +241,7 @@ $this->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15
                         for($i = 0; $i < $count; $i++){
                             echo '<div class="col-12 mt-1 text-center"><span class="text-nowrap">' . yii\helpers\Html::a($documents[$i]->base_name . '.' . $documents[$i]->extension, ['download/' . $documents[$i]->id], ['class' => 'link-primary link-offset-2 link-underline-opacity-50 link-underline-opacity-100-hover', 'title' => 'Скачать', 'target' => '_self']) . '</span></div>';
                         }
-                    }
-                    else{
-                        echo '<span class="not-set">Файлы по заданной категории отсутствуют</span>';
-                    }      
+                    }   
                 }
                 else{
                     echo '<span class="not-set">Категория не задана</span>';
@@ -268,6 +255,43 @@ $this->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15
     <?php 
         echo '<span>История сообщений:</span><hr class="text-danger my-2">';
         if(isset($model->tg_user_id)){
+            if(isset(Yii::$app->user->identity->tg_user_id)){
+                if(($model->status === 0 || $model->status === 1)){
+                    echo '<button id="ticket-send-file-button" onclick="showSendFile();" class="btn btn-warning btn-sm my-2 mx-1">Отправить файл</button>';
+                    echo '<hr class="text-danger my-2">';
+                    echo '<div id="ticket-send-message-form" style="display: block;>';
+                    echo '<hr class="text-danger my-2">';
+                    echo '<div class="text-dark col-12 col-md-8 offset-md-2">';
+                    echo '<label id="messageTextLabel" class="form-label text-wrap text-break text-light fw-bold" for="messageTextarea">Форма отправки сообщений</label>';
+                    echo '<textarea id="messageTextarea" class="form-control" rows="4"></textarea>';
+                    echo '</div>';
+                    echo '<div class="d-flex justify-content-center my-2 mx-1">' . yii\helpers\Html::a('Отправить', ['message-text', 'id' => $model->id], [
+                        'class' => 'btn btn-success col-12 col-md-8',
+                        'id' => 'sendMessageButton'
+                    ]) . '</div>';
+                    echo '<hr class="text-danger my-2">';
+                    echo '</div>';
+    
+                    echo '<div id="ticket-send-file-form" style="display: none;>';
+                    echo '<hr class="text-danger my-2">';
+                    $form = yii\widgets\ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data', 'class' => 'col-12 col-md-8 col-lg-6 offset-md-2 offset-lg-3'], 'action' => ['message-file', 'id' => $model->id]]);
+                    echo $form->field(new Documents(), 'file', ['labelOptions' => ['class' => 'form-required']])->fileInput(['class' => 'form-control', 'type' => 'file'])->label('Файл');
+                    echo '<div class="form-group">';
+                    echo yii\helpers\Html::submitButton('Отправить', ['class' => 'btn btn-success col-12']);
+                    echo '</div>';
+                    $form::end();
+                    echo '<hr class="text-danger my-2">';
+                    echo '</div>';
+                }
+                else{
+                    echo '<span class="not-set">Обращение закрыто, возможность отправки сообщений отключена.</span>';
+                    echo '<hr class="text-danger my-2">';
+                }
+            }
+            else{
+                echo '<hr class="text-danger my-2">';
+                echo '<span class="not-set">Для отправки сообщений необходимо привязать ваш telegram к личному кабинету</span>';
+            }
             if(array_key_exists(1, $model->messages)){
                 $count = count($model->messages);
                 for($i = 1; $i < $count; $i++){
@@ -319,53 +343,15 @@ $this->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15
             else{
                 echo '<span class="not-set">Ничего не найдено.</span>';
             }
-            if(isset(Yii::$app->user->identity->tg_user_id)){
-                if(($model->status === 0 || $model->status === 1)){
-                    echo '<hr class="text-danger my-2">';
-                    echo '<button id="ticket-send-message-button" onclick="showSendMessage();" class="btn btn-warning btn-sm my-2 mx-1">Отправить текстовое сообщение</button> <button id="ticket-send-file-button" onclick="showSendFile();" class="btn btn-warning btn-sm my-2 mx-1">Отправить документ</button>';
-                    echo '<hr class="text-danger my-2">';
-                    echo '<div id="ticket-send-message-form" style="display: none;>';
-                    echo '<hr class="text-danger my-2">';
-                    echo '<div class="form-floating text-dark col-12 col-md-8 col-lg-6 offset-md-2 offset-lg-3">';
-                    echo '<textarea id="messageTextarea" class="form-control" placeholder="" id="floatingTextarea"></textarea>';
-                    echo '<label id="messageTextLabel" for="floatingTextarea">Форма отправки сообщений в telegram</label>';
-                    echo '</div>';
-                    echo '<div class="d-flex justify-content-center my-2 mx-1">' . yii\helpers\Html::a('Отправить', ['message-text', 'id' => $model->id], [
-                        'class' => 'btn btn-success col-12 col-md-8 col-lg-6',
-                        'id' => 'sendMessageButton'
-                    ]) . '</div>';
-                    echo '</div>';
-    
-                    echo '<div id="ticket-send-file-form" style="display: none;>';
-                    echo '<hr class="text-danger my-2">';
-                    $form = yii\widgets\ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data', 'class' => 'col-12 col-md-8 col-lg-6 offset-md-2 offset-lg-3'], 'action' => ['message-file', 'id' => $model->id]]);
-                    echo '<strong id="messageTextLabel" for="floatingTextarea">Форма отправки документов в telegram</strong>';
-                    echo $form->field(new Documents(), 'file', ['labelOptions' => ['class' => 'form-required']])->fileInput(['class' => 'form-control', 'type' => 'file']);
-                    echo '<div class="form-group">';
-                    echo yii\helpers\Html::submitButton('Отправить', ['class' => 'btn btn-success col-12']);
-                    echo '</div>';
-                    $form::end();
-                    echo '</div>';
-                }
-                else{
-                    echo '<hr class="text-danger my-2">';
-                    echo '<span class="not-set">Обращение закрыто, возможность отправки сообщений отключена.</span>';
-                }
-            }
-            else{
-                echo '<hr class="text-danger my-2">';
-                echo '<span class="not-set">Для отправки сообщений необходимо привязать ваш telegram к личному кабинету</span>';
-            }
         }
         else{
-            echo '<span class="not-set">ID пользователя в telegram не задан</span>';
+            echo '<span class="not-set">Ничего не найдено.</span>';
         }
     ?>
     
 </div>
 
 <script>
-
     function setModalHeader(header){
         let modalHeader = document.getElementById('ModalLabel');
         modalHeader.innerHTML = header;
@@ -401,37 +387,19 @@ $this->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15
 </script>
 
 <script>
-    function showSendMessage(){
-        let form = document.getElementById('ticket-send-message-form');
-        let button = document.getElementById('ticket-send-message-button');
-        let buttonFile = document.getElementById('ticket-send-file-button');
-        if(form.style.display === 'none'){
-            form.style.display = 'block';
-            buttonFile.style.display = 'none';
-            button.innerText = 'Скрыть форму отправки сообщения';
-        }
-        else{
-            form.style.display = 'none';
-            buttonFile.style.display = 'inline-block';
-            button.innerText = 'Отправить текстовое сообщение';
-        }
-    }
-</script>
-
-<script>
     function showSendFile(){
         let form = document.getElementById('ticket-send-file-form');
         let button = document.getElementById('ticket-send-file-button');
-        let buttonMessage = document.getElementById('ticket-send-message-button');
+        let messageForm = document.getElementById('ticket-send-message-form');
         if(form.style.display === 'none'){
             form.style.display = 'block';
-            buttonMessage.style.display = 'none';
-            button.innerText = 'Скрыть форму отправки документа';
+            messageForm.style.display = 'none';
+            button.innerText = 'Скрыть форму отправки файла';
         }
         else{
             form.style.display = 'none';
-            buttonMessage.style.display = 'inline-block';
-            button.innerText = 'Отправить документ';
+            messageForm.style.display = 'block';
+            button.innerText = 'Отправить файл';
         }
     }
 </script>
@@ -442,8 +410,8 @@ $this->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15
     sendMessageButton.addEventListener("click", function(event){
         event.preventDefault();
         var messageValue = encodeURIComponent(messageTextarea.value);
-        if(messageValue.length < 6 || messageValue.length > 2000){
-            document.getElementById("messageTextLabel").innerHTML = '<span class="text-danger">Сообщение должно быть больше 6 символов и меньше 2000 символов!</span>';
+        if(messageValue.length < 6 || messageValue.length > 2800){
+            document.getElementById("messageTextLabel").innerHTML = '<span class="text-danger">Сообщение должно быть больше 6 символов и меньше 2800 символов!</span>';
         }
         else{
             let currentHref = sendMessageButton.getAttribute("href");

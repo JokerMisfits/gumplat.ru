@@ -43,6 +43,11 @@ class CitySearch extends Cities{
                 'forcePageParam' => false,
                 'pageSizeParam' => false,
                 'pageSize' => 15
+            ],
+            'sort' => [
+                'defaultOrder' => [
+                    'name' => SORT_ASC
+                ]
             ]
         ]);
 

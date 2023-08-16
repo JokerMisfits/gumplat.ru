@@ -28,6 +28,14 @@ $this->params['breadcrumbs'][] = $this->title;
             ['class' => 'yii\grid\SerialColumn'],
             'name',
             [
+                'attribute' => 'ticketsCount',
+                'label' => 'Количество обращений',
+                'value' => function($model){
+                    return count($model->tickets);
+                },
+                'contentOptions' => ['style' => 'text-align: center;']
+            ],
+            [
                 'class' => yii\grid\ActionColumn::class,
                 'urlCreator' => function ($action, Categories $model, $key, $index, $column) {
                     return yii\helpers\Url::toRoute([$action, 'id' => $model->id]);

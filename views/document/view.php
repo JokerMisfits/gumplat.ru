@@ -13,7 +13,7 @@ yii\web\YiiAsset::register($this);
 
 <div class="documents-view container table-responsive pt-0 mb-4 border border-dark rounded bg-light">
 
-    <h1><?= yii\helpers\Html::encode($this->title); ?></h1>
+    <h1 class="text-wrap text-break"><?= yii\helpers\Html::encode($this->title); ?></h1>
 
     <p>
         <?= yii\helpers\Html::a('Скачать', ['download-file', 'id' => $model->id], ['class' => 'btn btn-success']); ?>

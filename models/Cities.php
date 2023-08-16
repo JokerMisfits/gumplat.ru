@@ -28,7 +28,7 @@ class Cities extends \yii\db\ActiveRecord{
             [['name', 'x', 'y'], 'required'],
             [['x', 'y'], 'number'],
             [['territory'], 'integer'],
-            [['name'], 'string', 'max' => 255],
+            [['name'], 'string', 'max' => 45, 'tooLong' => 'Максимальная длина названия Н. П. - 45 символов(Ограничение для отображения кнопок в telegram).'],
             [['name'], 'unique']
         ];
     }
@@ -39,7 +39,7 @@ class Cities extends \yii\db\ActiveRecord{
     public function attributeLabels() : array{
         return [
             'id' => 'ID',
-            'name' => 'Название города',
+            'name' => 'Название Н. П.',
             'x' => 'Долгота',
             'y' => 'Широта',
             'territory' => 'Новая территория?'

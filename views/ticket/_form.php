@@ -36,11 +36,9 @@ sort($users);
 
     <?= $form->field($model, 'title', ['labelOptions' => ['class' => 'form-required']])->textInput(['maxlength' => true]); ?>
 
-    <?= $form->field($model, 'text', ['labelOptions' => ['class' => 'form-required']])->textarea(['rows' => 3]); ?>
+    <?= $form->field($model, 'text', ['labelOptions' => ['class' => 'form-required']])->textarea(['rows' => 4]); ?>
 
-    <?= $form->field($model, 'name')->textInput(['maxlength' => true]); ?>
-
-    <?= $form->field($model, 'surname')->textInput(['maxlength' => true]); ?>
+    <?= $form->field($model, 'snm')->textInput(['maxlength' => true]); ?>
 
     <?= $form->field($model, 'phone')->textInput(['maxlength' => true]); ?>
 
@@ -48,13 +46,13 @@ sort($users);
 
     <?= $form->field($model, 'comment')->textarea(['rows' => 2])->hint('Пример:' . '<br>' . '06/08/23 Взято в работу, прозвон клиента' . '<br>' . '07/08/23 Запрос документов у клиента' . '<br>' . '24/08/23 Документы не были получены => обращение закрыто.'); ?>
 
-    <?= $form->field($model, 'category_id')->dropDownList(yii\helpers\ArrayHelper::map(Categories::find()->select(['id', 'name'])->all(), 'id', 'name'), ['prompt' => 'Выберите категорию']); ?>
+    <?= $form->field($model, 'category_id')->dropDownList(yii\helpers\ArrayHelper::map(Categories::find()->select(['id', 'name'])->groupBy('name')->all(), 'id', 'name'), ['prompt' => 'Выберите категорию', 'style' => 'cursor: pointer;']); ?>
 
-    <?= $form->field($model, 'city_id')->dropDownList(yii\helpers\ArrayHelper::map(Cities::find()->where(['territory' => 0])->select(['id', 'name'])->all(), 'id', 'name') + ['Новая территория' => yii\helpers\ArrayHelper::map(Cities::find()->where(['territory' => 1])->select(['id', 'name'])->all(), 'id', 'name')], ['prompt' => 'Выберите город']); ?>
+    <?= $form->field($model, 'city_id')->dropDownList(yii\helpers\ArrayHelper::map(Cities::find()->select(['id', 'name'])->where(['territory' => 0])->groupBy('name')->all(), 'id', 'name') + ['Новая территория' => yii\helpers\ArrayHelper::map(Cities::find()->select(['id', 'name'])->where(['territory' => 1])->groupBy('name')->all(), 'id', 'name')], ['prompt' => 'Выберите Н. П.', 'style' => 'cursor: pointer;'])->label('Н. П.'); ?>
 
-    <?= $form->field($model, 'user_id')->dropDownList(yii\helpers\ArrayHelper::map($users, 'id', 'snm'), ['prompt' => 'Выберите сотрудника']); ?>
+    <!-- <?= $form->field($model, 'user_id')->dropDownList(yii\helpers\ArrayHelper::map($users, 'id', 'snm'), ['prompt' => 'Выберите сотрудника']); ?> -->
 
-    <?= $form->field($model, 'status')->dropDownList($statusOptions); ?>
+    <?= $form->field($model, 'status')->dropDownList($statusOptions, ['style' => 'cursor: pointer;']); ?>
 
     <div class="form-group">
         <?= yii\helpers\Html::submitButton('Сохранить', ['class' => 'btn btn-success']); ?>

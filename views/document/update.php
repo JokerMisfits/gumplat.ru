@@ -18,7 +18,7 @@ $this->params['breadcrumbs'][] = 'Изменить';
 
 <div class="documents-update container pt-0 mb-4 border border-dark rounded bg-light">
 
-    <h1><?= yii\helpers\Html::encode($this->title); ?></h1>
+    <h1 class="text-wrap text-break"><?= yii\helpers\Html::encode($this->title); ?></h1>
 
     <?= $this->render('_form', [
         'model' => $model

@@ -26,7 +26,7 @@ class Categories extends \yii\db\ActiveRecord{
     public function rules() : array{
         return [
             [['name'], 'required'],
-            [['name'], 'string', 'max' => 255]
+            [['name'], 'string', 'max' => 45, 'tooLong' => 'Максимальная длина названия категории - 45 символов(Ограничение для отображения кнопок в telegram).']
         ];
     }
 

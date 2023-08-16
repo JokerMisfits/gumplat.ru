@@ -48,7 +48,12 @@ class UserSearch extends Users{
                 'forcePageParam' => false,
                 'pageSizeParam' => false,
                 'pageSize' => 15
-            ]
+            ],
+            'sort' => [
+                'defaultOrder' => [
+                    'id' => SORT_ASC
+                ]
+            ],
         ]);
 
         $this->load($params);

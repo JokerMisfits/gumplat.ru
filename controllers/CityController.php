@@ -65,7 +65,7 @@ class CityController extends AppController{
         if(\Yii::$app->request->isPost){
             if($model->load(\yii::$app->request->post())){
                 if($model->save()){
-                    \Yii::$app->session->addFlash('success', 'Город успешно добавлен.');
+                    \Yii::$app->session->addFlash('success', 'Н. П. успешно добавлен.');
                     $updates['city'][$model->id]['name'] = $model->name;
                     $updates['city'][$model->id]['event'] = 'create';
                     $cache = \Yii::$app->cache->get('updates');
@@ -79,7 +79,7 @@ class CityController extends AppController{
                     return $this->redirect(['view', 'id' => $model->id]);
                 }
                 else{
-                    \Yii::$app->session->addFlash('error', 'Произошла ошибка при добавлении города.');
+                    \Yii::$app->session->addFlash('error', 'Произошла ошибка при добавлении Н. П.');
                 }
             }
         }
@@ -102,7 +102,7 @@ class CityController extends AppController{
         $model = $this->findModel($id);
         if(\Yii::$app->request->isPost && $model->load(\yii::$app->request->post())){
             if($model->save()){
-                \Yii::$app->session->addFlash('success', 'Город успешно обновлен.');
+                \Yii::$app->session->addFlash('success', 'Н. П. успешно обновлен.');
                 $updates['city'][$id]['name'] = $model->name;
                 $updates['city'][$id]['event'] = 'update';
                 $cache = \Yii::$app->cache->get('updates');
@@ -119,7 +119,7 @@ class CityController extends AppController{
                 return $this->redirect(['view', 'id' => $id]);
             }
             else{
-                \Yii::$app->session->addFlash('error', 'Произошла ошибка при обновлении города.');
+                \Yii::$app->session->addFlash('error', 'Произошла ошибка при обновлении Н. П.');
             }
         }
         return $this->render('update', [
@@ -138,7 +138,7 @@ class CityController extends AppController{
         if(Tickets::find()->where(['city_id' => $id])->limit(1)->count() === 0){
             $model = $this->findModel($id);
             if($model->delete() !== false){
-                \Yii::$app->session->addFlash('success', 'Город ' . $model->name . ' успешно удален.');
+                \Yii::$app->session->addFlash('success', 'Н. П. ' . $model->name . ' успешно удален.');
                 $updates['city'][$id]['event'] = 'delete';
                 $cache = \Yii::$app->cache->get('updates');
                 if($cache === false){
@@ -150,11 +150,11 @@ class CityController extends AppController{
                 }
             }
             else{
-                \Yii::$app->session->addFlash('error', 'Произошла ошибка при удалении города ' . $model->name . '.');  
+                \Yii::$app->session->addFlash('error', 'Произошла ошибка при удалении Н. П. ' . $model->name . '.');  
             }
         }
         else{
-            \Yii::$app->getSession()->addFlash('error', 'Данный город еще используется! '. \yii\helpers\Html::a(\yii\helpers\Html::encode('Перейти к данным обращениям'), \yii\helpers\Url::to(['tickets/', 'TicketSearch[city_id]' => $id]), ['class' => 'link-dark link-offset-2 link-underline-opacity-50 link-underline-opacity-100-hover', 'title' => 'Перейти']));
+            \Yii::$app->getSession()->addFlash('error', 'Данный Н. П. еще используется! '. \yii\helpers\Html::a(\yii\helpers\Html::encode('Перейти к данным обращениям'), \yii\helpers\Url::to(['tickets/', 'TicketSearch[city_id]' => $id]), ['class' => 'link-dark link-offset-2 link-underline-opacity-50 link-underline-opacity-100-hover', 'title' => 'Перейти']));
         }
         return $this->redirect(['index']);
     }

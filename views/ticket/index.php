@@ -57,16 +57,15 @@ $this->registerJsFile('https://api-maps.yandex.ru/2.1/?apikey=0296c13d-3743-4d3f
                         return 'Не удовлетворено';
                     }
                     else{
-                        return '<span class="not-set">(не задано)</span>';
+                        return null;
                     }
                 },
                 'filter' => ['0' => 'Зарегистрировано', '1' => 'Обрабатывается', '2' => 'Удовлетворено', '3' => 'Не удовлетворено'],
-                'filterInputOptions' => ['class' => 'form-control selectpicker', 'data-style' => 'btn-primary', 'prompt' => 'Все'],
+                'filterInputOptions' => ['class' => 'form-control selectpicker', 'data-style' => 'btn-primary', 'prompt' => 'Все', 'style' => 'cursor: pointer;'],
                 'format' => 'raw',
                 'contentOptions' => ['style' => 'text-align: center;']
             ],
-            'name',
-            'surname',
+            'snm',
             'email:email',
             [
                 'attribute' => 'category_id',
@@ -79,12 +78,12 @@ $this->registerJsFile('https://api-maps.yandex.ru/2.1/?apikey=0296c13d-3743-4d3f
                         return $model->category_id;
                     }
                 },
-                'filter' => yii\helpers\ArrayHelper::map(Categories::find()->asArray()->all(), 'id', 'name'),
-                'filterInputOptions' => ['class' => 'form-control selectpicker', 'data-style' => 'btn-primary', 'prompt' => 'Все']
+                'filter' => yii\helpers\ArrayHelper::map(Categories::find()->select(['id', 'name'])->groupBy('name')->asArray()->all(), 'id', 'name'),
+                'filterInputOptions' => ['class' => 'form-control selectpicker', 'data-style' => 'btn-primary', 'prompt' => 'Все', 'style' => 'cursor: pointer;']
             ],
             [
                 'attribute' => 'city_id',
-                'label' => 'Город',
+                'label' => 'Н. П.',
                 'value' => function($model){
                     if(isset($model->city_id)){
                         return Cities::findOne($model->city_id)->name;
@@ -93,23 +92,23 @@ $this->registerJsFile('https://api-maps.yandex.ru/2.1/?apikey=0296c13d-3743-4d3f
                         return $model->city_id;
                     }
                 },
-                'filter' => yii\helpers\ArrayHelper::map(Cities::find()->where(['territory' => 0])->asArray()->all(), 'id', 'name') + ['Новая территория' => yii\helpers\ArrayHelper::map(Cities::find()->where(['territory' => 1])->asArray()->all(), 'id', 'name')],
-                'filterInputOptions' => ['class' => 'form-control selectpicker', 'data-style' => 'btn-primary', 'prompt' => 'Все']
+                'filter' => yii\helpers\ArrayHelper::map(Cities::find()->select(['id', 'name'])->where(['territory' => 0])->groupBy('name')->asArray()->all(), 'id', 'name') + ['Новая территория' => yii\helpers\ArrayHelper::map(Cities::find()->select(['id', 'name'])->where(['territory' => 1])->groupBy('name')->asArray()->all(), 'id', 'name')],
+                'filterInputOptions' => ['class' => 'form-control selectpicker', 'data-style' => 'btn-primary', 'prompt' => 'Все', 'style' => 'cursor: pointer;']
             ],
-            [
-                'attribute' => 'user_id',
-                'label' => 'Ответственный',
-                'value' => function($model){
-                    if(isset($model->user_id)){
-                        return Users::findOne($model->user_id)->snm;
-                    }
-                    else{
-                        return $model->user_id;
-                    }
-                },
-                'filter' => yii\helpers\ArrayHelper::map(Users::find()->where(['or', ['id' => Yii::$app->params['systemUserId']], ['>=', 'id', 10]])->asArray()->all(), 'id', 'snm'),
-                'filterInputOptions' => ['class' => 'form-control selectpicker', 'data-style' => 'btn-primary', 'prompt' => 'Все']
-            ],
+            // [
+            //     'attribute' => 'user_id',
+            //     'label' => 'Ответственный',
+            //     'value' => function($model){
+            //         if(isset($model->user_id)){
+            //             return Users::findOne($model->user_id)->snm;
+            //         }
+            //         else{
+            //             return $model->user_id;
+            //         }
+            //     },
+            //     'filter' => yii\helpers\ArrayHelper::map(Users::find()->where(['or', ['id' => Yii::$app->params['systemUserId']], ['>=', 'id', 10]])->asArray()->all(), 'id', 'snm'),
+            //     'filterInputOptions' => ['class' => 'form-control selectpicker', 'data-style' => 'btn-primary', 'prompt' => 'Все']
+            // ],
             [
                 'attribute' => 'creation_date',
                 'label' => 'Дата обращения',
@@ -121,7 +120,7 @@ $this->registerJsFile('https://api-maps.yandex.ru/2.1/?apikey=0296c13d-3743-4d3f
                     'model' => $searchModel,
                     'attribute' => 'creation_date',
                     'dateFormat' => 'php:Y-m-d',
-                    'options' => ['class' => 'form-control selectpicker', 'data-style' => 'btn-primary', 'placeholder' => 'Все']
+                    'options' => ['class' => 'form-control selectpicker', 'data-style' => 'btn-primary', 'placeholder' => 'Все', 'readonly' => true, 'style' => 'cursor: pointer;']
                 ]),
             ],
             [
@@ -155,6 +154,16 @@ $this->registerJsFile('https://api-maps.yandex.ru/2.1/?apikey=0296c13d-3743-4d3f
 <?php yii\widgets\Pjax::end(); ?>
 
 </div>
+
+<script>
+    const tg = window.Telegram.WebApp;
+    if(tg.initDataUnsafe?.user?.id) {
+        tg.ready();
+        tg.expand();
+        tg.enableClosingConfirmation();
+        tg.setHeaderColor(tg.headerColor);
+    }
+</script>
 
 <script>
     function showSearch(){

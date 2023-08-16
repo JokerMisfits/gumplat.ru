@@ -12,7 +12,7 @@ class TicketSearch extends Tickets{
     public function rules() : array{
         return [
             [['id', 'tg_user_id', 'status', 'category_id', 'city_id', 'user_id'], 'integer'],
-            [['name', 'surname', 'phone', 'email', 'title', 'text', 'comment', 'messages', 'creation_date', 'last_change'], 'safe'],
+            [['snm', 'phone', 'email', 'title', 'text', 'comment', 'messages', 'creation_date', 'last_change'], 'safe'],
         ];
     }
 
@@ -70,8 +70,7 @@ class TicketSearch extends Tickets{
             'user_id' => $this->user_id
         ]);
 
-        $query->andFilterWhere(['like', 'name', $this->name])
-            ->andFilterWhere(['like', 'surname', $this->surname])
+        $query->andFilterWhere(['like', 'snm', $this->snm])
             ->andFilterWhere(['like', 'phone', $this->phone])
             ->andFilterWhere(['like', 'email', $this->email])
             ->andFilterWhere(['like', 'title', $this->title])
