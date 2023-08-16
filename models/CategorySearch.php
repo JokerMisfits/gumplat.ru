@@ -15,7 +15,8 @@ class CategorySearch extends Categories{
     public function rules() : array{
         return [
             [['id'], 'integer'],
-            [['name'], 'safe']
+            [['name'], 'safe'],
+            [['ticketsCount'], 'integer']
         ];
     }
 

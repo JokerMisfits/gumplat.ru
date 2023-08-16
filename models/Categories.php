@@ -13,6 +13,8 @@ namespace app\models;
  */
 class Categories extends \yii\db\ActiveRecord{
 
+    public $ticketsCount = 0;
+
     /**
      * {@inheritdoc}
      */
@@ -26,7 +28,8 @@ class Categories extends \yii\db\ActiveRecord{
     public function rules() : array{
         return [
             [['name'], 'required'],
-            [['name'], 'string', 'max' => 45, 'tooLong' => 'Максимальная длина названия категории - 45 символов(Ограничение для отображения кнопок в telegram).']
+            [['name'], 'string', 'max' => 45, 'tooLong' => 'Максимальная длина названия категории - 45 символов(Ограничение для отображения кнопок в telegram).'],
+            [['ticketsCount'], 'integer']
         ];
     }
 

@@ -30,10 +30,8 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'attribute' => 'ticketsCount',
                 'label' => 'Количество обращений',
-                'value' => function($model){
-                    return count($model->tickets);
-                },
-                'contentOptions' => ['style' => 'text-align: center;']
+                'contentOptions' => ['style' => 'text-align: center;'],
+                'filter' => ''
             ],
             [
                 'class' => yii\grid\ActionColumn::class,
