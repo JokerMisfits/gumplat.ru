@@ -289,8 +289,8 @@ $this->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15
                 }
             }
             else{
-                echo '<hr class="text-danger my-2">';
                 echo '<span class="not-set">Для отправки сообщений необходимо привязать ваш telegram к личному кабинету</span>';
+                echo '<hr class="text-danger my-2">';
             }
             if(array_key_exists(1, $model->messages)){
                 $count = count($model->messages);

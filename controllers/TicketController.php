@@ -225,10 +225,9 @@ class TicketController extends AppController{
             move_uploaded_file($_FILES['Documents']['tmp_name']['file'], $savePath);
             $data = [
                 'document' => \Yii::$app->params['host'] . '/web/documents/' . $name,
-                'filename' => $name,
                 'chat_id' => \Yii::$app->params['fileChatId']
             ];
-            $response = json_decode(AppController::curlSendData($data, '/sendData'), true);
+            $response = json_decode(AppController::curlSendData($data, '/sendDocument'), true);
             if(array_key_exists('ok', $response) && $response['ok'] === true){
                 if(array_key_exists('thumbnail', $response['result']['document']) || array_key_exists('thumb', $response['result']['document'])){
                     $type = 'photo';
