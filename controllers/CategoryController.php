@@ -39,8 +39,8 @@ class CategoryController extends AppController{
         $searchModel = new CategorySearch();
         $dataProvider = $searchModel->search(\yii::$app->request->get());
         $dataProvider->sort->attributes['ticketsCount'] = [
-            'asc' => ['ticketsCount' => SORT_ASC],
-            'desc' => ['ticketsCount' => SORT_DESC]
+            'asc' => ['ticketsCount' => SORT_DESC],
+            'desc' => ['ticketsCount' => SORT_ASC]
         ];
         return $this->render('index', [
             'searchModel' => $searchModel,

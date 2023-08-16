@@ -30,8 +30,13 @@ $this->params['breadcrumbs'][] = $this->title;
                 'attribute' => 'ticketsCount',
                 'label' => 'Количество обращений',
                 'value' => function($model){
-                    return count($model->tickets);
-                }
+                    $count = count($model->tickets);
+                    if($count > 0){
+                        return \yii\helpers\Html::a($count, \yii\helpers\Url::to(['tickets/', 'TicketSearch[category_id]' => $model->id]), ['class' => 'link-primary', 'title' => 'Перейти']);
+                    }
+                    return $count;
+                },
+                'format' => 'raw'
             ]
         ]
     ]);
