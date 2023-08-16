@@ -56,7 +56,7 @@ class Tickets extends \yii\db\ActiveRecord{
             ['status', 'default', 'value' => 0],
             ['status', 'in', 'range' => [0, 1, 2, 3]],
             ['user_id', 'default', 'value' => \Yii::$app->params['systemUserId']],
-            ['phone', 'match', 'pattern' => '/^\+?[0-9]{1,}$/i', 'message' => 'Недействительный номер'],
+            ['phone', 'match', 'pattern' => '/^\+?[0-9\s\(\)\-]+$/i', 'message' => 'Недействительный номер'],
             [['category_id'], 'exist', 'skipOnError' => true, 'targetClass' => Categories::class, 'targetAttribute' => ['category_id' => 'id']],
             [['city_id'], 'exist', 'skipOnError' => true, 'targetClass' => Cities::class, 'targetAttribute' => ['city_id' => 'id']],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => Users::class, 'targetAttribute' => ['user_id' => 'id']]

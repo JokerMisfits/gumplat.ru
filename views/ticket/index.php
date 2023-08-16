@@ -132,7 +132,7 @@ $this->registerJsFile('https://api-maps.yandex.ru/2.1/?apikey=0296c13d-3743-4d3f
             ]
         ],
         'rowOptions' => function ($model, $key, $index, $grid) {
-            return ['onclick' => 'window.location.href = "' . \yii\helpers\Url::to(['ticket/view', 'id' => $model->id]) . '"'];
+            return ['ondblclick' => 'window.location.href = "' . \yii\helpers\Url::to(['ticket/view', 'id' => $model->id]) . '"'];
         },
         'pager' => [
             'class' => yii\widgets\LinkPager::class,
