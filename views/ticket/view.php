@@ -356,7 +356,7 @@ $this->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15
     if(tg.initDataUnsafe?.user?.id){
         const links = document.querySelectorAll('#tgdownload');
         links.forEach(link => {
-            link.innerHTML = 'Просмотреть';
+            link.innerHTML = 'Скачивание файлов недоступно в webApp, доступен только просмотр фотографий.';
         });
     }
 </script>
