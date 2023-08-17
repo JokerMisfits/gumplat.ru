@@ -356,7 +356,12 @@ $this->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15
     if(tg.initDataUnsafe?.user?.id){
         const links = document.querySelectorAll('#tgdownload');
         links.forEach(link => {
-            link.innerHTML = 'Просмотреть';
+            if (link.href.includes('.pdf')) {
+                link.innerHTML = 'Просмотр документов недоступен в telegram webApp';
+            }
+            else{
+                link.innerHTML = 'Просмотреть';
+            }
         });
     }
 </script>
