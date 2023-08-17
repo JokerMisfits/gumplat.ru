@@ -297,7 +297,7 @@ $this->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15
                 for($i = 1; $i < $count; $i++){
                     if($model->messages[$i]['author'] === 'member'){
                         if($model->messages[$i]['type'] === 'text'){
-                            echo '<div class="alert alert-primary text-wrap text-break">' . $i . '.' . ' Сообщение от клиента: ' . $model->messages[$i]['message'] . '</div>';
+                            echo '<div class="alert alert-primary text-wrap text-break fs-5"><span class="fw-bold">' . $i . '.' . ' Сообщение от клиента:</span><br>' . $model->messages[$i]['message'] . '</div>';
                         }
                         else{
                             $path = explode('/', $model->messages[$i]['message']);
@@ -309,7 +309,7 @@ $this->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15
                             }
                             if(array_key_exists(5, $path) && array_key_exists(6, $path)){
                                 $file = explode('.', $path[6]);
-                                echo '<div class="alert alert-primary text-wrap text-break">' . $i . '.' . ' Файл от клиента: ' . yii\helpers\Html::a('Скачать', ['downloadtg/' . $bot . '-' . $path[5] . '-' . $file[0] . '-' . $file[1]], ['id' => 'tgdownload', 'class' => 'btn btn-danger btn-sm my-1', 'title' => 'Скачать', 'target' => '_self']) . '</div>';
+                                echo '<div class="alert alert-primary text-wrap text-break fs-5"><span class="fw-bold">' . $i . '.' . ' Файл от клиента:</span><br>' . yii\helpers\Html::a('Скачать', ['downloadtg/' . $bot . '-' . $path[5] . '-' . $file[0] . '-' . $file[1]], ['id' => 'tgdownload', 'class' => 'btn btn-danger btn-sm my-1', 'title' => 'Скачать', 'target' => '_self']) . '</div>';
                             }
                         }
                     }
@@ -322,7 +322,7 @@ $this->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15
                             $snm = 'юриста';
                         }
                         if($model->messages[$i]['type'] === 'text'){
-                            echo '<div class="alert alert-secondary text-wrap text-break">' . $i . '.' . ' Ответ от ' . $snm . ' : ' . $model->messages[$i]['message'] . '</div>';
+                            echo '<div class="alert alert-secondary text-wrap text-break fs-5"><span class="fw-bold">' . $i . '.' . ' Ответ от ' . $snm . ':</span><br>' . $model->messages[$i]['message'] . '</div>';
                         }
                         else{
                             $path = explode('/', $model->messages[$i]['message']);
@@ -334,7 +334,7 @@ $this->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15
                             }
                             if(array_key_exists(5, $path) && array_key_exists(6, $path)){
                                 $file = explode('.', $path[6]);
-                                echo '<div class="alert alert-secondary text-wrap text-break">' . $i . '.' . ' Файл от ' . $snm . ' : ' . yii\helpers\Html::a('Скачать', ['downloadtg/' . $bot . '-' . $path[5] . '-' . $file[0] . '-' . $file[1]], ['id' => 'tgdownload', 'class' => 'btn btn-danger btn-sm my-1', 'title' => 'Скачать', 'target' => '_self']) . '</div>';
+                                echo '<div class="alert alert-secondary text-wrap text-break fs-5"><span class="fw-bold">' . $i . '.' . ' Файл от ' . $snm . ':</span><br>' . yii\helpers\Html::a('Скачать', ['downloadtg/' . $bot . '-' . $path[5] . '-' . $file[0] . '-' . $file[1]], ['id' => 'tgdownload', 'class' => 'btn btn-danger btn-sm my-1', 'title' => 'Скачать', 'target' => '_self']) . '</div>';
                             }
                         }
                     }
@@ -356,7 +356,7 @@ $this->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15
     if(tg.initDataUnsafe?.user?.id){
         const links = document.querySelectorAll('#tgdownload');
         links.forEach(link => {
-            link.innerHTML = 'Скачивание файлов недоступно в webApp, доступен только просмотр фотографий.';
+            link.innerHTML = 'Просмотреть';
         });
     }
 </script>
