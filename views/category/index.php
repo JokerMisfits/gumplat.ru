@@ -18,8 +18,6 @@ $this->params['breadcrumbs'][] = $this->title;
     </p>
 </div>
 
-    <?php yii\widgets\Pjax::begin(); ?>
-
 <div class="table-responsive text-nowrap">
     <?= yii\grid\GridView::widget([
         'dataProvider' => $dataProvider,
@@ -32,7 +30,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'label' => 'Количество обращений',
                 'value' => function($model){
                     if($model->ticketsCount > 0){
-                        return \yii\helpers\Html::a($model->ticketsCount, \yii\helpers\Url::to(['tickets/', 'TicketSearch[category_id]' => $model->id]), ['class' => 'link-primary', 'title' => 'Перейти']);
+                        return \yii\helpers\Html::a($model->ticketsCount, \yii\helpers\Url::to(['tickets/', 'TicketSearch[category_id]' => $model->id]), ['class' => 'link-primary', 'title' => 'Перейти', 'target' => '_self']);
                     }
                     return $model->ticketsCount;
                 },
@@ -64,7 +62,5 @@ $this->params['breadcrumbs'][] = $this->title;
     ]);
     ?>
 </div>
-
-    <?php yii\widgets\Pjax::end(); ?>
 
 </div>
