@@ -34,8 +34,6 @@ sort($users);
         }
     ?>
 
-    <?= $form->field($model, 'title', ['labelOptions' => ['class' => 'form-required']])->textInput(['maxlength' => true]); ?>
-
     <?= $form->field($model, 'text', ['labelOptions' => ['class' => 'form-required']])->textarea(['rows' => 4]); ?>
 
     <?= $form->field($model, 'snm')->textInput(['maxlength' => true]); ?>

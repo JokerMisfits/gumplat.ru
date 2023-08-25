@@ -19,8 +19,6 @@
 
     <?= $form->field($model, 'phone')->textInput(['maxlength' => true]); ?>
 
-    <?= $form->field($model, 'title')->textInput(['maxlength' => true]); ?>
-
     <?= $form->field($model, 'text')->textarea(['rows' => 1]); ?>
 
     <?= $form->field($model, 'comment')->textarea(['rows' => 1]); ?>

@@ -37,11 +37,10 @@ $this->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15
 </style>
 
 <!-- Modal -->
-<div class="modal fade text-light" id="Modal" tabindex="-1" aria-labelledby="ModalLabel" aria-hidden="true">
+<div class="modal fade text-light" id="Modal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-fullscreen modal-dialog-scrollable">
         <div class="modal-content bg-dark">
-            <div class="modal-header">
-                <h1 class="modal-title fs-5 text-wrap text-break" id="ModalLabel">Заголовок</h1>
+            <div class="modal-header d-flex flex-row-reverse">
                 <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Закрыть</button>
             </div>
             <div class="modal-body text-wrap text-break" id="ModalContent">Текст</div>
@@ -73,24 +72,6 @@ $this->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15
         <?= yii\widgets\DetailView::widget([
             'model' => $model,
             'attributes' => [
-                [
-                    'attribute' => 'title',
-                    'label' => 'Заголовок обращения',
-                    'contentOptions' => ['id' => 'ticket-view-title', 'class' => 'text-wrap text-break'],
-                    'value' => function($model){
-                        $js = <<<JS
-                            setModalHeader(`$model->title`);
-                        JS;
-                        $this->registerJs($js);
-                        if(strlen($model->title) > 16){
-                            $js = <<<JS
-                                showTextMore(`$model->title`, 'title');
-                            JS;
-                            return $this->registerJs($js);
-                        }
-                        return $model->title;
-                    }
-                ],
                 [
                     'attribute' => 'snm',
                     'label' => 'ФИО',
@@ -139,7 +120,7 @@ $this->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15
                     'value' => function($model){
                         if(strlen($model->text) > 16){
                             $js = <<<JS
-                                showTextMore(`$model->text`, 'text');
+                                showTextMore(`$model->text`);
                             JS;
                             return $this->registerJs($js);
                         }
@@ -367,19 +348,8 @@ $this->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15
 </script>
 
 <script>
-    function setModalHeader(header){
-        let modalHeader = document.getElementById('ModalLabel');
-        modalHeader.innerHTML = header;
-    }
-
-    function showTextMore(content, from){
-        let button;
-        if(from === 'title'){
-            button = document.getElementById('ticket-view-title');
-        }
-        else{
-            button = document.getElementById('ticket-view-text');
-        }
+    function showTextMore(content){
+        let button = document.getElementById('ticket-view-text');
         let modalContent = document.getElementById('ModalContent');
         modalContent.innerHTML = content;
         button.innerHTML = `<button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#Modal">Показать</button>`;
@@ -427,6 +397,7 @@ $this->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15
         var messageValue = encodeURIComponent(messageTextarea.value);
         if(messageValue.length < 6 || messageValue.length > 2800){
             document.getElementById("messageTextLabel").innerHTML = '<span class="text-danger">Сообщение должно быть больше 6 символов и меньше 2800 символов!</span>';
+            document.getElementById("messageTextarea").value = '';
         }
         else{
             let currentHref = sendMessageButton.getAttribute("href");
