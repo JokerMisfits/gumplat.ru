@@ -11,7 +11,6 @@ namespace app\models;
  * @property string|null $snm ФИО
  * @property string|null $phone Номер телефона
  * @property string|null $email Почта
- * @property string $title Заголовок обращения
  * @property string $text Текст обращения
  * @property string|null $comment Результаты рассмотрения
  * @property string|array $messages Сообщения
