@@ -345,7 +345,6 @@ $this->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15
                 let img = document.createElement('img');
                 img.src = link.href;
                 link.innerHTML = '';
-                link.href = '#';
                 img.classList.add('img-fluid');
                 link.classList.remove('btn', 'btn-danger', 'btn-sm');
                 link.parentNode.classList.add('px-0');
