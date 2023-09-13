@@ -176,7 +176,7 @@ class CategoryController extends AppController{
      * @return Categories the loaded model
      * @throws \yii\web\NotFoundHttpException if the model cannot be found
      */
-    protected function findModel(int $id) : Categories{
+    protected function findModel(int $id) : Categories|\yii\db\BaseActiveRecord|null{
         if(($model = Categories::findOne(['id' => $id])) !== null){
             return $model;
         }

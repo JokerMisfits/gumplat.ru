@@ -15,7 +15,7 @@ use app\models\Categories;
             echo 'Доступные фоматы для загрузки: ' . $model->getExtensions() . '<hr class="text-primary my-2">';
             echo $form->field($model, 'file', ['labelOptions' => ['class' => 'form-required']])->fileInput(['class' => 'form-control', 'type' => 'file']);
         }
-        echo $form->field($model, 'category_id', ['labelOptions' => ['class' => 'form-required']])->dropDownList(yii\helpers\ArrayHelper::map(Categories::find()->select(['id', 'name'])->groupBy('name')->all(), 'id', 'name'), ['prompt' => 'Выберите категорию', 'class' => 'form-control', 'style' => 'cursor: pointer;']);
+        echo $form->field($model, 'category_id', ['labelOptions' => ['class' => 'form-required']])->dropDownList(yii\helpers\ArrayHelper::map(Categories::find()->select(['IF(COUNT(id) > 0, MAX(id), NULL) as id', 'MAX(name) as name'])->groupBy('name')->all(), 'id', 'name'), ['prompt' => 'Выберите категорию', 'class' => 'form-control', 'style' => 'cursor: pointer;']);
     ?>
 
     <div class="form-group">

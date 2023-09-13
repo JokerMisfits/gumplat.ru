@@ -44,7 +44,7 @@ sort($users);
 
     <?= $form->field($model, 'comment')->textarea(['rows' => 2])->hint('Пример:' . '<br>' . '06/08/23 Взято в работу, прозвон клиента' . '<br>' . '07/08/23 Запрос документов у клиента' . '<br>' . '24/08/23 Документы не были получены => обращение закрыто.'); ?>
 
-    <?= $form->field($model, 'category_id')->dropDownList(yii\helpers\ArrayHelper::map(Categories::find()->select(['id', 'name'])->groupBy('name')->all(), 'id', 'name'), ['prompt' => 'Выберите категорию', 'style' => 'cursor: pointer;']); ?>
+    <?= $form->field($model, 'category_id')->dropDownList(yii\helpers\ArrayHelper::map(Categories::find()->select(['IF(COUNT(id) > 0, MAX(id), NULL) as id', 'MAX(name) as name'])->groupBy('name')->all(), 'id', 'name'), ['prompt' => 'Выберите категорию', 'style' => 'cursor: pointer;']); ?>
 
     <?= $form->field($model, 'city_id')->dropDownList(yii\helpers\ArrayHelper::map(Cities::find()->select(['id', 'name'])->where(['territory' => 0])->groupBy('name')->all(), 'id', 'name') + ['Новая территория' => yii\helpers\ArrayHelper::map(Cities::find()->select(['id', 'name'])->where(['territory' => 1])->groupBy('name')->all(), 'id', 'name')], ['prompt' => 'Выберите Н. П.', 'style' => 'cursor: pointer;'])->label('Н. П.'); ?>
 

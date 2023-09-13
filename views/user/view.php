@@ -41,7 +41,13 @@ $this->params['breadcrumbs'][] = $this->title;
         'model' => $model,
         'attributes' => [
             'snm',
-            'registration_date'
+            [
+                'attribute' => 'registration_date',
+                'value' => function($model){
+                    $dateTime = new DateTime($model->registration_date, null);
+					return Yii::$app->formatter->asDatetime($dateTime, 'php:d.m.Y H:i:s');
+                }
+            ]
         ]
     ]);
     ?>

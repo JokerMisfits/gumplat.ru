@@ -307,7 +307,7 @@ class UserController extends AppController{
      * @return Users the loaded model
      * @throws \yii\web\NotFoundHttpException if the model cannot be found
      */
-    protected function findModel(int $id) : Users{
+    protected function findModel(int $id) : Users|\yii\db\BaseActiveRecord|null{
         if(($model = Users::findOne(['id' => $id])) !== null){
             return $model;
         }

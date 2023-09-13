@@ -168,7 +168,7 @@ class CityController extends AppController{
      * @return Cities the loaded model
      * @throws \yii\web\NotFoundHttpException if the model cannot be found
      */
-    protected function findModel(int $id) : Cities{
+    protected function findModel(int $id) : Cities|\yii\db\BaseActiveRecord|null{
         if (($model = Cities::findOne(['id' => $id])) !== null) {
             return $model;
         }

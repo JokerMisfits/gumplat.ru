@@ -205,7 +205,7 @@ class TicketController extends AppController{
         }
         catch(\Exception|\Throwable $e){
             $transaction->rollBack();
-            \Yii::error('Ошибка при обновлении сообщения в Ticket::' . $id . ' | ' . $e->getMessage(), 'tickets');
+            \Yii::error('Ошибка при обновлении сообщения в Ticket::' . $id . ' | ' . $e->getMessage());
             \Yii::$app->session->addFlash('error', 'Произошла ошибка при отправке сообщения.');
         }
         \Yii::$app->request->queryParams = [];
@@ -269,17 +269,17 @@ class TicketController extends AppController{
                     }
                     catch(\Exception|\Throwable $e){
                         $transaction->rollBack();
-                        \Yii::error('Ошибка при обновлении сообщения(файл) в Ticket::' . $id . ' | ' . $e->getMessage(), 'tickets');
+                        \Yii::error('Ошибка при обновлении сообщения(файл) в Ticket::' . $id . ' | ' . $e->getMessage());
                         \Yii::$app->session->addFlash('error', 'Произошла ошибка при отправке сообщения.');
                     }
                 }
                 else{
-                    \Yii::error('Ошибка при подгрузке файла в директорию бота в telegram ' . json_encode($response), 'tickets');
+                    \Yii::error('Ошибка при подгрузке файла в директорию бота в telegram ' . json_encode($response));
                     \Yii::$app->session->addFlash('error', 'Произошла ошибка при обработке сообщения на сервере telegram.');
                 }
             }
             else{
-                \Yii::error('Ошибка при отправке сообщения(файл) в telegram ' . json_encode($response), 'tickets');
+                \Yii::error('Ошибка при отправке сообщения(файл) в telegram ' . json_encode($response));
                 \Yii::$app->session->addFlash('error', 'Произошла ошибка при отправке сообщения.');
             }
             unlink($savePath);
@@ -295,7 +295,7 @@ class TicketController extends AppController{
      * @return Tickets the loaded model
      * @throws \yii\web\NotFoundHttpException if the model cannot be found
      */
-    protected function findModel(int $id) : Tickets{
+    protected function findModel(int $id) : Tickets|\yii\db\BaseActiveRecord|null{
         if(($model = Tickets::findOne(['id' => $id])) !== null){
             return $model;
         }

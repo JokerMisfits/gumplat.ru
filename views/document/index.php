@@ -49,7 +49,15 @@ $progress = round((($folderSize * 100) / Yii::$app->params['maxFileStorageSize']
                         return $model->category_id;
                     }
                 },
-                'filter' => yii\helpers\ArrayHelper::map(Categories::find()->select(['id', 'name'])->groupBy('name')->all(), 'id', 'name'),
+                'filter' => yii\helpers\ArrayHelper::map(
+					Categories::find()
+                    ->select(['IF(COUNT(id) > 0, MAX(id), NULL) as id', 'MAX(name) as name'])
+                    ->groupBy('name')
+                    ->asArray()
+                    ->all(),
+					'id',
+					'name'
+				),
                 'filterInputOptions' => ['class' => 'form-control selectpicker', 'data-style' => 'btn-primary', 'prompt' => 'Все', 'style' => 'cursor: pointer;']
             ],
             [

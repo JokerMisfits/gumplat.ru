@@ -78,7 +78,15 @@ $this->registerJsFile('https://api-maps.yandex.ru/2.1/?apikey=0296c13d-3743-4d3f
                         return $model->category_id;
                     }
                 },
-                'filter' => yii\helpers\ArrayHelper::map(Categories::find()->select(['id', 'name'])->groupBy('name')->asArray()->all(), 'id', 'name'),
+                'filter' => yii\helpers\ArrayHelper::map(
+					Categories::find()
+                    ->select(['IF(COUNT(id) > 0, MAX(id), NULL) as id', 'MAX(name) as name'])
+                    ->groupBy('name')
+                    ->asArray()
+                    ->all(),
+					'id',
+					'name'
+				),
                 'filterInputOptions' => ['class' => 'form-control selectpicker', 'data-style' => 'btn-primary', 'prompt' => 'Все', 'style' => 'cursor: pointer;']
             ],
             [

@@ -183,11 +183,25 @@ class DocumentController extends AppController{
         }
         $realPath = 'https://api.telegram.org/file/bot' . $token . '/' . $path[1] . '/' . $path[2] . '.' . $path[3];
 
+        try{
+            $response = file_get_contents($realPath);
+            if(!$response){
+                \Yii::$app->session->addFlash('error', 'Failed to open stream: HTTP request failed! HTTP/1.1 404 Not Found');
+                return \Yii::$app->response->redirect('/index');
+            }
+        }
+        catch(\Exception|\Throwable $e){
+            $message = $e->getMessage();
+            $message = explode(': ', $message);
+            \Yii::$app->session->addFlash('error', $message[1] . ': ' . $message[2]);
+            return \Yii::$app->response->redirect('/index');
+        }
+
         \Yii::$app->response->headers->set('Content-Type', 'application/octet-stream');
         \Yii::$app->response->headers->set('Content-Disposition', 'attachment; filename="' . $path[2] . '.' . $path[3] . '"');
 
         return \Yii::$app->response->sendContentAsFile(
-            file_get_contents($realPath),
+            $response,
             $path[2] . '.' . $path[3],
             ['inline' => true]
         );
@@ -200,7 +214,7 @@ class DocumentController extends AppController{
      * @return Documents the loaded model
      * @throws\yii\web\NotFoundHttpException if the model cannot be found
      */
-    protected function findModel(int $id) : Documents{
+    protected function findModel(int $id) : Documents|\yii\db\BaseActiveRecord|null{
         if(($model = Documents::findOne(['id' => $id])) !== null){
             return $model;
         }

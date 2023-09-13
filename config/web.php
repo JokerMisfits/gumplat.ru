@@ -5,7 +5,7 @@ $db = require __DIR__ . '/db.php';
 
 $config = [
     'id' => 'basic',
-    'name' => 'Demo',
+    'name' => 'gumplat.ru',
     'version' => '1.0.0',
     'basePath' => dirname(__DIR__),
     'language' => 'ru-Ru',
@@ -83,7 +83,7 @@ if (YII_ENV_DEV) {
     $config['modules']['debug'] = [
         'class' => 'yii\debug\Module',
         // uncomment the following to add your IP if you are not connecting from localhost.
-        'allowedIPs' => ['127.0.0.1', '::1', '198.16.66.140'],
+        'allowedIPs' => ['127.0.0.1', '::1', '178.65.173.199'],
     ];
 
     $config['bootstrap'][] = 'gii';
@@ -95,7 +95,7 @@ if (YII_ENV_DEV) {
             ]
         ],
         // uncomment the following to add your IP if you are not connecting from localhost.
-        'allowedIPs' => ['127.0.0.1', '::1' , '198.16.66.140'],
+        'allowedIPs' => ['127.0.0.1', '::1' , '178.65.173.199'],
     ];
 }
 
