@@ -243,7 +243,7 @@ $this->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15
                     echo '<div id="ticket-send-message-form" style="display: block;>';
                     echo '<hr class="text-danger my-2">';
                     echo '<div class="text-dark col-12 col-md-8 offset-md-2">';
-                    echo '<label id="messageTextLabel" class="form-label text-wrap text-break text-light fw-bold" for="messageTextarea">Форма отправки сообщений</label>';
+                    echo '<label id="messageTextLabel" class="form-label form-required text-wrap text-break text-light fw-bold" for="messageTextarea">Форма отправки сообщений</label>';
                     echo '<textarea id="messageTextarea" class="form-control" rows="4"></textarea>';
                     echo '</div>';
                     echo '<div class="d-flex justify-content-center my-2 mx-1">' . yii\helpers\Html::a('Отправить', ['message-text', 'id' => $model->id], [
@@ -256,7 +256,7 @@ $this->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15
                     echo '<div id="ticket-send-file-form" style="display: none;>';
                     echo '<hr class="text-danger my-2">';
                     $form = yii\widgets\ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data', 'class' => 'col-12 col-md-8 col-lg-6 offset-md-2 offset-lg-3'], 'action' => ['message-file', 'id' => $model->id]]);
-                    echo $form->field(new Documents(['scenario' => 'uploadTg']), 'file', ['labelOptions' => ['class' => 'form-required']])->fileInput(['class' => 'form-control', 'type' => 'file'])->label('Файл');
+                    echo $form->field(new Documents(['scenario' => 'uploadTg']), 'file', ['labelOptions' => ['class' => 'form-label form-required text-light fw-bold']])->fileInput(['class' => 'form-control', 'type' => 'file'])->label('Файл');
                     echo '<div class="form-group">';
                     echo yii\helpers\Html::submitButton('Отправить', ['class' => 'btn btn-success col-12']);
                     echo '</div>';
@@ -337,7 +337,7 @@ $this->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15
     if(tg.initDataUnsafe?.user?.id){
         const links = document.querySelectorAll('#tgdownload');
         links.forEach(link => {
-            if(link.href.includes('-pdf')){
+            if(link.href.includes('-pdf') || link.href.includes('-PDF')){
                 link.innerHTML = 'Просмотр PDF документов недоступен в telegram webApp';
                 link.href = '#';
             }

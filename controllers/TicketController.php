@@ -253,7 +253,7 @@ class TicketController extends AppController{
                         $model->limit = \Yii::$app->params['limitAfterResponse'];
                         $model->is_new = 0;
                         $updates['ticket'][$id]['messages'] = $model->messages;
-                        $updates['ticket'][$id]['event'] = 'message';
+                        $updates['ticket'][$id]['event'] = 'update';
                         $updates['ticket'][$id]['tg_user_id'] = $model->tg_user_id;
                         $model->updateAttributes(['messages', 'limit']);
                         $transaction->commit();
