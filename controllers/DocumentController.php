@@ -170,44 +170,6 @@ class DocumentController extends AppController{
 }
 
     /**
-     * @param string $path path
-     * @return string|\yii\web\Response
-     */
-    public function actionDownloadFileFromTg(string $path) : \yii\web\Response{
-        $path = explode('-', $path);
-        if($path[0] === 'main'){
-            $token = $_SERVER['BOT_TOKEN'];
-        }
-        else{
-            $token = $_SERVER['BOT_FILE_TOKEN'];
-        }
-        $realPath = 'https://api.telegram.org/file/bot' . $token . '/' . $path[1] . '/' . $path[2] . '.' . $path[3];
-
-        try{
-            $response = file_get_contents($realPath);
-            if(!$response){
-                \Yii::$app->session->addFlash('error', 'Failed to open stream: HTTP request failed! HTTP/1.1 404 Not Found');
-                return \Yii::$app->response->redirect('/index');
-            }
-        }
-        catch(\Exception|\Throwable $e){
-            $message = $e->getMessage();
-            $message = explode(': ', $message);
-            \Yii::$app->session->addFlash('error', $message[1] . ': ' . $message[2]);
-            return \Yii::$app->response->redirect('/index');
-        }
-
-        \Yii::$app->response->headers->set('Content-Type', 'application/octet-stream');
-        \Yii::$app->response->headers->set('Content-Disposition', 'attachment; filename="' . $path[2] . '.' . $path[3] . '"');
-
-        return \Yii::$app->response->sendContentAsFile(
-            $response,
-            $path[2] . '.' . $path[3],
-            ['inline' => true]
-        );
-    }
-
-    /**
      * Finds the Documents model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param int $id ID

@@ -20,15 +20,15 @@ sort($users);
         $form = yii\widgets\ActiveForm::begin();
         if($action === 'ticket/create'){
             $statusOptions = [
-                '0' => 'Зарегистрировано',
-                '1' => 'Обрабатывается'
+                '0' => 'Первичное',
+                '1' => 'В работе'
             ];
         }
         else{
             $statusOptions = [
-                '0' => 'Зарегистрировано',
-                '1' => 'Обрабатывается',
-                '2' => 'Удовлетворено',
+                '0' => 'Первичное',
+                '1' => 'В работе',
+                '2' => 'Закрыто',
                 '3' => 'Не удовлетворено'
             ];
         }
@@ -40,7 +40,7 @@ sort($users);
 
     <?= $form->field($model, 'phone')->textInput(['maxlength' => true]); ?>
 
-    <?= $form->field($model, 'email')->textInput(['maxlength' => true, 'minlength' => 5])->input('email'); ?>
+    <?php //echo $form->field($model, 'email')->textInput(['maxlength' => true, 'minlength' => 5])->input('email'); ?>
 
     <?= $form->field($model, 'comment')->textarea(['rows' => 2])->hint('Пример:' . '<br>' . '06/08/23 Взято в работу, прозвон клиента' . '<br>' . '07/08/23 Запрос документов у клиента' . '<br>' . '24/08/23 Документы не были получены => обращение закрыто.'); ?>
 

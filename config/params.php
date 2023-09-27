@@ -6,6 +6,6 @@ return [
     'developerUserId' => 2,
     'testUserId' => 3,
     'limitAfterResponse' => 5, //Лимит сообщений пользователя после ответа юриста
-    'host' => 'https://diamondaitranslate.space',
+    'host' => 'https://gumplat.ru',
     'fileChatId' => -1001508525149 //Id чата для файлов
 ];

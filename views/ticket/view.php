@@ -99,20 +99,20 @@ $this->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15
                     },
                     'format' => 'raw'
                 ],
-                [
-                    'attribute' => 'email',
-                    'label' => 'Почта',
-                    'contentOptions' => ['class' => 'text-wrap text-break'],
-                    'value' => function($model){
-                        if(!isset($model->email) || $model->email === ''){
-                            return null;
-                        }
-                        else{
-                           return $model->email;
-                        }
-                    },
-                    'format' => 'email'
-                ],
+                // [
+                //     'attribute' => 'email',
+                //     'label' => 'Почта',
+                //     'contentOptions' => ['class' => 'text-wrap text-break'],
+                //     'value' => function($model){
+                //         if(!isset($model->email) || $model->email === ''){
+                //             return null;
+                //         }
+                //         else{
+                //            return $model->email;
+                //         }
+                //     },
+                //     'format' => 'email'
+                // ],
                 [
                     'attribute' => 'text',
                     'label' => 'Текст обращения',
@@ -133,13 +133,13 @@ $this->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15
                     'contentOptions' => ['class' => 'text-wrap text-break'],
                     'value' => function($model){
                         if($model->status == 0){
-                            return 'Зарегистрировано';
+                            return 'Первичное';
                         }
                         elseif($model->status == 1){
-                            return 'Обрабатывается';
+                            return 'В работе';
                         }
                         elseif($model->status == 2){
-                            return 'Удовлетворено';
+                            return 'Закрыто';
                         }
                         elseif($model->status == 3){
                             return 'Не удовлетворено';
@@ -244,6 +244,7 @@ $this->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15
                     echo '<hr class="text-danger my-2">';
                     echo '<div class="text-dark col-12 col-md-8 offset-md-2">';
                     echo '<label id="messageTextLabel" class="form-label form-required text-wrap text-break text-light fw-bold" for="messageTextarea">Форма отправки сообщений</label>';
+                    echo '<br><span id="messageCounter" class="text-light"> 0 из 2800 символов</span>';
                     echo '<textarea id="messageTextarea" class="form-control" rows="4"></textarea>';
                     echo '</div>';
                     echo '<div class="d-flex justify-content-center my-2 mx-1">' . yii\helpers\Html::a('Отправить', ['message-text', 'id' => $model->id], [
@@ -281,17 +282,9 @@ $this->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15
                             echo '<div class="alert alert-primary text-wrap text-break fs-5"><span class="fw-bold">' . $i . '.' . ' Сообщение от клиента:</span><br>' . $model->messages[$i]['message'] . '</div>';
                         }
                         else{
-                            $path = explode('/', $model->messages[$i]['message']);
-                            if($path[4] === 'bot' . $_SERVER['BOT_TOKEN']){
-                                $bot = 'main';
-                            }
-                            else{
-                                $bot = 'file';
-                            }
-                            if(array_key_exists(5, $path) && array_key_exists(6, $path)){
-                                $file = explode('.', $path[6]);
-                                echo '<div class="alert alert-primary text-wrap text-break fs-5"><span class="fw-bold">' . $i . '.' . ' Файл от клиента:</span><br>' . yii\helpers\Html::a('Скачать', ['downloadtg/' . $bot . '-' . $path[5] . '-' . $file[0] . '-' . $file[1]], ['id' => 'tgdownload', 'class' => 'btn btn-danger btn-sm my-1', 'title' => 'Скачать', 'target' => '_self']) . '</div>';
-                            }
+                            $realPath = \Yii::$app->params['host'] . '/web/documents/' . $model->messages[$i]['message'];
+                            echo '<div class="alert alert-primary text-wrap text-break fs-5"><span class="fw-bold">' . $i . '.' . ' Файл от клиента:</span><br>' . yii\helpers\Html::a('Скачать', $realPath, ['download' => $model->messages[$i]['message'], 'id' => 'tgdownload', 'class' => 'btn btn-danger btn-sm my-1 mx-1', 'title' => 'Скачать', 'target' => '_self']);
+                            echo yii\helpers\Html::a('Посмотреть', $realPath, ['id' => 'tgdownload', 'class' => 'btn btn-primary btn-sm my-1', 'title' => 'Посмотреть', 'target' => '_self']) . '</div>';
                         }
                     }
                     else{
@@ -306,17 +299,9 @@ $this->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15
                             echo '<div class="alert alert-secondary text-wrap text-break fs-5"><span class="fw-bold">' . $i . '.' . ' Ответ от ' . $snm . ':</span><br>' . $model->messages[$i]['message'] . '</div>';
                         }
                         else{
-                            $path = explode('/', $model->messages[$i]['message']);
-                            if($path[4] === 'bot' . $_SERVER['BOT_TOKEN']){
-                                $bot = 'main';
-                            }
-                            else{
-                                $bot = 'file';
-                            }
-                            if(array_key_exists(5, $path) && array_key_exists(6, $path)){
-                                $file = explode('.', $path[6]);
-                                echo '<div class="alert alert-secondary text-wrap text-break fs-5"><span class="fw-bold">' . $i . '.' . ' Файл от ' . $snm . ':</span><br>' . yii\helpers\Html::a('Скачать', ['downloadtg/' . $bot . '-' . $path[5] . '-' . $file[0] . '-' . $file[1]], ['id' => 'tgdownload', 'class' => 'btn btn-danger btn-sm my-1', 'title' => 'Скачать', 'target' => '_self']) . '</div>';
-                            }
+                            $realPath = \Yii::$app->params['host'] . '/web/documents/' . $model->messages[$i]['message'];
+                            echo '<div class="alert alert-secondary text-wrap text-break fs-5"><span class="fw-bold">' . $i . '.' . ' Файл от ' . $snm . ':</span><br>' . yii\helpers\Html::a('Скачать', $realPath, ['download' => $model->messages[$i]['message'], 'id' => 'tgdownload', 'class' => 'btn btn-danger btn-sm my-1 mx-1', 'title' => 'Скачать', 'target' => '_self']);
+                            echo yii\helpers\Html::a('Посмотреть', $realPath, ['id' => 'tgdownload', 'class' => 'btn btn-primary btn-sm my-1', 'title' => 'Посмотреть', 'target' => '_self']) . '</div>';
                         }
                     }
                 }
@@ -337,7 +322,7 @@ $this->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15
     if(tg.initDataUnsafe?.user?.id){
         const links = document.querySelectorAll('#tgdownload');
         links.forEach(link => {
-            if(link.href.includes('-pdf') || link.href.includes('-PDF')){
+            if(link.href.includes('.pdf') || link.href.includes('.PDF')){
                 link.innerHTML = 'Просмотр PDF документов недоступен в telegram webApp';
                 link.href = '#';
             }
@@ -399,16 +384,31 @@ $this->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15
 <script>
     var sendMessageButton = document.getElementById("sendMessageButton");
     var messageTextarea = document.getElementById("messageTextarea");
+    var messageCounter = document.getElementById("messageCounter");
+    messageTextarea.addEventListener('input', function(){
+        var messageLength = messageTextarea.value.length;
+        messageCounter.textContent = " " + messageLength + " из 2800 символов";
+        if(messageLength > 2800){
+            let sendMessageButton = document.getElementById("sendMessageButton");
+            sendMessageButton.style = "display: none;";
+        }
+        else{
+            let sendMessageButton = document.getElementById("sendMessageButton");
+            sendMessageButton.style = "display: block;";
+        }
+    });
+
+
     sendMessageButton.addEventListener("click", function(event){
         event.preventDefault();
-        var messageValue = encodeURIComponent(messageTextarea.value);
-        if(messageValue.length < 6 || messageValue.length > 2800){
-            document.getElementById("messageTextLabel").innerHTML = '<span class="text-danger">Сообщение должно быть больше 6 символов и меньше 2800 символов!</span>';
+        var messageLength = messageTextarea.value.length;
+        if(messageLength < 6 || messageLength > 2800){
+            document.getElementById("messageTextLabel").innerHTML = '<span class="text-light">Сообщение должно быть больше 6 символов и меньше 2800 символов!</span>';
             document.getElementById("messageTextarea").value = '';
         }
         else{
             let currentHref = sendMessageButton.getAttribute("href");
-            window.location.href = currentHref + "&message=" + messageValue;
+            window.location.href = currentHref + "&message=" + encodeURIComponent(messageTextarea.value);
         }
     });
 </script>

@@ -45,13 +45,13 @@ $this->registerJsFile('https://api-maps.yandex.ru/2.1/?apikey=0296c13d-3743-4d3f
                 'label' => 'Статус обращения',
                 'value' => function($model){
                     if($model->status == 0){
-                        return 'Зарегистрировано';
+                        return 'Первичное';
                     }
                     elseif($model->status == 1){
-                        return 'Обрабатывается';
+                        return 'В работе';
                     }
                     elseif($model->status == 2){
-                        return 'Удовлетворено';
+                        return 'Закрыто';
                     }
                     elseif($model->status == 3){
                         return 'Не удовлетворено';
@@ -60,13 +60,13 @@ $this->registerJsFile('https://api-maps.yandex.ru/2.1/?apikey=0296c13d-3743-4d3f
                         return null;
                     }
                 },
-                'filter' => ['0' => 'Зарегистрировано', '1' => 'Обрабатывается', '2' => 'Удовлетворено', '3' => 'Не удовлетворено'],
+                'filter' => ['0' => 'Первичное', '1' => 'В работе', '2' => 'Закрыто', '3' => 'Не удовлетворено'],
                 'filterInputOptions' => ['class' => 'form-control selectpicker', 'data-style' => 'btn-primary', 'prompt' => 'Все', 'style' => 'cursor: pointer;'],
                 'format' => 'raw',
                 'contentOptions' => ['style' => 'text-align: center;']
             ],
             'snm',
-            'email:email',
+            //'email:email',
             [
                 'attribute' => 'category_id',
                 'label' => 'Категория обращения',

@@ -223,66 +223,44 @@ class TicketController extends AppController{
             $name = \Yii::$app->security->generateRandomString(6) . '.' . end($name);
             $savePath = realpath(\Yii::getAlias('@web')) . '/documents/' . $name;
             move_uploaded_file($_FILES['Documents']['tmp_name']['file'], $savePath);
-            $data = [
-                'document' => \Yii::$app->params['host'] . '/web/documents/' . $name,
-                'caption' => $_FILES['Documents']['name']['file'],
-                'chat_id' => \Yii::$app->params['fileChatId']
-            ];
-            $response = json_decode(AppController::curlSendData($data, '/sendDocument'), true);
-            if(array_key_exists('ok', $response) && $response['ok'] === true){
-                if((array_key_exists('thumbnail', $response['result']['document']) || array_key_exists('thumb', $response['result']['document'])) && $response['result']['document']['mime_type'] !== 'application/pdf'){
-                    $type = 'photo';
-                }
-                else{
-                    $type = 'document';
-                }
-                $data = [
-                    'file_id' => $response['result']['document']['file_id']
-                ];
-                $response = json_decode(AppController::curlSendData($data, '/getFile'), true);
-                if(array_key_exists('ok', $response) && $response['ok'] === true){
-                    $model = $this->findModel($id);
-                    $transaction = $model->getDb()->beginTransaction();
-                    try{
-                        $message = [
-                            'type' => $type,
-                            'author' => \Yii::$app->user->identity->tg_user_id,
-                            'message' => 'https://api.telegram.org/file/bot' . $_SERVER['BOT_FILE_TOKEN'] . '/' . $response['result']['file_path']
-                        ];
-                        $model->messages = array_merge($model->messages, [$message]);
-                        $model->limit = \Yii::$app->params['limitAfterResponse'];
-                        $model->is_new = 0;
-                        $updates['ticket'][$id]['messages'] = $model->messages;
-                        $updates['ticket'][$id]['event'] = 'update';
-                        $updates['ticket'][$id]['tg_user_id'] = $model->tg_user_id;
-                        $model->updateAttributes(['messages', 'limit']);
-                        $transaction->commit();
-                        $cache = \Yii::$app->cache->get('updates');
-                        if($cache === false){
-                            \Yii::$app->cache->set('updates', $updates, null);
-                        }
-                        else{
-                            $cache['ticket'][$id] = $updates['ticket'][$id];
-                            \Yii::$app->cache->set('updates', $cache, null);
-                        }
-                        \Yii::$app->session->addFlash('success', 'Сообщение успешно отправлено.'); 
-                    }
-                    catch(\Exception|\Throwable $e){
-                        $transaction->rollBack();
-                        \Yii::error('Ошибка при обновлении сообщения(файл) в Ticket::' . $id . ' | ' . $e->getMessage());
-                        \Yii::$app->session->addFlash('error', 'Произошла ошибка при отправке сообщения.');
-                    }
-                }
-                else{
-                    \Yii::error('Ошибка при подгрузке файла в директорию бота в telegram ' . json_encode($response));
-                    \Yii::$app->session->addFlash('error', 'Произошла ошибка при обработке сообщения на сервере telegram.');
-                }
+
+            $type = 'document';
+            if(str_contains($_FILES['Documents']['type']['file'], 'image')){
+                $type = 'photo';
             }
-            else{
-                \Yii::error('Ошибка при отправке сообщения(файл) в telegram ' . json_encode($response));
+
+            $model = $this->findModel($id);
+            $transaction = $model->getDb()->beginTransaction();
+            try{
+                $message = [
+                    'type' => $type,
+                    'author' => \Yii::$app->user->identity->tg_user_id,
+                    'message' => $name
+                ];
+
+                $model->messages = array_merge($model->messages, [$message]);
+                $model->limit = \Yii::$app->params['limitAfterResponse'];
+                $model->is_new = 0;
+                $updates['ticket'][$id]['messages'] = $model->messages;
+                $updates['ticket'][$id]['event'] = 'update';
+                $updates['ticket'][$id]['tg_user_id'] = $model->tg_user_id;
+                $model->updateAttributes(['messages', 'limit']);
+                $transaction->commit();
+                $cache = \Yii::$app->cache->get('updates');
+                if($cache === false){
+                    \Yii::$app->cache->set('updates', $updates, null);
+                }
+                else{
+                    $cache['ticket'][$id] = $updates['ticket'][$id];
+                    \Yii::$app->cache->set('updates', $cache, null);
+                }
+                \Yii::$app->session->addFlash('success', 'Сообщение успешно отправлено.'); 
+            }
+            catch(\Exception|\Throwable $e){
+                $transaction->rollBack();
+                \Yii::error('Ошибка при обновлении сообщения(файл) в Ticket::' . $id . ' | ' . $e->getMessage());
                 \Yii::$app->session->addFlash('error', 'Произошла ошибка при отправке сообщения.');
             }
-            unlink($savePath);
         }
         \Yii::$app->request->queryParams = [];
         return $this->redirect(['view', 'id' => $id]);
